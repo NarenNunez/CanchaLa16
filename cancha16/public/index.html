@@ -1,0 +1,1424 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Cancha de la 16 · Reserva tu espacio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;800;900&family=Barlow:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+/* ════════════════════════════════════════════
+   TOKENS
+════════════════════════════════════════════ */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:    #07090b;
+  --bg2:   #0c1014;
+  --bg3:   #111820;
+  --bg4:   #16202a;
+  --bg5:   #1c2a35;
+
+  --neon:  #39FF14;
+  --neon2: rgba(57,255,20,.1);
+  --neon3: rgba(57,255,20,.22);
+  --neon4: rgba(57,255,20,.45);
+  --nglow: 0 0 24px rgba(57,255,20,.45);
+
+  --gold:  #FFB800;
+  --gold2: rgba(255,184,0,.1);
+  --gold3: rgba(255,184,0,.25);
+
+  --purple: #9B5CFF;
+  --pur2:   rgba(155,92,255,.12);
+  --pur3:   rgba(155,92,255,.3);
+
+  --red:   #FF3B3B;
+  --red2:  rgba(255,59,59,.12);
+  --blue:  #3B9EFF;
+
+  --border:  rgba(255,255,255,.07);
+  --border2: rgba(255,255,255,.12);
+  --bneon:   rgba(57,255,20,.2);
+
+  --t1: #EEF4FF;
+  --t2: #6B8494;
+  --t3: #374F5E;
+
+  --fh:'Barlow Condensed',sans-serif;
+  --fb:'Barlow',sans-serif;
+}
+
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--t1);font-family:var(--fb);overflow-x:hidden}
+
+/* Scanline texture */
+body::before{
+  content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
+  background:repeating-linear-gradient(0deg,transparent,transparent 3px,rgba(0,0,0,.025) 3px,rgba(0,0,0,.025) 4px);
+}
+
+/* Orbs */
+.orb{position:fixed;border-radius:50%;filter:blur(120px);pointer-events:none;z-index:0;animation:odrift 18s ease-in-out infinite alternate}
+.o1{width:800px;height:800px;background:rgba(57,255,20,.045);top:-200px;left:-200px}
+.o2{width:600px;height:600px;background:rgba(155,92,255,.04);bottom:-150px;right:-150px;animation-delay:-9s}
+@keyframes odrift{from{transform:translate(0,0)}to{transform:translate(60px,40px)}}
+
+/* ════ NAVBAR ════════════════════════════════ */
+nav{
+  position:sticky;top:0;z-index:200;
+  height:60px;padding:0 32px;
+  background:rgba(7,9,11,.92);backdrop-filter:blur(28px);
+  border-bottom:1px solid var(--border);
+  display:flex;align-items:center;justify-content:space-between;
+}
+.nav-brand{display:flex;align-items:center;gap:10px}
+.nav-logo-box{
+  width:34px;height:34px;background:var(--neon);border-radius:7px;
+  display:flex;align-items:center;justify-content:center;
+  font-family:var(--fh);font-size:13px;font-weight:900;color:#000;flex-shrink:0;
+}
+.nav-name{font-family:var(--fh);font-size:18px;font-weight:900;letter-spacing:.5px;color:var(--t1)}
+.nav-name span{color:var(--neon)}
+.nav-links{display:flex;gap:4px;align-items:center}
+.nav-a{
+  padding:7px 14px;border-radius:7px;font-size:12px;font-weight:600;
+  color:var(--t2);cursor:pointer;transition:all .18s;
+  border:none;background:none;font-family:var(--fb);letter-spacing:.2px;
+}
+.nav-a:hover{color:var(--t1);background:rgba(255,255,255,.05)}
+.nav-badge{
+  display:flex;align-items:center;gap:5px;padding:5px 11px;border-radius:99px;
+  background:var(--neon2);border:1px solid var(--bneon);
+  font-size:10px;font-weight:700;color:var(--neon);letter-spacing:.5px;text-transform:uppercase;
+}
+.nav-badge-dot{width:5px;height:5px;border-radius:50%;background:var(--neon);animation:blink 2s infinite}
+@keyframes blink{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.3;transform:scale(1.5)}}
+.nav-cta{
+  padding:9px 20px;border-radius:8px;
+  background:var(--neon);color:#000;
+  font-family:var(--fh);font-size:13px;font-weight:900;letter-spacing:1px;text-transform:uppercase;
+  border:none;cursor:pointer;transition:all .22s;
+}
+.nav-cta:hover{box-shadow:var(--nglow);transform:translateY(-1px)}
+
+/* ════ HERO ══════════════════════════════════ */
+.hero{
+  position:relative;min-height:94vh;
+  display:flex;flex-direction:column;justify-content:center;
+  padding:0 40px;overflow:hidden;z-index:1;
+}
+.hero-bg-img{
+  position:absolute;inset:0;z-index:0;
+  background:url('https://images.unsplash.com/photo-1574629810360-7efbbe195018?w=1600&q=55') center/cover;
+  opacity:.1;filter:saturate(.2);
+}
+.hero-overlay{
+  position:absolute;inset:0;z-index:0;
+  background:linear-gradient(to right,rgba(7,9,11,.97) 40%,rgba(7,9,11,.55) 75%,rgba(7,9,11,.25) 100%);
+}
+.hero-content{position:relative;z-index:1;max-width:680px}
+.hero-eyebrow{
+  display:inline-flex;align-items:center;gap:8px;
+  padding:5px 13px;border-radius:99px;
+  background:var(--neon2);border:1px solid var(--bneon);
+  font-family:var(--fh);font-size:11px;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:var(--neon);
+  margin-bottom:18px;
+  animation:fup .6s ease both;
+}
+.hero-eyebrow::before{content:'';width:5px;height:5px;border-radius:50%;background:var(--neon);animation:blink 2s infinite}
+.hero h1{
+  font-family:var(--fh);font-size:clamp(64px,10vw,120px);font-weight:900;
+  line-height:.92;letter-spacing:1px;text-transform:uppercase;color:var(--t1);
+  animation:fup .6s .08s ease both;
+}
+.hero h1 em{font-style:normal;color:var(--neon)}
+.hero-sub{
+  margin-top:18px;font-size:16px;color:var(--t2);line-height:1.65;max-width:440px;
+  animation:fup .6s .16s ease both;
+}
+.hero-actions{
+  display:flex;gap:10px;margin-top:32px;flex-wrap:wrap;
+  animation:fup .6s .24s ease both;
+}
+.btn-hero-main{
+  display:inline-flex;align-items:center;gap:8px;padding:14px 28px;border-radius:10px;
+  background:var(--neon);color:#000;font-family:var(--fh);font-size:15px;font-weight:900;
+  letter-spacing:1px;text-transform:uppercase;border:none;cursor:pointer;transition:all .22s;
+}
+.btn-hero-main:hover{box-shadow:var(--nglow),0 0 60px rgba(57,255,20,.25);transform:translateY(-2px)}
+.btn-hero-sec{
+  display:inline-flex;align-items:center;gap:8px;padding:14px 24px;border-radius:10px;
+  background:transparent;border:1px solid var(--border2);
+  color:var(--t1);font-family:var(--fh);font-size:15px;font-weight:800;
+  letter-spacing:1px;text-transform:uppercase;cursor:pointer;transition:all .22s;
+}
+.btn-hero-sec:hover{background:rgba(255,255,255,.06);border-color:var(--bneon);color:var(--neon)}
+
+.hero-stats{
+  display:flex;gap:40px;margin-top:52px;
+  animation:fup .6s .32s ease both;
+}
+.hst-val{font-family:var(--fh);font-size:40px;font-weight:900;color:var(--neon);line-height:1}
+.hst-lbl{font-size:11px;color:var(--t3);text-transform:uppercase;letter-spacing:.8px;margin-top:3px;font-weight:600}
+
+.hero-scroll{
+  position:absolute;bottom:28px;left:50%;transform:translateX(-50%);z-index:1;
+  display:flex;flex-direction:column;align-items:center;gap:6px;
+  font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--t3);
+  animation:fup .6s .5s ease both;
+}
+.scroll-bar{width:1px;height:36px;background:linear-gradient(to bottom,var(--neon),transparent);animation:spulse 2s ease-in-out infinite}
+@keyframes spulse{0%,100%{opacity:.4;transform:scaleY(1)}50%{opacity:1;transform:scaleY(1.2)}}
+@keyframes fup{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}}
+
+/* ════ SECTION WRAPPER ═══════════════════════ */
+section{position:relative;z-index:1}
+.container{max-width:1080px;margin:0 auto;padding:0 24px}
+.sec-ey{font-family:var(--fh);font-size:11px;font-weight:800;letter-spacing:2.5px;text-transform:uppercase;color:var(--neon);margin-bottom:8px}
+.sec-title{font-family:var(--fh);font-size:clamp(34px,5vw,50px);font-weight:900;letter-spacing:.5px;text-transform:uppercase;line-height:1.05}
+.sec-sub{font-size:14px;color:var(--t2);margin-top:8px;line-height:1.6;max-width:520px}
+
+/* ════ TABLA DE PRECIOS ══════════════════════ */
+#precios{padding:50px 0 0}
+.precios-card{
+  background:var(--bg3);border:1px solid var(--border);border-radius:16px;
+  overflow:hidden;margin-top:28px;
+}
+.precios-card-head{
+  padding:16px 24px;border-bottom:1px solid var(--border);
+  display:flex;align-items:center;justify-content:space-between;
+  background:rgba(57,255,20,.03);
+}
+.precios-card-title{font-family:var(--fh);font-size:13px;font-weight:900;letter-spacing:2px;text-transform:uppercase;color:var(--t2)}
+.precios-note{font-size:11px;color:var(--t3)}
+.precios-table{width:100%;border-collapse:collapse}
+.precios-table th{
+  padding:11px 20px;font-family:var(--fh);font-size:10px;font-weight:800;
+  letter-spacing:2px;text-transform:uppercase;color:var(--t3);border-bottom:1px solid var(--border);text-align:center;
+}
+.precios-table th:first-child{text-align:left}
+.precios-table td{
+  padding:14px 20px;font-size:13px;border-bottom:1px solid rgba(255,255,255,.03);text-align:center;
+}
+.precios-table tr:last-child td{border-bottom:none}
+.precios-table td:first-child{text-align:left;font-weight:600;color:var(--t1)}
+.precios-table tr:hover td{background:rgba(255,255,255,.02)}
+.price-chip{
+  display:inline-block;padding:4px 10px;border-radius:6px;
+  font-family:var(--fh);font-size:14px;font-weight:900;letter-spacing:.3px;
+}
+.pc-low{background:var(--neon2);color:var(--neon);border:1px solid var(--bneon)}
+.pc-mid{background:var(--gold2);color:var(--gold);border:1px solid var(--gold3)}
+.pc-high{background:rgba(59,158,255,.1);color:var(--blue);border:1px solid rgba(59,158,255,.25)}
+.pc-low2{background:rgba(57,255,20,.16);color:var(--neon)}
+.pc-mid2{background:rgba(255,184,0,.18);color:var(--gold)}
+.pc-high2{background:rgba(59,158,255,.18);color:var(--blue)}
+.franja-row{display:flex;align-items:center;gap:10px}
+.franja-dot{width:8px;height:8px;border-radius:2px;flex-shrink:0}
+.franja-label{font-weight:700;font-size:13px;color:var(--t1)}
+.franja-range{font-size:11px;color:var(--t3);font-weight:400}
+
+/* ════ RESERVAR SECTION ══════════════════════ */
+#reservar{padding:60px 0}
+.booking-wrap{
+  background:var(--bg3);border:1px solid var(--border);border-radius:18px;overflow:hidden;
+}
+
+/* Day strip */
+.day-strip-top{padding:20px 24px;border-bottom:1px solid var(--border);background:rgba(0,0,0,.2)}
+.day-strip-label{font-family:var(--fh);font-size:10px;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:var(--t3);margin-bottom:12px}
+.day-strip{display:grid;grid-template-columns:repeat(7,1fr);gap:7px}
+.day-btn{
+  display:flex;flex-direction:column;align-items:center;gap:4px;padding:11px 4px;
+  border-radius:10px;border:1px solid var(--border);background:transparent;
+  color:var(--t2);cursor:pointer;transition:all .2s;font-family:var(--fb);
+}
+.day-btn:hover:not(.past){border-color:var(--bneon);color:var(--neon);background:var(--neon2)}
+.day-btn.active{border-color:var(--neon);background:var(--neon);color:#000;box-shadow:var(--nglow)}
+.day-btn.past{opacity:.28;cursor:not-allowed}
+.d-name{font-family:var(--fh);font-size:9px;font-weight:800;letter-spacing:1px;text-transform:uppercase;opacity:.7}
+.d-num{font-family:var(--fh);font-size:22px;font-weight:900;line-height:1}
+.d-dots{display:flex;gap:3px;min-height:5px}
+.dd{width:4px;height:4px;border-radius:50%}
+.dd-y{background:var(--gold)}.dd-g{background:var(--neon)}.dd-p{background:var(--purple)}
+.day-btn.active .d-name,.day-btn.active .d-num{color:#000}
+
+/* Slots */
+.slots-area{padding:20px 24px}
+.slots-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:10px}
+.slots-day-title{font-family:var(--fh);font-size:17px;font-weight:900;letter-spacing:.5px;text-transform:uppercase;color:var(--t1)}
+.slots-legend{display:flex;gap:10px;flex-wrap:wrap}
+.leg{display:flex;align-items:center;gap:4px;font-size:10px;color:var(--t3);font-weight:600;letter-spacing:.3px;text-transform:uppercase}
+.leg-sq{width:8px;height:8px;border-radius:2px}
+.leg-libre{background:rgba(57,255,20,.4)}.leg-ocu{background:rgba(255,59,59,.4)}.leg-fijo{background:rgba(155,92,255,.5)}
+
+.slots-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(110px,1fr));gap:8px}
+.slot{
+  display:flex;flex-direction:column;align-items:center;gap:2px;
+  padding:13px 8px;border-radius:11px;border:1px solid var(--border);background:var(--bg4);
+  cursor:pointer;transition:all .2s cubic-bezier(.23,1,.32,1);position:relative;overflow:hidden;
+}
+.slot:hover:not(.taken):not(.fijo){border-color:var(--bneon);background:var(--neon2);transform:translateY(-2px)}
+.slot.selected{
+  border-color:var(--neon);background:rgba(57,255,20,.15);transform:translateY(-2px);
+  box-shadow:0 0 16px rgba(57,255,20,.2);
+}
+.slot.selected::after{content:'✓';position:absolute;top:4px;right:6px;font-size:9px;font-weight:900;color:var(--neon)}
+.slot.taken{background:var(--red2);border-color:rgba(255,59,59,.2);cursor:not-allowed;opacity:.55}
+.slot.fijo{
+  background:var(--pur2);border-color:var(--pur3);cursor:not-allowed;
+}
+/* fijo ribbon */
+.slot.fijo::before{
+  content:'FIJO';position:absolute;top:5px;right:-8px;
+  background:var(--purple);color:#fff;
+  font-family:var(--fh);font-size:8px;font-weight:900;letter-spacing:.8px;
+  padding:1px 14px;transform:rotate(35deg);
+  transform-origin:right top;
+}
+.slot-time{font-family:var(--fh);font-size:15px;font-weight:900;letter-spacing:.3px;color:var(--t1)}
+.slot.taken .slot-time{text-decoration:line-through;color:var(--t3)}
+.slot.fijo .slot-time{color:var(--purple);text-decoration:line-through}
+.slot.selected .slot-time{color:var(--neon)}
+.slot-price{font-family:var(--fh);font-size:12px;font-weight:800;letter-spacing:.2px}
+.slot-price.low{color:var(--neon)}.slot-price.mid{color:var(--gold)}.slot-price.high{color:var(--blue)}
+.slot-tag{
+  font-family:var(--fh);font-size:9px;font-weight:800;letter-spacing:.5px;text-transform:uppercase;
+  padding:2px 6px;border-radius:4px;margin-top:2px;
+}
+.st-low{background:var(--neon2);color:var(--neon)}
+.st-mid{background:var(--gold2);color:var(--gold)}
+.st-high{background:rgba(59,158,255,.1);color:var(--blue)}
+.st-ocu{background:var(--red2);color:var(--red)}
+.st-fijo{background:var(--pur2);color:var(--purple)}
+
+/* Summary bar */
+.booking-summary{
+  border-top:1px solid var(--border);padding:16px 24px;
+  display:flex;align-items:center;gap:16px;flex-wrap:wrap;
+  background:rgba(0,0,0,.25);
+}
+.sum-items{display:flex;gap:24px;flex:1;flex-wrap:wrap}
+.sum-it{}
+.sum-k{font-family:var(--fh);font-size:9px;font-weight:800;letter-spacing:1.5px;text-transform:uppercase;color:var(--t3);margin-bottom:3px}
+.sum-v{font-size:14px;font-weight:600;color:var(--t1)}
+.sum-v.empty{color:var(--t3);font-style:italic;font-size:12px}
+.sum-v.price{font-family:var(--fh);font-size:22px;font-weight:900;color:var(--neon)}
+.btn-reservar-now{
+  padding:12px 24px;border-radius:9px;
+  background:var(--neon);color:#000;
+  font-family:var(--fh);font-size:14px;font-weight:900;letter-spacing:1px;text-transform:uppercase;
+  border:none;cursor:pointer;transition:all .22s;
+  display:flex;align-items:center;gap:6px;white-space:nowrap;
+}
+.btn-reservar-now:hover:not(:disabled){box-shadow:var(--nglow);transform:translateY(-1px)}
+.btn-reservar-now:disabled{background:var(--bg5);color:var(--t3);cursor:not-allowed;box-shadow:none;transform:none;border:1px solid var(--border)}
+
+/* ════ EVENTOS SECTION ═══════════════════════ */
+#eventos{
+  padding:70px 0;
+  background:linear-gradient(180deg,transparent 0%,rgba(155,92,255,.04) 40%,rgba(155,92,255,.06) 60%,transparent 100%);
+}
+.eventos-hero{
+  border-radius:20px;overflow:hidden;
+  background:linear-gradient(135deg,#0d0818 0%,#13092a 40%,#1a0f3a 100%);
+  border:1px solid var(--pur3);
+  padding:52px 48px;margin-bottom:28px;
+  position:relative;
+}
+.eventos-hero::before{
+  content:'';position:absolute;inset:0;
+  background:url('https://images.unsplash.com/photo-1579952363873-27f3bade9f55?w=1200&q=40') center/cover;
+  opacity:.06;filter:saturate(.1);
+}
+.eventos-hero-inner{position:relative;z-index:1;display:flex;align-items:center;justify-content:space-between;gap:32px;flex-wrap:wrap}
+.ev-hero-text{}
+.ev-hero-ey{font-family:var(--fh);font-size:11px;font-weight:800;letter-spacing:3px;text-transform:uppercase;color:var(--purple);margin-bottom:10px;display:flex;align-items:center;gap:6px}
+.ev-hero-ey::before{content:'';width:5px;height:5px;border-radius:50%;background:var(--purple);animation:blink 2s infinite}
+.ev-hero-title{font-family:var(--fh);font-size:clamp(36px,5vw,58px);font-weight:900;letter-spacing:.5px;text-transform:uppercase;line-height:1;color:var(--t1);margin-bottom:12px}
+.ev-hero-title span{color:var(--purple)}
+.ev-hero-sub{font-size:14px;color:rgba(255,255,255,.5);line-height:1.6;max-width:400px}
+.ev-hero-cta{flex-shrink:0}
+.btn-wa-big{
+  display:flex;align-items:center;gap:10px;padding:16px 28px;border-radius:12px;
+  background:#25d366;color:#fff;
+  font-family:var(--fh);font-size:16px;font-weight:900;letter-spacing:1px;text-transform:uppercase;
+  border:none;cursor:pointer;transition:all .25s;
+  box-shadow:0 0 30px rgba(37,211,102,.25);
+}
+.btn-wa-big:hover{box-shadow:0 0 50px rgba(37,211,102,.5);transform:translateY(-2px)}
+.wa-ico{font-size:22px}
+
+/* Paquetes */
+.paquetes-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.paquete-card{
+  border-radius:14px;border:1px solid var(--border);background:var(--bg3);
+  padding:24px 20px;position:relative;overflow:hidden;transition:all .25s;cursor:pointer;
+}
+.paquete-card:hover{border-color:var(--pur3);transform:translateY(-3px);box-shadow:0 16px 40px rgba(0,0,0,.5),0 0 20px rgba(155,92,255,.07)}
+.paquete-card.featured{border-color:var(--purple);background:linear-gradient(135deg,rgba(155,92,255,.1),var(--bg3))}
+.paquete-card.featured::before{
+  content:'MÁS POPULAR';position:absolute;top:14px;right:-10px;
+  background:var(--purple);color:#fff;font-family:var(--fh);font-size:9px;font-weight:900;
+  letter-spacing:1px;padding:3px 18px;transform:rotate(35deg);transform-origin:right top;
+}
+.paq-tipo{font-family:var(--fh);font-size:10px;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:var(--purple);margin-bottom:8px}
+.paq-title{font-family:var(--fh);font-size:22px;font-weight:900;letter-spacing:.3px;text-transform:uppercase;margin-bottom:6px}
+.paq-desc{font-size:12px;color:var(--t2);line-height:1.6;margin-bottom:16px}
+.paq-includes{display:flex;flex-direction:column;gap:5px;margin-bottom:18px}
+.paq-inc-item{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--t2)}
+.paq-check{color:var(--neon);font-size:11px}
+.paq-price-row{display:flex;align-items:baseline;gap:6px;margin-bottom:14px}
+.paq-price{font-family:var(--fh);font-size:32px;font-weight:900;color:var(--t1)}
+.paq-price-label{font-size:12px;color:var(--t3)}
+.btn-paq{
+  width:100%;padding:11px;border-radius:9px;
+  background:transparent;border:1px solid var(--pur3);
+  color:var(--purple);font-family:var(--fh);font-size:12px;font-weight:900;
+  letter-spacing:1px;text-transform:uppercase;cursor:pointer;transition:all .22s;
+}
+.btn-paq:hover{background:var(--pur2);box-shadow:0 0 16px rgba(155,92,255,.2)}
+.paquete-card.featured .btn-paq{background:var(--purple);color:#fff;border-color:var(--purple)}
+.paquete-card.featured .btn-paq:hover{box-shadow:0 0 24px rgba(155,92,255,.45)}
+
+/* ════ CLIENTES FIJOS SECTION ════════════════ */
+#fijos{padding:70px 0}
+.fijos-layout{display:grid;grid-template-columns:1fr 1fr;gap:36px;align-items:start}
+.fijos-left{}
+.fijos-perks{display:flex;flex-direction:column;gap:10px;margin-top:24px}
+.perk{
+  display:flex;gap:12px;padding:14px 16px;border-radius:11px;
+  background:var(--bg3);border:1px solid var(--border);transition:border-color .2s;
+}
+.perk:hover{border-color:var(--border2)}
+.perk-icon{font-size:20px;flex-shrink:0;margin-top:1px}
+.perk-title{font-size:13px;font-weight:700;color:var(--t1);margin-bottom:2px}
+.perk-desc{font-size:12px;color:var(--t3);line-height:1.5}
+
+.fijos-form{
+  background:var(--bg3);border:1px solid var(--border);border-radius:18px;padding:28px;
+}
+.ff-title{font-family:var(--fh);font-size:22px;font-weight:900;letter-spacing:.5px;text-transform:uppercase;margin-bottom:4px}
+.ff-sub{font-size:12px;color:var(--t2);margin-bottom:22px;line-height:1.5}
+.form-group{margin-bottom:13px}
+.form-label{
+  display:block;font-family:var(--fh);font-size:9px;font-weight:800;
+  letter-spacing:1.5px;text-transform:uppercase;color:var(--t3);margin-bottom:6px;
+}
+.form-input,.form-select{
+  width:100%;padding:10px 12px;border-radius:8px;
+  background:rgba(255,255,255,.04);border:1px solid var(--border2);
+  color:var(--t1);font-size:13px;font-family:var(--fb);outline:none;
+  transition:all .18s;
+}
+.form-input::placeholder{color:var(--t3)}
+.form-input:focus,.form-select:focus{border-color:var(--bneon);box-shadow:0 0 0 2px rgba(57,255,20,.08)}
+.form-select option{background:var(--bg3)}
+.dias-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:5px}
+.dia-cb{display:none}
+.dia-lbl{
+  display:flex;align-items:center;justify-content:center;padding:9px 4px;
+  border-radius:8px;border:1px solid var(--border);background:transparent;
+  color:var(--t3);font-family:var(--fh);font-size:10px;font-weight:800;
+  letter-spacing:.5px;text-transform:uppercase;cursor:pointer;transition:all .18s;
+}
+.dia-cb:checked + .dia-lbl{border-color:var(--neon);background:var(--neon2);color:var(--neon)}
+.btn-submit-fijo{
+  width:100%;padding:13px;border-radius:9px;
+  background:var(--neon);color:#000;
+  font-family:var(--fh);font-size:13px;font-weight:900;letter-spacing:1px;text-transform:uppercase;
+  border:none;cursor:pointer;margin-top:6px;transition:all .22s;
+}
+.btn-submit-fijo:hover{box-shadow:var(--nglow);transform:translateY(-1px)}
+
+/* ════ FOOTER ════════════════════════════════ */
+footer{
+  position:relative;z-index:1;padding:36px 0;
+  background:var(--bg2);border-top:1px solid var(--border);margin-top:40px;
+}
+.footer-inner{
+  max-width:1080px;margin:0 auto;padding:0 24px;
+  display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:16px;
+}
+.footer-brand{font-family:var(--fh);font-size:18px;font-weight:900;color:var(--t1)}
+.footer-brand span{color:var(--neon)}
+.footer-links{display:flex;gap:16px}
+.footer-link{font-size:12px;color:var(--t3);cursor:pointer;transition:color .18s;font-weight:500}
+.footer-link:hover{color:var(--t1)}
+.footer-copy{font-size:11px;color:var(--t3)}
+
+/* ════ MODAL / OVERLAY ════════════════════════ */
+.overlay{
+  position:fixed;inset:0;background:rgba(0,0,0,.88);backdrop-filter:blur(12px);
+  z-index:500;display:flex;align-items:center;justify-content:center;padding:20px;
+  opacity:0;pointer-events:none;transition:opacity .28s;
+}
+.overlay.open{opacity:1;pointer-events:all}
+.modal{
+  background:var(--bg2);border:1px solid var(--border2);border-radius:20px;
+  width:100%;max-width:500px;
+  transform:translateY(20px) scale(.97);
+  transition:all .32s cubic-bezier(.23,1,.32,1);
+  box-shadow:0 40px 80px rgba(0,0,0,.8);
+  overflow:hidden;
+  position:relative;
+}
+.modal::before{
+  content:'';position:absolute;top:0;left:15%;right:15%;height:1px;
+  background:linear-gradient(90deg,transparent,var(--neon),transparent);
+}
+.overlay.open .modal{transform:none}
+
+/* Modal steps */
+.modal-step{display:none}.modal-step.active{display:block}
+.modal-head{
+  padding:20px 24px;border-bottom:1px solid var(--border);
+  display:flex;align-items:center;justify-content:space-between;
+}
+.modal-title{font-family:var(--fh);font-size:18px;font-weight:900;letter-spacing:1px;text-transform:uppercase}
+.modal-x{
+  width:28px;height:28px;border-radius:6px;border:1px solid var(--border2);
+  background:rgba(255,255,255,.04);color:var(--t2);cursor:pointer;font-size:14px;
+  display:flex;align-items:center;justify-content:center;transition:all .18s;
+}
+.modal-x:hover{background:var(--red2);color:var(--red);border-color:rgba(255,59,59,.3)}
+
+/* Steps indicator */
+.steps-bar{display:flex;padding:12px 24px;gap:6px;border-bottom:1px solid var(--border);background:rgba(0,0,0,.2)}
+.step-ind{
+  flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;cursor:default;
+}
+.step-num{
+  width:22px;height:22px;border-radius:50%;border:1.5px solid var(--border2);
+  display:flex;align-items:center;justify-content:center;
+  font-family:var(--fh);font-size:10px;font-weight:900;color:var(--t3);
+  transition:all .25s;
+}
+.step-ind.done .step-num{background:var(--neon);border-color:var(--neon);color:#000}
+.step-ind.current .step-num{border-color:var(--neon);color:var(--neon)}
+.step-lbl{font-family:var(--fh);font-size:8px;font-weight:800;letter-spacing:1px;text-transform:uppercase;color:var(--t3)}
+.step-ind.current .step-lbl{color:var(--neon)}
+.step-ind.done .step-lbl{color:var(--t2)}
+.step-line{flex:1;height:1px;background:var(--border);margin-top:10px;align-self:center;transition:background .25s}
+.step-line.done{background:var(--neon)}
+
+.modal-body{padding:20px 24px}
+
+/* Resumen en modal */
+.res-box{
+  background:rgba(0,0,0,.3);border:1px solid var(--border);border-radius:12px;
+  padding:14px 16px;margin-bottom:16px;
+  display:grid;grid-template-columns:1fr 1fr;gap:10px;
+}
+.rb-k{font-family:var(--fh);font-size:9px;font-weight:800;letter-spacing:1.5px;text-transform:uppercase;color:var(--t3);margin-bottom:3px}
+.rb-v{font-size:14px;font-weight:600;color:var(--t1)}
+.rb-v.neon{font-family:var(--fh);font-size:22px;font-weight:900;color:var(--neon)}
+
+/* Método de pago */
+.metodos{display:flex;flex-direction:column;gap:8px;margin-bottom:16px}
+.metodo{
+  display:flex;align-items:center;gap:12px;padding:13px 14px;border-radius:10px;
+  border:1px solid var(--border2);background:transparent;cursor:pointer;transition:all .2s;
+  font-family:var(--fb);width:100%;text-align:left;
+}
+.metodo:hover{border-color:var(--bneon);background:var(--neon2)}
+.metodo.selected{border-color:var(--neon);background:rgba(57,255,20,.12)}
+.metodo-ico{font-size:22px;width:38px;height:38px;background:var(--bg4);border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.metodo-name{font-size:13px;font-weight:700;color:var(--t1)}
+.metodo-sub{font-size:11px;color:var(--t3);margin-top:1px}
+.metodo-check{margin-left:auto;width:18px;height:18px;border-radius:50%;border:1.5px solid var(--border2);display:flex;align-items:center;justify-content:center;font-size:10px;color:transparent;transition:all .2s}
+.metodo.selected .metodo-check{background:var(--neon);border-color:var(--neon);color:#000}
+
+/* Instrucciones de pago */
+.instrucciones{
+  background:rgba(57,255,20,.05);border:1px solid var(--bneon);border-radius:10px;
+  padding:14px 16px;margin-bottom:14px;
+  font-size:13px;color:var(--t1);line-height:1.6;
+}
+.inst-title{font-family:var(--fh);font-size:11px;font-weight:800;letter-spacing:1.5px;text-transform:uppercase;color:var(--neon);margin-bottom:8px}
+.inst-line{display:flex;gap:8px;margin-bottom:4px}
+.inst-line::before{content:'→';color:var(--neon);flex-shrink:0}
+
+/* Upload */
+.upload-zone{
+  border:1.5px dashed var(--border2);border-radius:12px;padding:22px;
+  text-align:center;cursor:pointer;transition:all .22s;margin-bottom:14px;
+}
+.upload-zone:hover{border-color:var(--bneon);background:var(--neon2)}
+.upload-zone.filled{border-color:var(--neon);background:rgba(57,255,20,.06);border-style:solid}
+.upload-ico{font-size:28px;margin-bottom:6px}
+.upload-text{font-size:12px;color:var(--t2);line-height:1.5}
+.upload-text strong{color:var(--t1)}
+
+/* Modal buttons */
+.modal-btns{display:flex;gap:8px;padding:16px 24px;border-top:1px solid var(--border);background:rgba(0,0,0,.15)}
+.m-cancel-btn{
+  flex:1;padding:11px;border-radius:8px;border:1px solid var(--border2);
+  background:transparent;color:var(--t2);font-family:var(--fh);font-size:12px;font-weight:800;
+  letter-spacing:1px;text-transform:uppercase;cursor:pointer;transition:all .18s;
+}
+.m-cancel-btn:hover{background:rgba(255,255,255,.04);color:var(--t1)}
+.m-next-btn{
+  flex:2;padding:11px;border-radius:8px;border:none;
+  background:var(--neon);color:#000;font-family:var(--fh);font-size:12px;font-weight:900;
+  letter-spacing:1px;text-transform:uppercase;cursor:pointer;transition:all .22s;
+  display:flex;align-items:center;justify-content:center;gap:6px;
+}
+.m-next-btn:hover{box-shadow:var(--nglow)}
+.m-next-btn.gold{background:var(--gold)}
+.m-next-btn.purple{background:var(--purple)}
+
+/* ════ TOAST ══════════════════════════════════ */
+.toast{
+  position:fixed;bottom:20px;right:20px;z-index:9999;
+  padding:12px 18px;border-radius:10px;
+  background:var(--bg3);border:1px solid var(--bneon);color:var(--neon);
+  font-size:13px;font-weight:600;display:flex;align-items:center;gap:8px;
+  box-shadow:0 4px 30px rgba(0,0,0,.6),0 0 16px rgba(57,255,20,.15);
+  transform:translateY(60px);opacity:0;pointer-events:none;
+  transition:all .35s cubic-bezier(.23,1,.32,1);
+}
+.toast.show{transform:translateY(0);opacity:1}
+
+/* ════ RESPONSIVE ════════════════════════════ */
+@media(max-width:768px){
+  .fijos-layout{grid-template-columns:1fr}
+  .paquetes-grid{grid-template-columns:1fr}
+  .hero{padding:0 20px;min-height:80vh}
+  nav{padding:0 16px}
+  .container{padding:0 16px}
+  .slots-grid{grid-template-columns:repeat(3,1fr)}
+  .day-strip{gap:4px}
+  .d-num{font-size:18px}
+  .eventos-hero{padding:32px 24px}
+  .ev-hero-inner{flex-direction:column}
+}
+</style>
+</head>
+<body>
+
+<div class="orb o1"></div>
+<div class="orb o2"></div>
+
+<!-- ════ NAVBAR ════════════════════════════════ -->
+<nav>
+  <div class="nav-brand">
+    <div class="nav-logo-box">16</div>
+    <div class="nav-name">Cancha <span>de la 16</span></div>
+  </div>
+  <div class="nav-links">
+    <button class="nav-a" onclick="goto('#precios')">Precios</button>
+    <button class="nav-a" onclick="goto('#reservar')">Reservar</button>
+    <button class="nav-a" onclick="goto('#eventos')">Eventos</button>
+    <button class="nav-a" onclick="goto('#fijos')">Cliente Fijo</button>
+    <div class="nav-badge"><span class="nav-badge-dot"></span>Disponible hoy</div>
+    <button class="nav-cta" onclick="goto('#reservar')">Reservar →</button>
+  </div>
+</nav>
+
+<!-- ════ HERO ═══════════════════════════════════ -->
+<div class="hero">
+  <div class="hero-bg-img"></div>
+  <div class="hero-overlay"></div>
+  <div class="hero-content">
+    <div class="hero-eyebrow">Cancha sintética · Medellín</div>
+    <h1>JUEGA<br>EN LA <em>16</em></h1>
+    <p class="hero-sub">La cancha que nunca para. Reserva en segundos, juega cuando quieras. Iluminada, techada y lista para tu equipo.</p>
+    <div class="hero-actions">
+      <button class="btn-hero-main" onclick="goto('#reservar')">⚡ Reservar ahora</button>
+      <button class="btn-hero-sec" onclick="goto('#eventos')">🏆 Ver eventos</button>
+    </div>
+    <div class="hero-stats">
+      <div><div class="hst-val">800+</div><div class="hst-lbl">Partidos / mes</div></div>
+      <div><div class="hst-val">4.9★</div><div class="hst-lbl">Calificación</div></div>
+      <div><div class="hst-val">24/7</div><div class="hst-lbl">Disponible</div></div>
+    </div>
+  </div>
+  <div class="hero-scroll"><div class="scroll-bar"></div><span>Desliza</span></div>
+</div>
+
+<!-- ════ TABLA DE PRECIOS ════════════════════════ -->
+<section id="precios">
+  <div class="container">
+    <div class="sec-ey">Tarifas claras</div>
+    <div class="sec-title">Precios por horario</div>
+    <div class="sec-sub">El precio varía según la franja y el día. Siempre verás el costo exacto antes de reservar.</div>
+    <div class="precios-card">
+      <div class="precios-card-head">
+        <div class="precios-card-title">Cancha de la 16 · Tarifa hora</div>
+        <div class="precios-note">Precios en COP · 1 hora de juego</div>
+      </div>
+      <table class="precios-table">
+        <thead>
+          <tr>
+            <th>Franja</th>
+            <th>Horario</th>
+            <th>Lun – Jue</th>
+            <th>Vie</th>
+            <th>Sáb – Dom</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>
+              <div class="franja-row">
+                <span class="franja-dot" style="background:var(--neon)"></span>
+                <span><div class="franja-label">🌅 Mañana</div><div class="franja-range">Económico</div></span>
+              </div>
+            </td>
+            <td style="color:var(--t2)">07:00 – 12:00</td>
+            <td><span class="price-chip pc-low">$50.000</span></td>
+            <td><span class="price-chip pc-low2">$60.000</span></td>
+            <td><span class="price-chip pc-low2">$65.000</span></td>
+          </tr>
+          <tr>
+            <td>
+              <div class="franja-row">
+                <span class="franja-dot" style="background:var(--gold)"></span>
+                <span><div class="franja-label">☀️ Tarde</div><div class="franja-range">Regular</div></span>
+              </div>
+            </td>
+            <td style="color:var(--t2)">12:00 – 18:00</td>
+            <td><span class="price-chip pc-mid">$65.000</span></td>
+            <td><span class="price-chip pc-mid2">$75.000</span></td>
+            <td><span class="price-chip pc-mid2">$80.000</span></td>
+          </tr>
+          <tr>
+            <td>
+              <div class="franja-row">
+                <span class="franja-dot" style="background:var(--blue)"></span>
+                <span><div class="franja-label">🌙 Noche</div><div class="franja-range">Prime</div></span>
+              </div>
+            </td>
+            <td style="color:var(--t2)">18:00 – 23:00</td>
+            <td><span class="price-chip pc-high">$80.000</span></td>
+            <td><span class="price-chip pc-high2">$90.000</span></td>
+            <td><span class="price-chip pc-high2">$100.000</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- ════ RESERVAR ═══════════════════════════════ -->
+<section id="reservar">
+  <div class="container">
+    <div class="sec-ey">Disponibilidad en tiempo real</div>
+    <div class="sec-title">Elige tu hora</div>
+    <div class="sec-sub">Selecciona el día y el horario. El precio se calcula automáticamente.</div>
+    <div style="margin-top:28px"></div>
+    <div class="booking-wrap">
+      <!-- Day strip -->
+      <div class="day-strip-top">
+        <div class="day-strip-label">Selecciona el día</div>
+        <div class="day-strip" id="day-strip"></div>
+      </div>
+      <!-- Slots -->
+      <div class="slots-area">
+        <div class="slots-top">
+          <div class="slots-day-title" id="slots-day-label">—</div>
+          <div class="slots-legend">
+            <span class="leg"><span class="leg-sq leg-libre"></span>Libre</span>
+            <span class="leg"><span class="leg-sq leg-ocu"></span>Ocupado</span>
+            <span class="leg"><span class="leg-sq leg-fijo"></span>Cliente fijo</span>
+          </div>
+        </div>
+        <div class="slots-grid" id="slots-grid"></div>
+      </div>
+      <!-- Summary -->
+      <div class="booking-summary">
+        <div class="sum-items">
+          <div class="sum-it"><div class="sum-k">Fecha</div><div class="sum-v empty" id="sum-fecha">Sin seleccionar</div></div>
+          <div class="sum-it"><div class="sum-k">Horario</div><div class="sum-v empty" id="sum-hora">Sin seleccionar</div></div>
+          <div class="sum-it"><div class="sum-k">Total</div><div class="sum-v price" id="sum-precio">—</div></div>
+        </div>
+        <button class="btn-reservar-now" id="btn-res" disabled onclick="openReservaModal()">
+          Reservar → 
+        </button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ════ EVENTOS ════════════════════════════════ -->
+<section id="eventos">
+  <div class="container">
+    <div class="sec-ey">Algo más grande que un partido</div>
+    <div class="sec-title">Eventos en la cancha</div>
+    <div class="sec-sub">Torneos, cumpleaños, campeonatos. Contáctanos por WhatsApp y armamos tu evento a la medida.</div>
+    <div style="margin-top:28px"></div>
+
+    <!-- Hero eventos -->
+    <div class="eventos-hero">
+      <div class="eventos-hero-inner ev-hero-inner">
+        <div class="ev-hero-text">
+          <div class="ev-hero-ey">Reservas especiales</div>
+          <div class="ev-hero-title">Haz tu <span>evento</span><br>realidad</div>
+          <div class="ev-hero-sub">Torneos, cumpleaños corporativos o campeonatos de barrio. Tenemos el espacio y la cancha. Tú pones el equipo.</div>
+        </div>
+        <div class="ev-hero-cta">
+          <button class="btn-wa-big" onclick="openWA('evento')">
+            <span class="wa-ico">💬</span>
+            Cotizar por WhatsApp
+          </button>
+          <div style="margin-top:10px;font-size:11px;color:rgba(255,255,255,.3);text-align:center">Respondemos en menos de 2h</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Paquetes -->
+    <div class="paquetes-grid">
+      <div class="paquete-card" onclick="openWA('basico')">
+        <div class="paq-tipo">Paquete básico</div>
+        <div class="paq-title">Partido & <br>Celebración</div>
+        <div class="paq-desc">Perfecto para cumpleaños o reunión de amigos. Cancha reservada solo para ustedes.</div>
+        <div class="paq-includes">
+          <div class="paq-inc-item"><span class="paq-check">✓</span>2 horas de cancha</div>
+          <div class="paq-inc-item"><span class="paq-check">✓</span>Iluminación incluida</div>
+          <div class="paq-inc-item"><span class="paq-check">✓</span>Hasta 12 personas</div>
+          <div class="paq-inc-item"><span class="paq-check" style="color:var(--t3)">—</span><span style="color:var(--t3)">Sin decoración</span></div>
+        </div>
+        <div class="paq-price-row">
+          <div class="paq-price">Desde $160k</div>
+          <div class="paq-price-label">/ evento</div>
+        </div>
+        <button class="btn-paq">💬 Cotizar por WhatsApp</button>
+      </div>
+
+      <div class="paquete-card featured" onclick="openWA('premium')">
+        <div class="paq-tipo">Más popular</div>
+        <div class="paq-title">Cumpleaños <br>Premium</div>
+        <div class="paq-desc">Experiencia completa con decoración, música y todo para que el cumpleañero lo recuerde siempre.</div>
+        <div class="paq-includes">
+          <div class="paq-inc-item"><span class="paq-check">✓</span>3 horas de cancha</div>
+          <div class="paq-inc-item"><span class="paq-check">✓</span>Decoración temática</div>
+          <div class="paq-inc-item"><span class="paq-check">✓</span>Parlante / música</div>
+          <div class="paq-inc-item"><span class="paq-check">✓</span>Hasta 20 personas</div>
+        </div>
+        <div class="paq-price-row">
+          <div class="paq-price">Desde $350k</div>
+          <div class="paq-price-label">/ evento</div>
+        </div>
+        <button class="btn-paq">💬 Cotizar por WhatsApp</button>
+      </div>
+
+      <div class="paquete-card" onclick="openWA('torneo')">
+        <div class="paq-tipo">Competencia</div>
+        <div class="paq-title">Torneo <br>& Liga</div>
+        <div class="paq-desc">Organiza tu torneo relámpago o liga de barrio. Cupos, brackets y premiación incluidos.</div>
+        <div class="paq-includes">
+          <div class="paq-inc-item"><span class="paq-check">✓</span>Día completo de cancha</div>
+          <div class="paq-inc-item"><span class="paq-check">✓</span>Brackets y organización</div>
+          <div class="paq-inc-item"><span class="paq-check">✓</span>Premiación personalizada</div>
+          <div class="paq-inc-item"><span class="paq-check">✓</span>Hasta 8 equipos</div>
+        </div>
+        <div class="paq-price-row">
+          <div class="paq-price">Desde $800k</div>
+          <div class="paq-price-label">/ torneo</div>
+        </div>
+        <button class="btn-paq">💬 Cotizar por WhatsApp</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ════ CLIENTES FIJOS ══════════════════════════ -->
+<section id="fijos">
+  <div class="container">
+    <div class="sec-ey">🔒 Tu hora asegurada</div>
+    <div class="sec-title">Hazte Cliente Fijo</div>
+    <div class="sec-sub">¿Siempre juegas el mismo día? Asegura tu turno para toda la temporada. Sin reservar cada semana.</div>
+    <div style="margin-top:36px"></div>
+    <div class="fijos-layout">
+      <div class="fijos-left">
+        <div class="fijos-perks">
+          <div class="perk">
+            <div class="perk-icon">🔒</div>
+            <div><div class="perk-title">Hora garantizada</div><div class="perk-desc">Tu turno bloqueado semana a semana. Nadie te lo puede quitar.</div></div>
+          </div>
+          <div class="perk">
+            <div class="perk-icon">💰</div>
+            <div><div class="perk-title">Precio preferencial</div><div class="perk-desc">Hasta 10% de descuento sobre la tarifa regular de tu franja.</div></div>
+          </div>
+          <div class="perk">
+            <div class="perk-icon">📲</div>
+            <div><div class="perk-title">Notificaciones directas</div><div class="perk-desc">Te avisamos de cambios, eventos o cierres antes que nadie.</div></div>
+          </div>
+          <div class="perk">
+            <div class="perk-icon">⚡</div>
+            <div><div class="perk-title">Confirmación en 24h</div><div class="perk-desc">Revisamos tu solicitud y te confirmamos el mismo día hábil.</div></div>
+          </div>
+        </div>
+      </div>
+      <div class="fijos-form">
+        <div class="ff-title">Solicitar cupo fijo</div>
+        <div class="ff-sub">Completa el formulario. El admin revisará tu solicitud y te contacta en 24 horas.</div>
+        <div class="form-group"><label class="form-label">Nombre completo</label><input type="text" class="form-input" id="fijo-nombre" placeholder="Tu nombre..."/></div>
+        <div class="form-group"><label class="form-label">WhatsApp</label><input type="tel" class="form-input" id="fijo-tel" placeholder="+57 300 000 0000"/></div>
+        <div class="form-group">
+          <label class="form-label">Día de la semana</label>
+          <div class="dias-grid">
+            <input type="checkbox" class="dia-cb" id="dc0" value="Lun"><label class="dia-lbl" for="dc0">Lun</label>
+            <input type="checkbox" class="dia-cb" id="dc1" value="Mar"><label class="dia-lbl" for="dc1">Mar</label>
+            <input type="checkbox" class="dia-cb" id="dc2" value="Mié"><label class="dia-lbl" for="dc2">Mié</label>
+            <input type="checkbox" class="dia-cb" id="dc3" value="Jue"><label class="dia-lbl" for="dc3">Jue</label>
+            <input type="checkbox" class="dia-cb" id="dc4" value="Vie"><label class="dia-lbl" for="dc4">Vie</label>
+            <input type="checkbox" class="dia-cb" id="dc5" value="Sáb"><label class="dia-lbl" for="dc5">Sáb</label>
+            <input type="checkbox" class="dia-cb" id="dc6" value="Dom"><label class="dia-lbl" for="dc6">Dom</label>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Hora deseada</label>
+          <select class="form-select" id="fijo-hora"><option value="">Seleccionar...</option></select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Número de jugadores</label>
+          <select class="form-select" id="fijo-players">
+            <option>10 jugadores (5 vs 5)</option>
+            <option>12 jugadores (6 vs 6)</option>
+          </select>
+        </div>
+        <button class="btn-submit-fijo" onclick="submitFijo()">Enviar solicitud →</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ════ FOOTER ══════════════════════════════════ -->
+<footer>
+  <div class="footer-inner">
+    <div class="footer-brand">Cancha <span>de la 16</span></div>
+    <div class="footer-links">
+      <span class="footer-link" onclick="goto('#precios')">Precios</span>
+      <span class="footer-link" onclick="goto('#reservar')">Reservar</span>
+      <span class="footer-link" onclick="goto('#eventos')">Eventos</span>
+      <span class="footer-link" onclick="goto('#fijos')">Cliente Fijo</span>
+    </div>
+    <div class="footer-copy">© 2025 · Powered by AMN</div>
+  </div>
+</footer>
+
+<!-- ════ MODAL RESERVA ═══════════════════════════ -->
+<div class="overlay" id="ov-reserva" onclick="if(event.target===this)closeReservaModal()">
+  <div class="modal">
+    <!-- Steps indicator -->
+    <div class="modal-head">
+      <div class="modal-title" id="modal-step-title">Confirmar reserva</div>
+      <button class="modal-x" onclick="closeReservaModal()">×</button>
+    </div>
+    <div class="steps-bar">
+      <div class="step-ind" id="si-0"><div class="step-num">1</div><div class="step-lbl">Resumen</div></div>
+      <div class="step-line" id="sl-0"></div>
+      <div class="step-ind" id="si-1"><div class="step-num">2</div><div class="step-lbl">Pago</div></div>
+      <div class="step-line" id="sl-1"></div>
+      <div class="step-ind" id="si-2"><div class="step-num">3</div><div class="step-lbl">Comprobante</div></div>
+    </div>
+
+    <!-- Step 1: Resumen -->
+    <div class="modal-step active" id="ms-0">
+      <div class="modal-body">
+        <div class="res-box">
+          <div><div class="rb-k">Cancha</div><div class="rb-v">Cancha de la 16</div></div>
+          <div><div class="rb-k">Fecha</div><div class="rb-v" id="m-fecha">—</div></div>
+          <div><div class="rb-k">Horario</div><div class="rb-v" id="m-hora">—</div></div>
+          <div><div class="rb-k">Total</div><div class="rb-v neon" id="m-precio">—</div></div>
+        </div>
+        <div style="font-size:12px;color:var(--t3);line-height:1.6;padding:12px 14px;border-radius:9px;background:rgba(255,255,255,.03);border:1px solid var(--border)">
+          📋 Tu reserva quedará en estado <strong style="color:var(--gold)">PENDIENTE</strong> hasta que verifiquemos tu pago. Te confirmamos por WhatsApp en máximo 1 hora.
+        </div>
+      </div>
+      <div class="modal-btns">
+        <button class="m-cancel-btn" onclick="closeReservaModal()">Cancelar</button>
+        <button class="m-next-btn" onclick="goStep(1)">Continuar al pago →</button>
+      </div>
+    </div>
+
+    <!-- Step 2: Método de pago -->
+    <div class="modal-step" id="ms-1">
+      <div class="modal-body">
+        <div style="font-family:var(--fh);font-size:10px;font-weight:800;letter-spacing:1.5px;text-transform:uppercase;color:var(--t3);margin-bottom:10px">Selecciona tu método</div>
+        <div class="metodos">
+          <button class="metodo" onclick="selectMetodo(this,'nequi')">
+            <div class="metodo-ico">📱</div>
+            <div><div class="metodo-name">Nequi</div><div class="metodo-sub">Transferencia instantánea</div></div>
+            <div class="metodo-check">✓</div>
+          </button>
+          <button class="metodo" onclick="selectMetodo(this,'bancolombia')">
+            <div class="metodo-ico">🏦</div>
+            <div><div class="metodo-name">Bancolombia</div><div class="metodo-sub">Transferencia / PSE</div></div>
+            <div class="metodo-check">✓</div>
+          </button>
+          <button class="metodo" onclick="selectMetodo(this,'efectivo')">
+            <div class="metodo-ico">💵</div>
+            <div><div class="metodo-name">Efectivo</div><div class="metodo-sub">Al llegar a la cancha</div></div>
+            <div class="metodo-check">✓</div>
+          </button>
+        </div>
+        <div class="instrucciones" id="instrucciones-box" style="display:none"></div>
+      </div>
+      <div class="modal-btns">
+        <button class="m-cancel-btn" onclick="goStep(0)">← Volver</button>
+        <button class="m-next-btn" id="btn-next-2" onclick="goStep(2)" disabled style="opacity:.4;cursor:not-allowed">Continuar →</button>
+      </div>
+    </div>
+
+    <!-- Step 3: Comprobante -->
+    <div class="modal-step" id="ms-2">
+      <div class="modal-body">
+        <div class="res-box" style="grid-template-columns:1fr 1fr;margin-bottom:14px">
+          <div><div class="rb-k">Método</div><div class="rb-v" id="m-metodo">—</div></div>
+          <div><div class="rb-k">Total</div><div class="rb-v neon" id="m-precio2">—</div></div>
+        </div>
+        <div class="upload-zone" id="upload-zone" onclick="document.getElementById('file-input').click()">
+          <div class="upload-ico">📎</div>
+          <div class="upload-text"><strong>Sube tu comprobante</strong><br>Captura de pantalla, foto o PDF · Máx 5MB</div>
+          <input type="file" id="file-input" style="display:none" accept="image/*,.pdf" onchange="handleFile(this)"/>
+        </div>
+        <div id="efectivo-note" style="display:none;font-size:12px;color:var(--t2);padding:12px 14px;border-radius:9px;background:rgba(255,184,0,.06);border:1px solid var(--gold3);line-height:1.6">
+          💵 <strong style="color:var(--gold)">Pago en efectivo</strong> — Llega 10 minutos antes de tu hora y cancela directamente en la cancha. Tu reserva queda apartada por 20 minutos.
+        </div>
+      </div>
+      <div class="modal-btns">
+        <button class="m-cancel-btn" onclick="goStep(1)">← Volver</button>
+        <button class="m-next-btn" id="btn-confirmar" onclick="confirmarReserva()">✓ Confirmar reserva</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ════ TOAST ════════════════════════════════════ -->
+<div class="toast" id="toast"><span id="t-ico">✅</span><span id="t-msg">Listo</span></div>
+
+<!-- ENV: inyecta tus credenciales aquí antes de subir -->
+<script>
+window.ENV = {
+  SUPABASE_URL:      'https://laoipuyrbqhnkcredtag.supabase.co',
+  SUPABASE_ANON_KEY: 'sb_publishable_jh2DtwMpGx7wOgmAuD378A_iK2Z9MTt',
+  WA_NUM: '573001234567',
+}
+</script>
+<script type="module">
+import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm'
+
+// ── Supabase ───────────────────────────────────────────────────
+const sb = createClient(window.ENV.SUPABASE_URL, window.ENV.SUPABASE_ANON_KEY)
+
+// ── Constantes locales ─────────────────────────────────────────
+const DIAS   = ['Dom','Lun','Mar','Mié','Jue','Vie','Sáb']
+const MESES  = ['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre']
+const WA_NUM = window.ENV.WA_NUM
+
+// ── Estado ─────────────────────────────────────────────────────
+let franjas    = []      // franjas_precio desde Supabase
+let fijosActivos = {}    // { 'dow:HH:00': true }
+let ocupados   = {}      // { dayIdx: ['HH:00', ...] }
+let selDate    = null
+let selDayIdx  = 0
+let selSlot    = null
+let selPrecio  = 0
+let currentStep= 0
+let selMetodo  = null
+let uploadFile = null
+let configPago = {}
+let channelSub = null    // suscripción realtime actual
+
+// ── Init ───────────────────────────────────────────────────────
+async function init() {
+  await Promise.all([
+    cargarFranjas(),
+    cargarConfigPago(),
+  ])
+  buildHoraSelect()
+  buildDayStrip()
+  const today = new Date(); today.setHours(0,0,0,0)
+  await selectDay(today, 0, document.querySelector('.day-btn'))
+}
+
+// ── DATOS SUPABASE ─────────────────────────────────────────────
+
+async function cargarFranjas() {
+  const { data } = await sb.from('franjas_precio').select('*').eq('activo', true).order('hora_inicio')
+  franjas = data || fallbackFranjas()
+}
+
+async function cargarConfigPago() {
+  const { data } = await sb.from('config_pago').select('*').single()
+  configPago = data || {}
+}
+
+async function cargarSlotsDelDia(fecha, idx) {
+  const dow = new Date(fecha.getTime()).getDay()
+
+  const [{ data: resData }, { data: fijosData }] = await Promise.all([
+    sb.from('reservas')
+      .select('hora_inicio, tipo, estado')
+      .eq('fecha', fecha.toISOString().split('T')[0])
+      .not('estado', 'eq', 'cancelado'),
+    sb.from('clientes_fijos')
+      .select('hora_inicio')
+      .eq('dia_semana', dow)
+      .eq('estado', 'activo'),
+  ])
+
+  // Ocupados normales
+  ocupados[idx] = (resData || []).map(r => r.hora_inicio.slice(0,5))
+
+  // Fijos: clave "dow:HH:00"
+  fijosActivos = {}
+  for (const f of (fijosData || [])) {
+    fijosActivos[`${dow}:${f.hora_inicio.slice(0,5)}`] = true
+  }
+}
+
+// ── Realtime ───────────────────────────────────────────────────
+function suscribirFecha(fecha) {
+  if (channelSub) sb.removeChannel(channelSub)
+  channelSub = sb
+    .channel(`slots-${fecha}`)
+    .on('postgres_changes', { event: '*', schema: 'public', table: 'reservas', filter: `fecha=eq.${fecha}` },
+      async () => { await cargarSlotsDelDia(selDate, selDayIdx); renderSlots() })
+    .subscribe()
+}
+
+// ── CÁLCULO DE PRECIO ──────────────────────────────────────────
+function calcPrecio(h, dow) {
+  const esFSD = dow === 0 || dow === 6
+  const esVie = dow === 5
+  if (!franjas.length) return fallbackPrecio(h, dow)
+  const f = franjas.find(f => h >= f.hora_inicio && h < f.hora_fin)
+  if (!f) return { precio: 0, tier: 'mid' }
+  const precio = esFSD ? f.precio_fsd : esVie ? f.precio_vie : f.precio_lv
+  const tier = f.hora_inicio < 12 ? 'low' : f.hora_inicio < 18 ? 'mid' : 'high'
+  return { precio, tier }
+}
+
+function esFijo(dow, time) {
+  return !!fijosActivos[`${dow}:${time}`]
+}
+
+// ── DAY STRIP ──────────────────────────────────────────────────
+function buildDayStrip() {
+  const strip = document.getElementById('day-strip')
+  const today = new Date(); today.setHours(0,0,0,0)
+  strip.innerHTML = ''
+  for (let i = 0; i < 7; i++) {
+    const d = new Date(today); d.setDate(today.getDate() + i)
+    const dow = d.getDay()
+    const btn = document.createElement('div')
+    btn.className = 'day-btn' + (i === 0 ? ' active' : '')
+    btn.innerHTML = `
+      <span class="d-name">${DIAS[dow]}</span>
+      <span class="d-num">${d.getDate()}</span>
+      <div class="d-dots"></div>`
+    btn.addEventListener('click', () => selectDay(d, i, btn))
+    strip.appendChild(btn)
+  }
+}
+
+async function selectDay(date, idx, btn) {
+  document.querySelectorAll('.day-btn').forEach(b => b.classList.remove('active'))
+  btn.classList.add('active')
+  selDate = date; selDayIdx = idx; selSlot = null; selPrecio = 0
+
+  // Spinner en slots
+  document.getElementById('slots-grid').innerHTML = '<div style="grid-column:1/-1;padding:20px;text-align:center;color:var(--t3);font-size:12px">Cargando disponibilidad...</div>'
+
+  await cargarSlotsDelDia(date, idx)
+  suscribirFecha(date.toISOString().split('T')[0])
+
+  // Actualizar dots del day strip con info real
+  const strip = document.getElementById('day-strip')
+  const btns = strip.querySelectorAll('.day-btn')
+  const hasOcu = (ocupados[idx] || []).length > 0
+  const hasFijo = Object.keys(fijosActivos).some(k => k.startsWith(date.getDay() + ':'))
+  const dotsEl = btns[idx]?.querySelector('.d-dots')
+  if (dotsEl) {
+    dotsEl.innerHTML = (hasOcu ? '<span class="dd dd-y"></span>' : '') + (hasFijo ? '<span class="dd dd-p"></span>' : '')
+  }
+
+  const dow = date.getDay()
+  document.getElementById('slots-day-label').textContent = `${DIAS[dow]} ${date.getDate()} de ${MESES[date.getMonth()]}`
+  renderSlots()
+  updateSummary()
+}
+
+// ── SLOTS ──────────────────────────────────────────────────────
+function renderSlots() {
+  const dow = selDate.getDay()
+  const oc  = ocupados[selDayIdx] || []
+  const grid = document.getElementById('slots-grid')
+  grid.innerHTML = ''
+
+  for (let h = 7; h < 23; h++) {
+    const time = String(h).padStart(2,'0') + ':00'
+    const taken = oc.includes(time)
+    const fijo  = !taken && esFijo(dow, time)
+    const isSel = selSlot === time
+    const { precio, tier } = calcPrecio(h, dow)
+
+    const el = document.createElement('div')
+    let cls = 'slot'
+    if (taken) cls += ' taken'
+    else if (fijo) cls += ' fijo'
+    else if (isSel) cls += ' selected'
+
+    const tagTxt = taken ? 'Ocupado' : fijo ? 'Fijo' : tier === 'low' ? 'Económico' : tier === 'mid' ? 'Regular' : 'Prime'
+    const tagCls = taken ? 'st-ocu' : fijo ? 'st-fijo' : `st-${tier}`
+
+    el.className = cls
+    el.innerHTML = `
+      <span class="slot-time">${time}</span>
+      <span class="slot-price ${tier}">$${(precio/1000).toFixed(0)}k</span>
+      <span class="slot-tag ${tagCls}">${tagTxt}</span>`
+
+    if (!taken && !fijo) {
+      el.addEventListener('click', () => { selSlot = time; selPrecio = precio; renderSlots(); updateSummary() })
+    }
+    el.style.opacity = '0'; el.style.transform = 'translateY(6px)'
+    setTimeout(() => { el.style.transition = `opacity .18s ${(h-7)*16}ms,transform .18s ${(h-7)*16}ms`; el.style.opacity='1'; el.style.transform='none' }, 10)
+    grid.appendChild(el)
+  }
+}
+
+// ── SUMMARY ────────────────────────────────────────────────────
+function updateSummary() {
+  const btn = document.getElementById('btn-res')
+  if (selDate && selSlot) {
+    const dow = selDate.getDay()
+    const h   = parseInt(selSlot)
+    document.getElementById('sum-fecha').textContent = `${DIAS[dow]} ${selDate.getDate()} de ${MESES[selDate.getMonth()]}`
+    document.getElementById('sum-fecha').classList.remove('empty')
+    document.getElementById('sum-hora').textContent  = `${selSlot} – ${String(h+1).padStart(2,'0')}:00`
+    document.getElementById('sum-hora').classList.remove('empty')
+    document.getElementById('sum-precio').textContent = `$${selPrecio.toLocaleString('es-CO')}`
+    btn.disabled = false; btn.style.opacity='1'; btn.style.cursor='pointer'
+  } else {
+    document.getElementById('sum-hora').textContent = 'Sin seleccionar'
+    document.getElementById('sum-hora').classList.add('empty')
+    document.getElementById('sum-precio').textContent = '—'
+    btn.disabled = true; btn.style.opacity='.4'; btn.style.cursor='not-allowed'
+  }
+}
+
+// ── MODAL RESERVA ──────────────────────────────────────────────
+window.openReservaModal = function() {
+  if (!selDate || !selSlot) return
+  const dow = selDate.getDay()
+  const h = parseInt(selSlot)
+  document.getElementById('m-fecha').textContent  = `${DIAS[dow]} ${selDate.getDate()} de ${MESES[selDate.getMonth()]}`
+  document.getElementById('m-hora').textContent   = `${selSlot} – ${String(h+1).padStart(2,'0')}:00`
+  document.getElementById('m-precio').textContent = `$${selPrecio.toLocaleString('es-CO')}`
+  document.getElementById('m-precio2').textContent= `$${selPrecio.toLocaleString('es-CO')}`
+  goStep(0)
+  document.getElementById('ov-reserva').classList.add('open')
+}
+
+window.closeReservaModal = function() {
+  document.getElementById('ov-reserva').classList.remove('open')
+  selMetodo = null; uploadFile = null
+  document.querySelectorAll('.metodo').forEach(m=>m.classList.remove('selected'))
+  document.getElementById('instrucciones-box').style.display='none'
+  resetUpload()
+  document.getElementById('efectivo-note').style.display='none'
+  const n2 = document.getElementById('btn-next-2')
+  n2.disabled=true; n2.style.opacity='.4'; n2.style.cursor='not-allowed'
+}
+
+window.goStep = function(n) {
+  document.querySelectorAll('.modal-step').forEach((el,i)=>el.classList.toggle('active',i===n))
+  const titles = ['Confirmar reserva','Método de pago','Sube tu comprobante']
+  document.getElementById('modal-step-title').textContent = titles[n]
+  ;['si-0','si-1','si-2'].forEach((id,i)=>{
+    const el=document.getElementById(id); el.classList.remove('current','done')
+    if(i<n) el.classList.add('done'); if(i===n) el.classList.add('current')
+  })
+  ;['sl-0','sl-1'].forEach((id,i)=>document.getElementById(id).classList.toggle('done',i<n))
+  currentStep=n
+}
+
+// ── MÉTODO DE PAGO ─────────────────────────────────────────────
+const INSTRUCCIONES = {
+  nequi: {
+    title:'Pago por Nequi',
+    lines: () => [
+      'Abre tu app Nequi y selecciona "Enviar plata"',
+      `Número: <strong style="color:var(--neon)">${configPago.nequi_numero||'+57 300 123 4567'}</strong>`,
+      `Monto exacto: <strong style="color:var(--neon)">$${selPrecio.toLocaleString('es-CO')}</strong>`,
+      'En el concepto: tu nombre y hora reservada',
+      'Toma captura del comprobante',
+    ]
+  },
+  bancolombia: {
+    title:'Transferencia Bancolombia',
+    lines: () => [
+      `Banco: <strong style="color:var(--neon)">${configPago.banco_nombre||'Bancolombia'}</strong>`,
+      `Cuenta Ahorros: <strong style="color:var(--neon)">${configPago.banco_cuenta||'123-456789-00'}</strong>`,
+      `Titular: <strong style="color:var(--neon)">${configPago.banco_titular||'Cancha de la 16'}</strong>`,
+      `Monto exacto: <strong style="color:var(--neon)">$${selPrecio.toLocaleString('es-CO')}</strong>`,
+      'Guarda el comprobante de la transferencia',
+    ]
+  },
+  efectivo: {
+    title:'Pago en efectivo',
+    lines: () => [
+      'No necesitas hacer ninguna transferencia previa',
+      'Llega <strong style="color:var(--neon)">10 minutos antes</strong> de tu hora',
+      'Cancela directamente en la cancha al encargado',
+      'Tu reserva se libera si no llegas en <strong>20 minutos</strong>',
+    ]
+  }
+}
+
+window.selectMetodo = function(btn, tipo) {
+  document.querySelectorAll('.metodo').forEach(m=>m.classList.remove('selected'))
+  btn.classList.add('selected')
+  selMetodo = tipo
+  const box = document.getElementById('instrucciones-box')
+  const inst = INSTRUCCIONES[tipo]
+  box.style.display='block'
+  box.innerHTML = `<div class="inst-title">${inst.title}</div>` + inst.lines().map(l=>`<div class="inst-line">${l}</div>`).join('')
+  const n2=document.getElementById('btn-next-2'); n2.disabled=false; n2.style.opacity='1'; n2.style.cursor='pointer'
+  document.getElementById('efectivo-note').style.display = tipo==='efectivo'?'block':'none'
+  document.getElementById('upload-zone').style.display   = tipo==='efectivo'?'none':'block'
+}
+
+window.handleFile = function(input) {
+  if (!input.files[0]) return
+  uploadFile = input.files[0]
+  const zone = document.getElementById('upload-zone')
+  zone.className='upload-zone filled'
+  zone.innerHTML=`<div class="upload-ico">✅</div><div class="upload-text" style="color:var(--neon)"><strong>${uploadFile.name}</strong><br><span style="color:var(--t2)">Listo para enviar</span></div>`
+}
+
+function resetUpload() {
+  const zone = document.getElementById('upload-zone')
+  if (!zone) return
+  zone.className='upload-zone'
+  zone.innerHTML=`<div class="upload-ico">📎</div><div class="upload-text"><strong>Sube tu comprobante</strong><br>Captura de pantalla, foto o PDF · Máx 5MB</div><input type="file" id="file-input" style="display:none" accept="image/*,.pdf" onchange="handleFile(this)"/>`
+}
+
+window.confirmarReserva = async function() {
+  const btn = document.getElementById('btn-confirmar')
+  btn.disabled=true; btn.textContent='Enviando...'
+  try {
+    const h    = parseInt(selSlot)
+    const fecha= selDate.toISOString().split('T')[0]
+
+    // Upload comprobante si hay
+    let comprobante_url = null
+    if (uploadFile) {
+      const ext  = uploadFile.name.split('.').pop()
+      const path = `${fecha}/${Date.now()}.${ext}`
+      const { error: upErr } = await sb.storage.from('comprobantes').upload(path, uploadFile)
+      if (upErr) throw upErr
+      comprobante_url = path
+    }
+
+    // Crear reserva
+    const { error } = await sb.from('reservas').insert({
+      cliente_nombre: 'Reserva web',
+      fecha,
+      hora_inicio: selSlot + ':00',
+      hora_fin:    String(h+1).padStart(2,'0') + ':00:00',
+      precio:      selPrecio,
+      metodo_pago: selMetodo,
+      estado:      'pendiente',
+      comprobante_url,
+    })
+    if (error) throw error
+
+    // Actualizar estado local
+    if (!ocupados[selDayIdx]) ocupados[selDayIdx]=[]
+    ocupados[selDayIdx].push(selSlot)
+
+    closeReservaModal()
+    selSlot=null; selPrecio=0
+    renderSlots(); updateSummary()
+    showToast('🎉 ¡Reserva enviada! Te confirmamos pronto por WhatsApp.')
+  } catch(e) {
+    showToast('❌ Error: ' + e.message)
+  } finally {
+    btn.disabled=false; btn.innerHTML='✓ Confirmar reserva'
+  }
+}
+
+// ── EVENTOS / WhatsApp ─────────────────────────────────────────
+window.openWA = function(tipo) {
+  const msgs = {
+    evento:   'Hola! Quiero cotizar un evento en la Cancha de la 16 🏆',
+    basico:   'Hola! Me interesa el Paquete Básico para la Cancha de la 16 ⚽',
+    premium:  'Hola! Me interesa el Paquete Cumpleaños Premium 🎉',
+    torneo:   'Hola! Quiero organizar un torneo en la Cancha de la 16 🏆',
+  }
+  window.open(`https://wa.me/${WA_NUM}?text=${encodeURIComponent(msgs[tipo]||msgs.evento)}`, '_blank')
+}
+
+// ── FIJOS FORM ─────────────────────────────────────────────────
+function buildHoraSelect() {
+  const sel = document.getElementById('fijo-hora')
+  for (let h=7; h<23; h++) {
+    const opt=document.createElement('option')
+    opt.value=String(h).padStart(2,'0')+':00'
+    opt.textContent=String(h).padStart(2,'0')+':00'
+    sel.appendChild(opt)
+  }
+}
+
+window.submitFijo = async function() {
+  const nombre = document.getElementById('fijo-nombre').value.trim()
+  const tel    = document.getElementById('fijo-tel').value.trim()
+  const hora   = document.getElementById('fijo-hora').value
+  const dias   = [...document.querySelectorAll('.dia-cb:checked')].map(c=>c.value)
+  const DIAS_DOW = {Lun:1,Mar:2,Mié:3,Jue:4,Vie:5,Sáb:6,Dom:0}
+
+  if (!nombre||!tel||!hora||dias.length===0) {
+    showToast('⚠️ Completa todos los campos del formulario'); return
+  }
+
+  const inserts = dias.map(d => ({
+    nombre, telefono: tel,
+    dia_semana: DIAS_DOW[d],
+    hora_inicio: hora + ':00',
+    hora_fin:    String(parseInt(hora)+1).padStart(2,'0')+':00:00',
+    estado: 'solicitud',
+  }))
+
+  const { error } = await sb.from('clientes_fijos').insert(inserts)
+  if (error) { showToast('❌ Error: ' + error.message); return }
+
+  showToast(`✅ Solicitud enviada, ${nombre.split(' ')[0]}! Te confirmamos en 24h.`)
+  document.getElementById('fijo-nombre').value=''
+  document.getElementById('fijo-tel').value=''
+  document.querySelectorAll('.dia-cb').forEach(c=>c.checked=false)
+}
+
+// ── UTILS ──────────────────────────────────────────────────────
+window.goto = function(sel) { document.querySelector(sel).scrollIntoView({behavior:'smooth'}) }
+
+function showToast(msg) {
+  const t=document.getElementById('toast'); t.querySelector('#t-msg').textContent=msg
+  t.classList.add('show'); clearTimeout(t._t); t._t=setTimeout(()=>t.classList.remove('show'),4000)
+}
+
+// ── FALLBACKS (sin conexión o error de BD) ─────────────────────
+function fallbackFranjas() {
+  return [
+    {hora_inicio:7, hora_fin:12, precio_lv:50000,precio_vie:60000,precio_fsd:65000},
+    {hora_inicio:12,hora_fin:18, precio_lv:65000,precio_vie:75000,precio_fsd:80000},
+    {hora_inicio:18,hora_fin:23, precio_lv:80000,precio_vie:90000,precio_fsd:100000},
+  ]
+}
+function fallbackPrecio(h, dow) {
+  const f = fallbackFranjas().find(f=>h>=f.hora_inicio&&h<f.hora_fin)
+  if (!f) return {precio:65000,tier:'mid'}
+  const precio = (dow===0||dow===6)?f.precio_fsd:dow===5?f.precio_vie:f.precio_lv
+  const tier = f.hora_inicio<12?'low':f.hora_inicio<18?'mid':'high'
+  return {precio,tier}
+}
+
+// ── ARRANCAR ───────────────────────────────────────────────────
+init()
+</script>
+</body>
+</html>

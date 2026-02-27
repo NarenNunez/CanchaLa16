@@ -1,0 +1,1832 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>AMN · Panel Admin</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;800;900&family=Barlow:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* ═══════════════════════════════════════════════
+   TOKENS — AMN DARK SPORT
+═══════════════════════════════════════════════ */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:    #0a0d0f;
+  --bg2:   #0e1215;
+  --bg3:   #131a1f;
+  --bg4:   #192028;
+  --bg5:   #1e2830;
+
+  --neon:  #39FF14;
+  --neon2: rgba(57,255,20,.1);
+  --neon3: rgba(57,255,20,.25);
+  --neon4: rgba(57,255,20,.5);
+  --neon-glow: 0 0 20px rgba(57,255,20,.4);
+
+  --gold:  #FFB800;
+  --gold2: rgba(255,184,0,.12);
+  --red:   #FF3B3B;
+  --red2:  rgba(255,59,59,.12);
+  --blue:  #3B9EFF;
+  --blue2: rgba(59,158,255,.12);
+  --gray:  #8899A6;
+
+  --border:  rgba(255,255,255,.06);
+  --border2: rgba(255,255,255,.1);
+  --border-neon: rgba(57,255,20,.2);
+
+  --t1: #E8F4FF;
+  --t2: #6B8090;
+  --t3: #3A4F5E;
+
+  --fh: 'Barlow Condensed', sans-serif;
+  --fb: 'Barlow', sans-serif;
+
+  --sidebar: 210px;
+  --topbar:  56px;
+}
+
+html,body{height:100%;overflow:hidden}
+body{background:var(--bg);color:var(--t1);font-family:var(--fb);font-size:14px}
+
+/* ═══ SCANLINE TEXTURE ══════════════════════════ */
+body::before{
+  content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
+  background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,.03) 2px,rgba(0,0,0,.03) 4px);
+}
+
+/* ═══ LOGIN SCREEN ══════════════════════════════ */
+#login-screen{
+  position:fixed;inset:0;z-index:1000;
+  background:var(--bg);
+  display:flex;align-items:center;justify-content:center;
+  transition:opacity .5s, transform .5s;
+}
+#login-screen.hiding{opacity:0;transform:scale(1.05);pointer-events:none}
+
+.login-box{
+  background:var(--bg3);
+  border:1px solid var(--border2);
+  border-radius:16px;
+  padding:44px 40px;
+  width:100%;max-width:420px;
+  text-align:center;
+  position:relative;
+  box-shadow:0 0 60px rgba(0,0,0,.8), 0 0 0 1px var(--border);
+}
+.login-box::before{
+  content:'';position:absolute;top:-1px;left:20%;right:20%;height:2px;
+  background:linear-gradient(90deg,transparent,var(--neon),transparent);
+  border-radius:2px;
+}
+.login-eyebrow{
+  font-family:var(--fh);font-size:11px;font-weight:700;letter-spacing:3px;
+  text-transform:uppercase;color:var(--neon);margin-bottom:12px;
+}
+.login-title{
+  font-family:var(--fh);font-size:48px;font-weight:900;letter-spacing:2px;
+  text-transform:uppercase;color:var(--t1);margin-bottom:32px;line-height:1;
+}
+.pin-display{
+  display:flex;gap:12px;justify-content:center;margin-bottom:24px;
+}
+.pin-dot{
+  width:14px;height:14px;border-radius:50%;
+  background:var(--bg5);border:2px solid var(--border2);
+  transition:all .2s;
+}
+.pin-dot.filled{background:var(--neon);border-color:var(--neon);box-shadow:0 0 10px rgba(57,255,20,.5)}
+
+.pin-input{
+  width:100%;padding:16px;border-radius:10px;
+  background:var(--bg2);border:1px solid var(--border2);
+  color:var(--t1);font-size:16px;font-family:var(--fb);text-align:center;
+  letter-spacing:8px;outline:none;
+  transition:all .2s;
+  -webkit-text-security:disc;
+}
+.pin-input:focus{border-color:var(--border-neon);box-shadow:0 0 0 3px rgba(57,255,20,.08)}
+
+.login-btn{
+  width:100%;padding:16px;margin-top:14px;border-radius:10px;
+  background:var(--neon);color:#000;
+  font-family:var(--fh);font-size:18px;font-weight:900;letter-spacing:3px;text-transform:uppercase;
+  border:none;cursor:pointer;
+  transition:all .25s;
+  display:flex;align-items:center;justify-content:center;gap:10px;
+}
+.login-btn:hover{box-shadow:var(--neon-glow), 0 0 40px rgba(57,255,20,.3);transform:translateY(-1px)}
+.login-btn:active{transform:translateY(0)}
+.login-hint{margin-top:16px;font-size:12px;color:var(--t3);letter-spacing:.5px}
+.login-error{color:var(--red);font-size:12px;margin-top:8px;min-height:18px}
+
+/* ═══ MAIN LAYOUT ════════════════════════════════ */
+#app{display:none;height:100%;position:relative;z-index:1}
+#app.visible{display:flex}
+
+/* ═══ SIDEBAR ════════════════════════════════════ */
+.sidebar{
+  width:var(--sidebar);min-height:100vh;
+  background:var(--bg2);
+  border-right:1px solid var(--border);
+  display:flex;flex-direction:column;
+  position:fixed;top:0;left:0;bottom:0;z-index:100;
+  flex-shrink:0;
+}
+
+.sb-brand{
+  padding:18px 16px;border-bottom:1px solid var(--border);
+  display:flex;align-items:center;gap:10px;
+}
+.sb-logo-mark{
+  width:34px;height:34px;background:var(--neon);border-radius:7px;
+  display:flex;align-items:center;justify-content:center;flex-shrink:0;
+}
+.sb-logo-mark span{font-family:var(--fh);font-size:16px;font-weight:900;color:#000}
+.sb-brand-text{}
+.sb-brand-name{font-family:var(--fh);font-size:20px;font-weight:900;letter-spacing:1px;color:var(--t1);line-height:1}
+.sb-brand-sub{font-size:9px;text-transform:uppercase;letter-spacing:2px;color:var(--t3);font-weight:600}
+
+.sb-section{
+  padding:16px 14px 4px;
+  font-size:9px;text-transform:uppercase;letter-spacing:2px;color:var(--t3);font-weight:700;
+}
+.sb-nav{flex:1;padding:8px 10px;display:flex;flex-direction:column;gap:2px;overflow-y:auto}
+
+.sb-item{
+  display:flex;align-items:center;gap:10px;
+  padding:9px 12px;border-radius:9px;
+  cursor:pointer;transition:all .18s;
+  font-size:13px;font-weight:600;color:var(--t2);
+  border:1px solid transparent;
+  background:none;width:100%;text-align:left;font-family:var(--fb);
+  position:relative;
+}
+.sb-item:hover{color:var(--t1);background:rgba(255,255,255,.04)}
+.sb-item.active{
+  color:var(--neon);
+  background:var(--neon2);
+  border-color:var(--border-neon);
+}
+.sb-item.active .sb-dot{background:var(--neon)}
+.sb-dot{
+  width:6px;height:6px;border-radius:50%;
+  background:var(--t3);flex-shrink:0;transition:background .2s;
+}
+.sb-item.active .sb-dot{background:var(--neon);box-shadow:0 0 6px var(--neon)}
+.sb-label{flex:1}
+.sb-badge{
+  background:var(--red);color:#fff;
+  font-size:9px;font-weight:800;padding:2px 6px;border-radius:99px;
+  letter-spacing:.3px;min-width:18px;text-align:center;
+}
+.sb-badge.gold{background:var(--gold);color:#000}
+
+.sb-footer{
+  padding:10px;border-top:1px solid var(--border);
+}
+.sb-user{
+  display:flex;align-items:center;gap:10px;padding:10px 12px;
+  border-radius:9px;background:var(--bg3);border:1px solid var(--border);
+}
+.sb-avatar{
+  width:30px;height:30px;border-radius:8px;
+  background:var(--neon);
+  display:flex;align-items:center;justify-content:center;
+  font-family:var(--fh);font-size:14px;font-weight:900;color:#000;flex-shrink:0;
+}
+.sb-user-info{}
+.sb-user-name{font-size:12px;font-weight:700;color:var(--t1)}
+.sb-user-status{font-size:10px;color:var(--neon);letter-spacing:.3px;display:flex;align-items:center;gap:4px}
+.sb-status-dot{width:5px;height:5px;border-radius:50%;background:var(--neon);animation:blink 2s infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
+
+/* ═══ MAIN AREA ════════════════════════════════ */
+.main{margin-left:var(--sidebar);flex:1;display:flex;flex-direction:column;height:100vh;overflow:hidden}
+
+/* ═══ TOPBAR ════════════════════════════════════ */
+.topbar{
+  height:var(--topbar);
+  background:var(--bg2);border-bottom:1px solid var(--border);
+  display:flex;align-items:center;justify-content:space-between;
+  padding:0 24px;flex-shrink:0;
+}
+.topbar-left{display:flex;align-items:baseline;gap:14px}
+.topbar-title{font-family:var(--fh);font-size:18px;font-weight:900;letter-spacing:1.5px;text-transform:uppercase;color:var(--t1)}
+.topbar-date{font-size:13px;color:var(--t2);font-weight:500}
+.topbar-right{display:flex;align-items:center;gap:8px}
+.tb-live{
+  display:flex;align-items:center;gap:6px;padding:5px 12px;border-radius:99px;
+  background:var(--neon2);border:1px solid var(--border-neon);
+  font-size:11px;font-weight:700;color:var(--neon);letter-spacing:.5px;text-transform:uppercase;
+}
+.tb-live-dot{width:5px;height:5px;border-radius:50%;background:var(--neon);animation:blink 1.5s infinite}
+.tb-btn{
+  padding:6px 14px;border-radius:7px;
+  background:transparent;border:1px solid var(--border2);
+  color:var(--t2);font-size:11px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;
+  cursor:pointer;font-family:var(--fh);transition:all .2s;
+}
+.tb-btn:hover{color:var(--t1);background:rgba(255,255,255,.05)}
+.tb-btn.danger:hover{color:var(--red);border-color:rgba(255,59,59,.3);background:var(--red2)}
+
+/* ═══ CONTENT ═══════════════════════════════════ */
+.content{flex:1;overflow-y:auto;padding:22px 24px;scroll-behavior:smooth}
+.content::-webkit-scrollbar{width:4px}
+.content::-webkit-scrollbar-track{background:transparent}
+.content::-webkit-scrollbar-thumb{background:var(--bg5);border-radius:2px}
+
+.tab-panel{display:none;animation:fadeIn .25s ease}
+.tab-panel.active{display:block}
+@keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+
+/* ═══ KPI CARDS ═════════════════════════════════ */
+.kpi-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:20px}
+.kpi-card{
+  padding:18px 20px;border-radius:12px;
+  background:var(--bg3);border:1px solid var(--border);
+  position:relative;overflow:hidden;
+  transition:border-color .2s;
+}
+.kpi-card::after{
+  content:'';position:absolute;bottom:0;left:0;right:0;height:2px;
+  background:var(--kpi-color,var(--neon));opacity:.4;
+}
+.kpi-card:hover{border-color:var(--border2)}
+.kpi-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px}
+.kpi-label{
+  font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--t2);
+}
+.kpi-ico{font-size:16px;opacity:.7}
+.kpi-val{
+  font-family:var(--fh);font-size:42px;font-weight:900;line-height:1;
+  color:var(--kpi-color,var(--neon));
+  text-shadow:0 0 20px var(--kpi-color,rgba(57,255,20,.4));
+  margin-bottom:4px;
+}
+.kpi-sub{font-size:11px;color:var(--t3);letter-spacing:.3px}
+
+/* ═══ SECTION HEADER ════════════════════════════ */
+.sec-hd{
+  display:flex;align-items:center;justify-content:space-between;
+  margin-bottom:14px;flex-wrap:wrap;gap:8px;
+}
+.sec-title{
+  font-family:var(--fh);font-size:14px;font-weight:800;letter-spacing:2px;
+  text-transform:uppercase;color:var(--t2);
+}
+.sec-actions{display:flex;gap:6px;align-items:center}
+
+/* ═══ CALENDAR STRIP ════════════════════════════ */
+.cal-strip{display:grid;grid-template-columns:repeat(7,1fr);gap:8px;margin-bottom:20px}
+.cal-day{
+  display:flex;flex-direction:column;align-items:center;gap:4px;
+  padding:10px 6px;border-radius:10px;
+  border:1px solid var(--border);background:var(--bg3);
+  cursor:pointer;transition:all .2s;font-family:var(--fb);
+}
+.cal-day:hover:not(.past){border-color:var(--border-neon);background:var(--neon2)}
+.cal-day.active{
+  border-color:var(--neon);background:var(--neon);
+  box-shadow:var(--neon-glow);
+}
+.cal-day.past{opacity:.35;cursor:not-allowed}
+.cal-day-name{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:1px;
+  color:currentColor;opacity:.65}
+.cal-day-num{font-family:var(--fh);font-size:22px;font-weight:900;line-height:1;color:currentColor}
+.cal-day.active .cal-day-name,.cal-day.active .cal-day-num{color:#000}
+.cal-dots{display:flex;gap:3px;min-height:6px}
+.cdot{width:5px;height:5px;border-radius:50%}
+.cdot-r{background:var(--red)}.cdot-y{background:var(--gold)}.cdot-g{background:var(--neon)}
+
+/* ═══ CRONOGRAMA ════════════════════════════════ */
+.cronograma-wrap{
+  background:var(--bg3);border:1px solid var(--border);border-radius:12px;overflow:hidden;
+}
+.cronograma-head{
+  padding:14px 20px;border-bottom:1px solid var(--border);
+  display:flex;align-items:center;justify-content:space-between;
+}
+.cronograma-title{font-family:var(--fh);font-size:15px;font-weight:800;letter-spacing:1px;text-transform:uppercase}
+.cronograma-meta{font-size:12px;color:var(--t2)}
+.crono-row{
+  display:grid;grid-template-columns:64px 1fr auto;align-items:center;
+  padding:10px 20px;border-bottom:1px solid rgba(255,255,255,.03);
+  gap:16px;transition:background .15s;
+}
+.crono-row:last-child{border-bottom:none}
+.crono-row:hover{background:rgba(255,255,255,.02)}
+.crono-hora{
+  font-family:var(--fh);font-size:16px;font-weight:800;letter-spacing:.5px;color:var(--t2);
+}
+.crono-info{display:flex;flex-direction:column;gap:2px}
+.crono-cliente{font-size:13px;font-weight:600;color:var(--t1)}
+.crono-detail{font-size:11px;color:var(--t3)}
+.crono-status{display:flex;align-items:center;gap:8px}
+
+/* ═══ STATUS CHIPS ══════════════════════════════ */
+.chip{
+  display:inline-flex;align-items:center;gap:4px;
+  padding:3px 10px;border-radius:99px;
+  font-size:10px;font-weight:800;letter-spacing:.8px;text-transform:uppercase;
+  border:1px solid;
+}
+.chip-libre{background:var(--neon2);border-color:var(--neon3);color:var(--neon)}
+.chip-pendiente{background:var(--gold2);border-color:rgba(255,184,0,.3);color:var(--gold)}
+.chip-confirmado{background:rgba(57,255,20,.08);border-color:var(--neon3);color:var(--neon)}
+.chip-bloqueado{background:rgba(255,255,255,.05);border-color:var(--border2);color:var(--t2)}
+.chip-fijo{background:var(--blue2);border-color:rgba(59,158,255,.3);color:var(--blue)}
+.chip-cancelado{background:var(--red2);border-color:rgba(255,59,59,.3);color:var(--red)}
+
+/* ═══ BUTTONS ═══════════════════════════════════ */
+.btn{
+  display:inline-flex;align-items:center;gap:6px;
+  padding:7px 14px;border-radius:7px;
+  font-family:var(--fh);font-size:12px;font-weight:800;letter-spacing:1px;text-transform:uppercase;
+  cursor:pointer;border:1px solid;transition:all .2s;
+}
+.btn-neon{background:var(--neon);border-color:var(--neon);color:#000}
+.btn-neon:hover{box-shadow:var(--neon-glow);transform:translateY(-1px)}
+.btn-outline{background:transparent;border-color:var(--border2);color:var(--t2)}
+.btn-outline:hover{background:rgba(255,255,255,.04);color:var(--t1)}
+.btn-gold{background:var(--gold);border-color:var(--gold);color:#000}
+.btn-gold:hover{box-shadow:0 0 16px rgba(255,184,0,.4)}
+.btn-red{background:transparent;border-color:rgba(255,59,59,.4);color:var(--red)}
+.btn-red:hover{background:var(--red2)}
+.btn-approve{background:var(--neon2);border-color:var(--neon3);color:var(--neon)}
+.btn-approve:hover{background:rgba(57,255,20,.18)}
+.btn-cancel-act{background:var(--red2);border-color:rgba(255,59,59,.3);color:var(--red)}
+.btn-cancel-act:hover{background:rgba(255,59,59,.2)}
+.btn-free{background:var(--gold2);border-color:var(--gold3,rgba(255,184,0,.3));color:var(--gold)}
+.btn-free:hover{background:rgba(255,184,0,.2)}
+.btn-edit{background:var(--blue2);border-color:rgba(59,158,255,.3);color:var(--blue)}
+.btn-edit:hover{background:rgba(59,158,255,.2)}
+
+.btn-sm{padding:4px 10px;font-size:10px}
+
+/* ═══ TABLE ═════════════════════════════════════ */
+.t-wrap{background:var(--bg3);border:1px solid var(--border);border-radius:12px;overflow:hidden}
+table{width:100%;border-collapse:collapse}
+th{
+  padding:10px 16px;font-family:var(--fh);font-size:10px;font-weight:800;
+  letter-spacing:2px;text-transform:uppercase;color:var(--t3);
+  border-bottom:1px solid var(--border);text-align:left;
+}
+td{padding:12px 16px;font-size:13px;color:var(--t2);border-bottom:1px solid rgba(255,255,255,.03)}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:rgba(255,255,255,.015)}
+td strong{color:var(--t1);font-weight:600}
+.td-mono{font-family:var(--fh);font-size:15px;font-weight:800}
+
+/* ═══ FILTER BAR ════════════════════════════════ */
+.filter-bar{display:flex;gap:6px;flex-wrap:wrap}
+.filter-pill{
+  padding:5px 12px;border-radius:99px;
+  border:1px solid var(--border);background:transparent;
+  color:var(--t3);font-size:11px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;
+  cursor:pointer;font-family:var(--fh);transition:all .2s;
+}
+.filter-pill:hover{color:var(--t2);border-color:var(--border2)}
+.filter-pill.active{
+  background:var(--neon2);border-color:var(--border-neon);color:var(--neon);
+}
+
+/* ═══ FIJOS CARDS ═══════════════════════════════ */
+.fijos-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:12px}
+.fijo-card{
+  padding:16px 18px;border-radius:12px;
+  background:var(--bg3);border:1px solid var(--border);
+  transition:border-color .2s;
+}
+.fijo-card:hover{border-color:var(--border2)}
+.fc-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:12px}
+.fc-name{font-size:14px;font-weight:700;color:var(--t1);margin-bottom:3px}
+.fc-tel{font-size:11px;color:var(--t3)}
+.fc-schedule{
+  display:flex;align-items:center;gap:8px;flex-wrap:wrap;
+  padding:10px 12px;border-radius:8px;background:var(--bg4);
+  border:1px solid var(--border);margin-bottom:12px;
+}
+.fc-dia{font-family:var(--fh);font-size:14px;font-weight:800;letter-spacing:.5px;color:var(--neon)}
+.fc-sep{color:var(--t3)}
+.fc-hora{font-family:var(--fh);font-size:14px;font-weight:700;color:var(--t1)}
+.fc-persons{font-size:11px;color:var(--t3)}
+.fc-desde{font-size:11px;color:var(--t3);margin-bottom:10px}
+.fc-actions{display:flex;gap:6px}
+
+/* ═══ SOLICITUDES ═══════════════════════════════ */
+.solicitud-item{
+  padding:14px 18px;border-radius:10px;margin-bottom:8px;
+  background:rgba(255,184,0,.04);
+  border:1px solid rgba(255,184,0,.15);
+  transition:border-color .2s;
+}
+.solicitud-item:hover{border-color:rgba(255,184,0,.3)}
+.sol-row1{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}
+.sol-name{font-size:14px;font-weight:700;color:var(--t1)}
+.sol-time{font-size:11px;color:var(--t3)}
+.sol-details{font-size:12px;color:var(--t2);margin-bottom:10px;line-height:1.5}
+.sol-actions{display:flex;gap:6px}
+
+/* ═══ FINANZAS CHARTS ═══════════════════════════ */
+.fin-2col{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px}
+.chart-card{background:var(--bg3);border:1px solid var(--border);border-radius:12px;padding:18px 20px}
+.chart-title{font-family:var(--fh);font-size:11px;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:var(--t2);margin-bottom:14px}
+
+.bar-row{display:flex;align-items:center;gap:10px;margin-bottom:8px}
+.bar-lbl{font-size:11px;color:var(--t2);width:72px;text-align:right;flex-shrink:0;font-weight:600}
+.bar-track{flex:1;height:18px;background:rgba(255,255,255,.04);border-radius:3px;overflow:hidden;border:1px solid var(--border)}
+.bar-fill{height:100%;border-radius:3px;transition:width 1s cubic-bezier(.23,1,.32,1)}
+.bar-fill.g{background:linear-gradient(90deg,rgba(57,255,20,.3),var(--neon))}
+.bar-fill.y{background:linear-gradient(90deg,rgba(255,184,0,.3),var(--gold))}
+.bar-fill.b{background:linear-gradient(90deg,rgba(59,158,255,.3),var(--blue))}
+.bar-fill.r{background:linear-gradient(90deg,rgba(255,59,59,.3),var(--red))}
+.bar-val{font-family:var(--fh);font-size:12px;font-weight:800;color:var(--t1);width:52px;flex-shrink:0}
+
+/* Tienda */
+.product-item{
+  display:flex;align-items:center;gap:12px;padding:11px 14px;
+  border-radius:9px;background:var(--bg4);border:1px solid var(--border);
+  margin-bottom:6px;cursor:pointer;transition:all .2s;
+}
+.product-item:hover{border-color:var(--border-neon);background:rgba(57,255,20,.04)}
+.prod-icon{font-size:22px;width:38px;height:38px;display:flex;align-items:center;justify-content:center;
+  background:var(--bg3);border-radius:8px;border:1px solid var(--border);flex-shrink:0}
+.prod-name{font-size:13px;font-weight:600;color:var(--t1)}
+.prod-price{font-size:11px;color:var(--t3)}
+.prod-right{margin-left:auto;display:flex;align-items:center;gap:12px}
+.prod-sold{font-size:11px;color:var(--t2)}
+.prod-total{font-family:var(--fh);font-size:14px;font-weight:800;color:var(--neon)}
+
+.add-prod-btn{
+  display:flex;align-items:center;justify-content:center;gap:6px;
+  padding:11px;border-radius:9px;border:1.5px dashed var(--border2);
+  font-family:var(--fh);font-size:11px;font-weight:800;letter-spacing:1px;text-transform:uppercase;
+  color:var(--t3);cursor:pointer;transition:all .2s;margin-top:6px;background:none;width:100%;
+}
+.add-prod-btn:hover{border-color:var(--border-neon);color:var(--neon);background:var(--neon2)}
+
+/* ═══ CONFIG SECTION ════════════════════════════ */
+.price-row{
+  display:grid;grid-template-columns:120px 1fr repeat(2,120px);align-items:center;
+  padding:12px 16px;border-bottom:1px solid rgba(255,255,255,.03);gap:12px;
+}
+.price-row:last-child{border-bottom:none}
+.price-row:hover{background:rgba(255,255,255,.02)}
+.price-label{font-family:var(--fh);font-size:13px;font-weight:800;letter-spacing:.5px;color:var(--t1)}
+.price-range{font-size:11px;color:var(--t3)}
+.price-edit{
+  background:var(--bg4);border:1px solid var(--border2);border-radius:7px;
+  color:var(--neon);font-family:var(--fh);font-size:16px;font-weight:900;
+  padding:7px 10px;width:100%;outline:none;text-align:right;
+  transition:all .2s;
+}
+.price-edit:focus{border-color:var(--border-neon);box-shadow:0 0 0 2px rgba(57,255,20,.1)}
+
+.horario-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:10px}
+.horario-item{
+  padding:14px 16px;border-radius:10px;
+  background:var(--bg3);border:1px solid var(--border);
+}
+.horario-dia{font-family:var(--fh);font-size:13px;font-weight:800;letter-spacing:.5px;color:var(--t1);
+  margin-bottom:10px;display:flex;justify-content:space-between;align-items:center}
+.horario-times{display:flex;gap:6px;align-items:center}
+.time-input{
+  background:var(--bg4);border:1px solid var(--border2);border-radius:6px;
+  color:var(--t1);font-size:12px;padding:6px 8px;width:75px;outline:none;font-family:var(--fb);
+  transition:border-color .2s;
+}
+.time-input:focus{border-color:var(--border-neon)}
+.toggle-switch{position:relative;width:32px;height:18px;flex-shrink:0;cursor:pointer}
+.toggle-switch input{opacity:0;width:0;height:0;position:absolute}
+.toggle-slider{
+  position:absolute;inset:0;border-radius:99px;
+  background:var(--bg5);border:1px solid var(--border2);transition:all .25s;
+}
+.toggle-slider::before{
+  content:'';position:absolute;width:12px;height:12px;border-radius:50%;
+  top:2px;left:2px;background:var(--t3);transition:all .25s;
+}
+.toggle-switch input:checked + .toggle-slider{background:var(--neon);border-color:var(--neon)}
+.toggle-switch input:checked + .toggle-slider::before{transform:translateX(14px);background:#000}
+
+/* ═══ MODAL ═════════════════════════════════════ */
+.overlay{
+  position:fixed;inset:0;background:rgba(0,0,0,.85);backdrop-filter:blur(8px);
+  z-index:500;display:flex;align-items:center;justify-content:center;padding:20px;
+  opacity:0;pointer-events:none;transition:opacity .25s;
+}
+.overlay.open{opacity:1;pointer-events:all}
+.modal{
+  background:var(--bg3);border:1px solid var(--border2);border-radius:16px;
+  width:100%;max-width:460px;padding:28px;position:relative;
+  transform:translateY(16px) scale(.98);transition:all .3s cubic-bezier(.23,1,.32,1);
+  box-shadow:0 40px 80px rgba(0,0,0,.8);max-height:90vh;overflow-y:auto;
+}
+.modal::before{
+  content:'';position:absolute;top:-1px;left:15%;right:15%;height:1px;
+  background:linear-gradient(90deg,transparent,var(--neon),transparent);
+}
+.overlay.open .modal{transform:none}
+.m-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px}
+.m-title{font-family:var(--fh);font-size:20px;font-weight:900;letter-spacing:1px;text-transform:uppercase}
+.m-x{
+  width:28px;height:28px;border-radius:6px;
+  border:1px solid var(--border2);background:var(--bg4);color:var(--t2);
+  cursor:pointer;font-size:14px;display:flex;align-items:center;justify-content:center;
+  transition:all .18s;
+}
+.m-x:hover{background:var(--red2);color:var(--red);border-color:rgba(255,59,59,.3)}
+
+.form-group{margin-bottom:14px}
+.form-label{
+  display:block;font-family:var(--fh);font-size:10px;font-weight:800;
+  letter-spacing:1.5px;text-transform:uppercase;color:var(--t2);margin-bottom:6px;
+}
+.form-input,.form-select,.form-textarea{
+  width:100%;padding:10px 12px;border-radius:8px;
+  background:var(--bg4);border:1px solid var(--border2);
+  color:var(--t1);font-size:13px;font-family:var(--fb);outline:none;
+  transition:all .18s;
+}
+.form-input:focus,.form-select:focus,.form-textarea:focus{
+  border-color:var(--border-neon);box-shadow:0 0 0 2px rgba(57,255,20,.08);
+}
+.form-select option{background:var(--bg3)}
+.form-textarea{resize:vertical;min-height:70px}
+.form-2col{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.m-btns{display:flex;gap:8px;margin-top:20px}
+.m-cancel-btn{flex:1;padding:10px;border-radius:8px;border:1px solid var(--border2);
+  background:transparent;color:var(--t2);font-family:var(--fh);font-size:12px;font-weight:800;
+  letter-spacing:1px;text-transform:uppercase;cursor:pointer;transition:all .2s}
+.m-cancel-btn:hover{background:rgba(255,255,255,.04);color:var(--t1)}
+.m-save-btn{flex:2;padding:10px;border-radius:8px;border:none;
+  background:var(--neon);color:#000;font-family:var(--fh);font-size:12px;font-weight:900;
+  letter-spacing:1px;text-transform:uppercase;cursor:pointer;transition:all .25s}
+.m-save-btn:hover{box-shadow:var(--neon-glow)}
+.m-save-btn.gold{background:var(--gold)}
+.m-save-btn.red{background:var(--red)}
+
+.res-box{
+  background:var(--bg4);border:1px solid var(--border);border-radius:10px;
+  padding:14px 16px;margin-bottom:16px;
+  display:grid;grid-template-columns:1fr 1fr;gap:10px 16px;
+}
+.rb-key{font-size:9px;font-weight:800;letter-spacing:1.5px;text-transform:uppercase;color:var(--t3);margin-bottom:3px}
+.rb-val{font-size:14px;font-weight:600;color:var(--t1)}
+.rb-val.neon{font-family:var(--fh);font-size:20px;font-weight:900;color:var(--neon)}
+
+.upload-area{
+  border:1.5px dashed var(--border2);border-radius:10px;padding:20px;
+  text-align:center;cursor:pointer;transition:all .2s;margin-bottom:16px;
+}
+.upload-area:hover{border-color:var(--border-neon);background:var(--neon2)}
+.upload-area .upload-ico{font-size:26px;margin-bottom:6px}
+.upload-area p{font-size:12px;color:var(--t2);line-height:1.5}
+
+/* ═══ TOAST ═════════════════════════════════════ */
+.toast{
+  position:fixed;bottom:20px;right:20px;z-index:9999;
+  padding:12px 18px;border-radius:10px;
+  background:var(--bg3);border:1px solid var(--border-neon);
+  color:var(--neon);font-size:13px;font-weight:600;
+  display:flex;align-items:center;gap:8px;
+  box-shadow:0 4px 30px rgba(0,0,0,.6), 0 0 16px rgba(57,255,20,.15);
+  transform:translateY(60px);opacity:0;pointer-events:none;
+  transition:all .35s cubic-bezier(.23,1,.32,1);
+}
+.toast.show{transform:translateY(0);opacity:1}
+
+/* ═══ STATS SECTION ═════════════════════════════ */
+.stats-2col{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px}
+
+/* Movimientos table color */
+.mv-cat-cancha{font-family:var(--fh);font-size:10px;font-weight:800;letter-spacing:.5px;
+  padding:2px 8px;border-radius:99px;background:var(--neon2);color:var(--neon);border:1px solid var(--neon3)}
+.mv-cat-tienda{font-family:var(--fh);font-size:10px;font-weight:800;letter-spacing:.5px;
+  padding:2px 8px;border-radius:99px;background:var(--blue2);color:var(--blue);border:1px solid rgba(59,158,255,.3)}
+
+/* Scrollbar for modal */
+.modal::-webkit-scrollbar{width:3px}
+.modal::-webkit-scrollbar-thumb{background:var(--bg5);border-radius:2px}
+</style>
+</head>
+<body>
+
+<!-- ═════════════════════════════════════════════
+     LOGIN
+═════════════════════════════════════════════ -->
+<div id="login-screen">
+  <div class="login-box">
+    <div class="login-eyebrow">Panel de Control</div>
+    <div class="login-title">Administrador</div>
+    <div class="pin-display" id="pin-display">
+      <div class="pin-dot" id="pd0"></div>
+      <div class="pin-dot" id="pd1"></div>
+      <div class="pin-dot" id="pd2"></div>
+      <div class="pin-dot" id="pd3"></div>
+    </div>
+    <input class="pin-input" type="password" id="pin-input" maxlength="4" placeholder="· · · ·"
+      oninput="onPinInput(this)" onkeydown="if(event.key==='Enter')tryLogin()"/>
+    <button class="login-btn" onclick="tryLogin()">Ingresar →</button>
+    <div class="login-error" id="login-error"></div>
+    <div class="login-hint">PIN DEMO: 1234</div>
+  </div>
+</div>
+
+<!-- ═════════════════════════════════════════════
+     APP
+═════════════════════════════════════════════ -->
+<div id="app">
+
+<!-- SIDEBAR -->
+<aside class="sidebar">
+  <div class="sb-brand">
+    <div class="sb-logo-mark"><span>AMN</span></div>
+    <div class="sb-brand-text">
+      <div class="sb-brand-name">AMN.</div>
+      <div class="sb-brand-sub">Panel Admin</div>
+    </div>
+  </div>
+  <div class="sb-nav">
+    <div class="sb-section">Principal</div>
+    <button class="sb-item active" onclick="nav('agenda',this)">
+      <span class="sb-dot"></span><span class="sb-label">Agenda del día</span>
+    </button>
+    <button class="sb-item" onclick="nav('estadisticas',this)">
+      <span class="sb-dot"></span><span class="sb-label">Estadísticas</span>
+    </button>
+    <button class="sb-item" onclick="nav('historial',this)">
+      <span class="sb-dot"></span><span class="sb-label">Historial</span>
+    </button>
+
+    <div class="sb-section">Gestión</div>
+    <button class="sb-item" onclick="nav('reservas',this)">
+      <span class="sb-dot"></span><span class="sb-label">Reservas</span>
+      <span class="sb-badge" id="badge-res">3</span>
+    </button>
+    <button class="sb-item" onclick="nav('fijos',this)">
+      <span class="sb-dot"></span><span class="sb-label">Clientes Fijos</span>
+      <span class="sb-badge gold" id="badge-fijos">2</span>
+    </button>
+    <button class="sb-item" onclick="nav('eventos',this)">
+      <span class="sb-dot"></span><span class="sb-label">Eventos</span>
+    </button>
+    <button class="sb-item" onclick="nav('finanzas',this)">
+      <span class="sb-dot"></span><span class="sb-label">Finanzas</span>
+    </button>
+
+    <div class="sb-section">Configuración</div>
+    <button class="sb-item" onclick="nav('cancha',this)">
+      <span class="sb-dot"></span><span class="sb-label">Cancha</span>
+    </button>
+    <button class="sb-item" onclick="nav('pagos',this)">
+      <span class="sb-dot"></span><span class="sb-label">Datos de pago</span>
+    </button>
+    <button class="sb-item" onclick="nav('horarios',this)">
+      <span class="sb-dot"></span><span class="sb-label">Horarios</span>
+    </button>
+  </div>
+  <div class="sb-footer">
+    <div class="sb-user">
+      <div class="sb-avatar">A</div>
+      <div class="sb-user-info">
+        <div class="sb-user-name">Administrador</div>
+        <div class="sb-user-status"><span class="sb-status-dot"></span>ACTIVO</div>
+      </div>
+    </div>
+  </div>
+</aside>
+
+<!-- MAIN -->
+<div class="main">
+  <div class="topbar">
+    <div class="topbar-left">
+      <div class="topbar-title" id="topbar-title">Agenda Diaria</div>
+      <div class="topbar-date" id="topbar-date"></div>
+    </div>
+    <div class="topbar-right">
+      <div class="tb-live"><span class="tb-live-dot"></span>EN VIVO</div>
+      <a href="cancha16-cliente.html" target="_blank" class="tb-btn">👁 Ver sitio</a>
+      <button class="tb-btn danger" onclick="logout()">SALIR</button>
+    </div>
+  </div>
+
+  <div class="content">
+
+    <!-- ══ AGENDA DEL DÍA ══════════════════════════ -->
+    <div class="tab-panel active" id="tab-agenda">
+      <!-- KPIs -->
+      <div class="kpi-grid">
+        <div class="kpi-card" style="--kpi-color:var(--neon)">
+          <div class="kpi-top"><span class="kpi-label">Total Hoy</span><span class="kpi-ico">📅</span></div>
+          <div class="kpi-val" id="kpi-total">9</div>
+          <div class="kpi-sub">reservas registradas</div>
+        </div>
+        <div class="kpi-card" style="--kpi-color:var(--gold)">
+          <div class="kpi-top"><span class="kpi-label">Pendientes</span><span class="kpi-ico">⏳</span></div>
+          <div class="kpi-val" id="kpi-pend">3</div>
+          <div class="kpi-sub">esperando confirmación</div>
+        </div>
+        <div class="kpi-card" style="--kpi-color:var(--neon)">
+          <div class="kpi-top"><span class="kpi-label">Confirmados</span><span class="kpi-ico">✅</span></div>
+          <div class="kpi-val" id="kpi-conf">5</div>
+          <div class="kpi-sub">pagos validados</div>
+        </div>
+        <div class="kpi-card" style="--kpi-color:var(--gray)">
+          <div class="kpi-top"><span class="kpi-label">Bloqueados</span><span class="kpi-ico">🔒</span></div>
+          <div class="kpi-val" id="kpi-bloq" style="color:var(--gray)">1</div>
+          <div class="kpi-sub">mantenimiento / propio</div>
+        </div>
+      </div>
+
+      <!-- Selector días -->
+      <div class="sec-hd" style="margin-bottom:10px">
+        <span class="sec-title">Selecciona el día</span>
+      </div>
+      <div class="cal-strip" id="cal-strip"></div>
+
+      <!-- Cronograma -->
+      <div class="sec-hd">
+        <span class="sec-title">Cronograma del día</span>
+        <div class="sec-actions">
+          <button class="btn btn-neon btn-sm" onclick="openNuevaReserva()">+ Nueva reserva</button>
+          <button class="btn btn-outline btn-sm" onclick="openBloqueo()">🔒 Bloquear hora</button>
+        </div>
+      </div>
+      <div class="cronograma-wrap">
+        <div class="cronograma-head">
+          <div class="cronograma-title" id="crono-title">Miércoles 25 de Febrero</div>
+          <div class="cronograma-meta" id="crono-meta"></div>
+        </div>
+        <div id="cronograma-body"></div>
+      </div>
+    </div>
+
+    <!-- ══ ESTADÍSTICAS ════════════════════════════ -->
+    <div class="tab-panel" id="tab-estadisticas">
+      <div class="kpi-grid" style="grid-template-columns:repeat(4,1fr);margin-bottom:20px">
+        <div class="kpi-card" style="--kpi-color:var(--neon)">
+          <div class="kpi-top"><span class="kpi-label">Ingresos Mes</span><span class="kpi-ico">💰</span></div>
+          <div class="kpi-val">$4.8M</div><div class="kpi-sub">cancha + tienda</div>
+        </div>
+        <div class="kpi-card" style="--kpi-color:var(--gold)">
+          <div class="kpi-top"><span class="kpi-label">Reservas Mes</span><span class="kpi-ico">📊</span></div>
+          <div class="kpi-val" style="color:var(--gold)">87</div><div class="kpi-sub">en febrero</div>
+        </div>
+        <div class="kpi-card" style="--kpi-color:var(--blue)">
+          <div class="kpi-top"><span class="kpi-label">Ocupación</span><span class="kpi-ico">📈</span></div>
+          <div class="kpi-val" style="color:var(--blue)">72%</div><div class="kpi-sub">promedio diario</div>
+        </div>
+        <div class="kpi-card" style="--kpi-color:var(--neon)">
+          <div class="kpi-top"><span class="kpi-label">Clientes Fijos</span><span class="kpi-ico">🔒</span></div>
+          <div class="kpi-val">8</div><div class="kpi-sub">cupos activos</div>
+        </div>
+      </div>
+      <div class="fin-2col">
+        <div class="chart-card">
+          <div class="chart-title">Ingresos por día (esta semana)</div>
+          <div id="stat-dias-chart"></div>
+        </div>
+        <div class="chart-card">
+          <div class="chart-title">Reservas por franja horaria</div>
+          <div id="stat-franja-chart"></div>
+        </div>
+      </div>
+      <div class="fin-2col">
+        <div class="chart-card">
+          <div class="chart-title">Días más populares</div>
+          <div id="stat-popularidad-chart"></div>
+        </div>
+        <div class="chart-card">
+          <div class="chart-title">Estado de reservas (mes)</div>
+          <div id="stat-estado-chart"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ HISTORIAL ═══════════════════════════════ -->
+    <div class="tab-panel" id="tab-historial">
+      <div class="sec-hd">
+        <span class="sec-title">Historial de Reservas</span>
+        <div class="sec-actions">
+          <div class="filter-bar" id="hist-filters">
+            <button class="filter-pill active" onclick="filterHist(this,'all')">Todas</button>
+            <button class="filter-pill" onclick="filterHist(this,'confirmado')">Confirmadas</button>
+            <button class="filter-pill" onclick="filterHist(this,'pendiente')">Pendientes</button>
+            <button class="filter-pill" onclick="filterHist(this,'cancelado')">Canceladas</button>
+            <button class="filter-pill" onclick="filterHist(this,'fijo')">Fijos</button>
+          </div>
+        </div>
+      </div>
+      <div class="t-wrap">
+        <table>
+          <thead><tr><th>Cliente</th><th>Fecha</th><th>Horario</th><th>Precio</th><th>Tipo</th><th>Estado</th><th>Acciones</th></tr></thead>
+          <tbody id="hist-tbody"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- ══ RESERVAS ════════════════════════════════ -->
+    <div class="tab-panel" id="tab-reservas">
+      <div class="sec-hd">
+        <span class="sec-title">Gestión de Reservas</span>
+        <div class="sec-actions">
+          <button class="btn btn-neon btn-sm" onclick="openNuevaReserva()">+ Nueva</button>
+        </div>
+      </div>
+      <div class="t-wrap">
+        <table>
+          <thead><tr><th>Cliente</th><th>Fecha</th><th>Horario</th><th>Precio</th><th>Tipo</th><th>Estado</th><th>Acciones</th></tr></thead>
+          <tbody id="res-tbody"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- ══ CLIENTES FIJOS ══════════════════════════ -->
+    <div class="tab-panel" id="tab-fijos">
+      <div class="sec-hd">
+        <span class="sec-title">Clientes Fijos</span>
+        <div class="sec-actions">
+          <button class="btn btn-neon btn-sm" onclick="openNuevoFijo()">+ Registrar manual</button>
+        </div>
+      </div>
+      <div id="solicitudes-section"></div>
+      <div class="sec-hd" style="margin-top:20px">
+        <span class="sec-title" style="font-size:11px">Cupos activos</span>
+      </div>
+      <div class="fijos-grid" id="fijos-grid"></div>
+    </div>
+
+    <!-- ══ EVENTOS ═════════════════════════════════ -->
+    <div class="tab-panel" id="tab-eventos">
+      <div class="sec-hd">
+        <span class="sec-title">Gestión de Eventos</span>
+        <div class="sec-actions">
+          <button class="btn btn-gold btn-sm" onclick="openNuevoEvento()">+ Crear evento</button>
+        </div>
+      </div>
+      <div class="t-wrap">
+        <table>
+          <thead><tr><th>Evento</th><th>Tipo</th><th>Fecha</th><th>Precio</th><th>Cupos</th><th>Estado</th><th>Acciones</th></tr></thead>
+          <tbody id="ev-tbody"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- ══ FINANZAS ════════════════════════════════ -->
+    <div class="tab-panel" id="tab-finanzas">
+      <div class="kpi-grid" style="margin-bottom:16px">
+        <div class="kpi-card" style="--kpi-color:var(--neon)">
+          <div class="kpi-top"><span class="kpi-label">Total Mes</span><span class="kpi-ico">💰</span></div>
+          <div class="kpi-val">$5.3M</div><div class="kpi-sub">cancha + tienda</div>
+        </div>
+        <div class="kpi-card" style="--kpi-color:var(--neon)">
+          <div class="kpi-top"><span class="kpi-label">Cancha</span><span class="kpi-ico">⚽</span></div>
+          <div class="kpi-val">$4.8M</div><div class="kpi-sub">91.5% del total</div>
+        </div>
+        <div class="kpi-card" style="--kpi-color:var(--blue)">
+          <div class="kpi-top"><span class="kpi-label">Tienda</span><span class="kpi-ico">🛒</span></div>
+          <div class="kpi-val" style="color:var(--blue)">$448K</div><div class="kpi-sub">8.5% del total</div>
+        </div>
+        <div class="kpi-card" style="--kpi-color:var(--gold)">
+          <div class="kpi-top"><span class="kpi-label">Promedio/día</span><span class="kpi-ico">📆</span></div>
+          <div class="kpi-val" style="color:var(--gold)">$176K</div><div class="kpi-sub">últimos 30 días</div>
+        </div>
+      </div>
+      <div class="fin-2col">
+        <div class="chart-card"><div class="chart-title">Ingresos por día</div><div id="fin-dias"></div></div>
+        <div class="chart-card"><div class="chart-title">Ingresos por franja</div><div id="fin-franjas"></div></div>
+      </div>
+      <div class="sec-hd">
+        <span class="sec-title">Tienda · Productos</span>
+        <div class="sec-actions"><button class="btn btn-neon btn-sm" onclick="openAddProduct()">+ Producto</button></div>
+      </div>
+      <div class="t-wrap" style="padding:14px">
+        <div id="tienda-list"></div>
+        <button class="add-prod-btn" onclick="openAddProduct()">+ Agregar producto o bebida</button>
+      </div>
+      <div class="sec-hd" style="margin-top:16px"><span class="sec-title">Movimientos recientes</span></div>
+      <div class="t-wrap">
+        <table>
+          <thead><tr><th>Descripción</th><th>Categoría</th><th>Hora</th><th>Monto</th></tr></thead>
+          <tbody id="movs-tbody"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- ══ CANCHA CONFIG ════════════════════════════ -->
+    <div class="tab-panel" id="tab-cancha">
+      <div class="sec-hd">
+        <span class="sec-title">Información de la Cancha</span>
+        <div class="sec-actions"><button class="btn btn-neon btn-sm" onclick="saveConfig()">💾 Guardar</button></div>
+      </div>
+      <div class="t-wrap" style="padding:20px;margin-bottom:16px">
+        <div class="form-2col">
+          <div class="form-group"><label class="form-label">Nombre</label><input class="form-input" value="Cancha de la 16"/></div>
+          <div class="form-group"><label class="form-label">WhatsApp</label><input class="form-input" value="+57 300 123 4567"/></div>
+          <div class="form-group"><label class="form-label">Dirección</label><input class="form-input" value="Calle 16 #45-10, Medellín"/></div>
+          <div class="form-group"><label class="form-label">Capacidad máx.</label><input class="form-input" type="number" value="12"/></div>
+        </div>
+      </div>
+      <div class="sec-hd"><span class="sec-title">Precios por Franja</span></div>
+      <div class="t-wrap" style="margin-bottom:16px">
+        <div id="franjas-config"></div>
+      </div>
+    </div>
+
+    <!-- ══ DATOS DE PAGO ════════════════════════════ -->
+    <div class="tab-panel" id="tab-pagos">
+      <div class="sec-hd">
+        <span class="sec-title">Datos de Pago</span>
+        <div class="sec-actions"><button class="btn btn-neon btn-sm" onclick="saveConfig()">💾 Guardar</button></div>
+      </div>
+      <div class="t-wrap" style="padding:20px">
+        <div class="form-group"><label class="form-label">Banco / Entidad</label><input class="form-input" value="Bancolombia"/></div>
+        <div class="form-group"><label class="form-label">Número de cuenta</label><input class="form-input" value="123-456789-00"/></div>
+        <div class="form-2col">
+          <div class="form-group"><label class="form-label">Nequi</label><input class="form-input" value="+57 300 123 4567"/></div>
+          <div class="form-group"><label class="form-label">Daviplata</label><input class="form-input" value="+57 300 123 4567"/></div>
+        </div>
+        <div class="form-group"><label class="form-label">Titular de la cuenta</label><input class="form-input" value="Cancha de la 16 S.A.S."/></div>
+        <div class="form-group"><label class="form-label">Instrucciones para el cliente</label>
+          <textarea class="form-textarea">Realiza la transferencia y sube el comprobante. Tu reserva será confirmada en máximo 1 hora.</textarea>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ HORARIOS CONFIG ══════════════════════════ -->
+    <div class="tab-panel" id="tab-horarios">
+      <div class="sec-hd">
+        <span class="sec-title">Horarios Operativos</span>
+        <div class="sec-actions"><button class="btn btn-neon btn-sm" onclick="saveConfig()">💾 Guardar</button></div>
+      </div>
+      <div class="horario-grid" id="horario-grid"></div>
+      <div class="sec-hd" style="margin-top:20px">
+        <span class="sec-title">Multiplicadores de Precio</span>
+        <div class="sec-actions"><button class="btn btn-outline btn-sm" onclick="openNuevoMultiplicador()">+ Agregar</button></div>
+      </div>
+      <div id="multiplicadores-list"></div>
+    </div>
+
+  </div><!-- /content -->
+</div><!-- /main -->
+</div><!-- /app -->
+
+<!-- ═══ MODAL ═══════════════════════════════════ -->
+<div class="overlay" id="ov" onclick="if(event.target.id==='ov')closeModal()">
+  <div class="modal" id="modal-body"></div>
+</div>
+
+<!-- ═══ TOAST ════════════════════════════════════ -->
+<div class="toast" id="toast"><span id="t-ico">✅</span><span id="t-msg">OK</span></div>
+
+<!-- ENV -->
+<script>
+window.ENV = {
+  SUPABASE_URL:      'https://laoipuyrbqhnkcredtag.supabase.co',
+  SUPABASE_ANON_KEY: 'sb_publishable_jh2DtwMpGx7wOgmAuD378A_iK2Z9MTt',
+  ADMIN_PIN:         '1234',
+}
+</script>
+<script type="module">
+import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm'
+
+// ── Supabase ────────────────────────────────────────────────
+const sb = createClient(window.ENV.SUPABASE_URL, window.ENV.SUPABASE_ANON_KEY)
+
+// ── Constantes ──────────────────────────────────────────────
+const DIAS_ES   = ['Dom','Lun','Mar','Mié','Jue','Vie','Sáb']
+const DIAS_FULL = ['Domingo','Lunes','Martes','Miércoles','Jueves','Viernes','Sábado']
+const MESES_ES  = ['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre']
+
+// ── Estado en memoria ───────────────────────────────────────
+let selDate    = new Date()
+let selDayIdx  = 0
+let franjasConf= []
+let horarioOp  = []
+let multiplicadores = []
+let channelAdmin = null
+
+// ═══ LOGIN ════════════════════════════════════════════════
+window.onPinInput = function(el) {
+  const v = el.value.replace(/\D/g,'')
+  el.value = v
+  for (let i=0;i<4;i++) document.getElementById('pd'+i).classList.toggle('filled', i<v.length)
+}
+
+window.tryLogin = async function() {
+  const pin = document.getElementById('pin-input').value
+  const err = document.getElementById('login-error')
+
+  // Verificar PIN (en producción esto se valida contra Supabase Auth)
+  const adminPin = window.ENV.ADMIN_PIN || '1234'
+  if (pin === adminPin) {
+    document.getElementById('login-screen').classList.add('hiding')
+    setTimeout(() => {
+      document.getElementById('login-screen').style.display='none'
+      document.getElementById('app').style.display='flex'
+      initApp()
+    }, 500)
+  } else {
+    err.textContent='PIN incorrecto.'
+    document.getElementById('pin-input').value=''
+    for(let i=0;i<4;i++) document.getElementById('pd'+i).classList.remove('filled')
+    setTimeout(()=>err.textContent='', 2500)
+  }
+}
+
+window.logout = function() {
+  document.getElementById('app').style.display='none'
+  const ls = document.getElementById('login-screen')
+  ls.style.display='flex'; ls.classList.remove('hiding')
+  document.getElementById('pin-input').value=''
+  for(let i=0;i<4;i++) document.getElementById('pd'+i).classList.remove('filled')
+}
+
+// ═══ INIT ═════════════════════════════════════════════════
+async function initApp() {
+  setTopbarDate()
+  await Promise.all([cargarFranjasConf(), cargarHorarios()])
+  buildCalStrip()
+  await renderAgenda()
+  renderEstadisticas()
+  renderFranjasConfig()
+  renderHorarioGrid()
+  renderMultiplicadores()
+  updateBadges()
+  // Realtime para notificaciones de nuevas reservas
+  suscribirAdmin()
+}
+
+function setTopbarDate() {
+  const d = new Date()
+  document.getElementById('topbar-date').textContent =
+    `${DIAS_FULL[d.getDay()]} ${d.getDate()} de ${MESES_ES[d.getMonth()].charAt(0).toUpperCase()+MESES_ES[d.getMonth()].slice(1)} ${d.getFullYear()}`
+}
+
+function suscribirAdmin() {
+  if (channelAdmin) sb.removeChannel(channelAdmin)
+  channelAdmin = sb.channel('admin-reservas')
+    .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'reservas' }, () => {
+      showToast('🔔 Nueva reserva recibida')
+      updateBadges()
+      renderAgenda()
+    })
+    .subscribe()
+}
+
+// ═══ NAV ══════════════════════════════════════════════════
+const tabTitles = {
+  agenda:'Agenda Diaria', estadisticas:'Estadísticas', historial:'Historial',
+  reservas:'Reservas', fijos:'Clientes Fijos', eventos:'Eventos',
+  finanzas:'Finanzas', cancha:'Cancha', pagos:'Datos de Pago', horarios:'Horarios'
+}
+
+window.nav = function(id, btn) {
+  document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'))
+  document.getElementById('tab-'+id).classList.add('active')
+  document.querySelectorAll('.sb-item').forEach(b=>b.classList.remove('active'))
+  btn.classList.add('active')
+  document.getElementById('topbar-title').textContent = tabTitles[id]||id
+  const actions = {
+    historial: ()=>renderHistorial('all'),
+    reservas:  ()=>renderReservas(),
+    fijos:     ()=>renderFijos(),
+    eventos:   ()=>renderEventos(),
+    finanzas:  ()=>renderFinanzas(),
+  }
+  actions[id]?.()
+}
+
+// ═══ AGENDA ═══════════════════════════════════════════════
+function buildCalStrip() {
+  const strip = document.getElementById('cal-strip')
+  const today = new Date(); today.setHours(0,0,0,0)
+  strip.innerHTML = ''
+  for (let i=0; i<7; i++) {
+    const d = new Date(today); d.setDate(today.getDate()+i)
+    const btn = document.createElement('div')
+    btn.className = 'cal-day' + (i===0?' active':'')
+    btn.innerHTML=`<span class="cal-day-name">${DIAS_ES[d.getDay()]}</span><span class="cal-day-num">${d.getDate()}</span><div class="cal-dots"></div>`
+    btn.addEventListener('click', async () => {
+      if (btn.classList.contains('past')) return
+      document.querySelectorAll('.cal-day').forEach(b=>b.classList.remove('active'))
+      btn.classList.add('active')
+      selDate=d; selDayIdx=i; await renderAgenda()
+    })
+    strip.appendChild(btn)
+  }
+}
+
+async function renderAgenda() {
+  const fecha = selDate.toISOString().split('T')[0]
+  const dow   = selDate.getDay()
+
+  document.getElementById('crono-title').textContent =
+    `${DIAS_FULL[dow]} ${selDate.getDate()} de ${MESES_ES[selDate.getMonth()].charAt(0).toUpperCase()+MESES_ES[selDate.getMonth()].slice(1)}`
+
+  // Stats del día
+  const { data: stats } = await sb.rpc('stats_dia', { p_fecha: fecha })
+  if (stats) {
+    document.getElementById('kpi-total').textContent = stats.total || 0
+    document.getElementById('kpi-pend').textContent  = stats.pendientes || 0
+    document.getElementById('kpi-conf').textContent  = stats.confirmados || 0
+    document.getElementById('kpi-bloq').textContent  = stats.bloqueados || 0
+  }
+  document.getElementById('crono-meta').textContent = `${stats?.total||0} reservas · ${stats?.pendientes||0} pendientes`
+
+  // Reservas del día
+  const { data: reservas } = await sb.from('reservas')
+    .select('*').eq('fecha', fecha).not('estado','eq','cancelado').order('hora_inicio')
+
+  const body = document.getElementById('cronograma-body')
+  const AP=7, CI=23
+  let html = ''
+
+  for (let h=AP; h<CI; h++) {
+    const time    = String(h).padStart(2,'0')+':00'
+    const timeEnd = String(h+1).padStart(2,'0')+':00'
+    const res     = (reservas||[]).find(r => r.hora_inicio.startsWith(String(h).padStart(2,'0')+':'))
+
+    if (res) {
+      const sc = {pendiente:'chip-pendiente',confirmado:'chip-confirmado',cancelado:'chip-cancelado',bloqueado:'chip-bloqueado'}[res.estado]||'chip-libre'
+      const stxt = res.estado.toUpperCase()
+      let acts = ''
+      if(res.estado==='pendiente') acts=`<button class="btn btn-approve btn-sm" onclick="confirmarRes('${res.id}')">✓</button><button class="btn btn-cancel-act btn-sm" onclick="cancelarRes('${res.id}')">✗</button>`
+      else if(res.estado==='confirmado'&&res.tipo!=='bloqueo') acts=`<button class="btn btn-free btn-sm" onclick="liberarRes('${res.id}','${time}')">🔓 Liberar</button>`
+      else if(res.tipo==='bloqueo') acts=`<button class="btn btn-cancel-act btn-sm" onclick="liberarRes('${res.id}','${time}')">🔓</button>`
+
+      html+=`<div class="crono-row">
+        <div class="crono-hora">${time}</div>
+        <div class="crono-info">
+          <span class="crono-cliente">${res.tipo==='bloqueo'?'🔒 Bloqueado':res.cliente_nombre}</span>
+          <span class="crono-detail">${res.cliente_tel||'—'} · hasta ${timeEnd}${res.precio?` · $${res.precio.toLocaleString('es-CO')}`:''} ${res.tipo==='fijo'?'· 🔒 Fijo':''}</span>
+        </div>
+        <div class="crono-status"><span class="chip ${sc}">${stxt}</span>${acts}</div>
+      </div>`
+    } else {
+      html+=`<div class="crono-row">
+        <div class="crono-hora">${time}</div>
+        <div class="crono-info"><span class="crono-cliente" style="color:var(--t3)">Disponible</span></div>
+        <div class="crono-status"><span class="chip chip-libre">LIBRE</span>
+          <button class="btn btn-neon btn-sm" onclick="openNuevaReservaHora('${time}','${fecha}')">+</button>
+        </div>
+      </div>`
+    }
+  }
+  body.innerHTML = html
+
+  // Actualizar dots del cal-strip
+  const btns = document.querySelectorAll('.cal-day')
+  btns.forEach(async (btn, i) => {
+    const d2 = new Date(); d2.setDate(new Date().getDate()+i); d2.setHours(0,0,0,0)
+    const f2 = d2.toISOString().split('T')[0]
+    const { data: r } = await sb.from('reservas').select('estado').eq('fecha',f2).not('estado','eq','cancelado')
+    const pend = (r||[]).filter(x=>x.estado==='pendiente').length
+    const conf = (r||[]).filter(x=>x.estado==='confirmado').length
+    const dotsEl = btn.querySelector('.cal-dots')
+    if (dotsEl) dotsEl.innerHTML=(pend?'<span class="cdot cdot-y"></span>':'')+(conf?'<span class="cdot cdot-g"></span>':'')
+  })
+}
+
+// ═══ ACCIONES RESERVAS ═══════════════════════════════════
+window.confirmarRes = async function(id) {
+  const { error } = await sb.from('reservas').update({estado:'confirmado'}).eq('id',id)
+  if (error) { showToast('❌ '+error.message); return }
+  await renderAgenda(); renderReservas(); updateBadges()
+  showToast('✅ Reserva confirmada')
+}
+
+window.cancelarRes = async function(id) {
+  const { error } = await sb.from('reservas').update({estado:'cancelado'}).eq('id',id)
+  if (error) { showToast('❌ '+error.message); return }
+  await renderAgenda(); renderReservas(); updateBadges()
+  showToast('❌ Reserva cancelada')
+}
+
+window.liberarRes = async function(id, hora) {
+  if (!confirm(`¿Liberar el slot ${hora}?`)) return
+  const { error } = await sb.from('reservas').delete().eq('id',id)
+  if (error) { showToast('❌ '+error.message); return }
+  await renderAgenda(); renderReservas(); updateBadges()
+  showToast(`🔓 Slot ${hora} liberado`)
+}
+
+async function updateBadges() {
+  const { data } = await sb.from('reservas').select('id').eq('estado','pendiente')
+  const p = (data||[]).length
+  const br = document.getElementById('badge-res')
+  br.textContent=p; br.style.display=p>0?'':'none'
+
+  const { data: s } = await sb.from('clientes_fijos').select('id').eq('estado','solicitud')
+  const sf = (s||[]).length
+  const bf = document.getElementById('badge-fijos')
+  bf.textContent=sf; bf.style.display=sf>0?'':'none'
+}
+
+// ═══ HISTORIAL ════════════════════════════════════════════
+let histFilter = 'all'
+window.filterHist = function(btn, f) {
+  histFilter=f
+  document.querySelectorAll('#hist-filters .filter-pill').forEach(b=>b.classList.remove('active'))
+  btn.classList.add('active')
+  renderHistorial(f)
+}
+
+async function renderHistorial(f) {
+  let q = sb.from('reservas').select('*').order('fecha',{ascending:false}).order('hora_inicio')
+  if (f==='fijo') q=q.eq('tipo','fijo')
+  else if (f!=='all') q=q.eq('estado',f)
+  const { data } = await q
+  document.getElementById('hist-tbody').innerHTML = (data||[]).map(buildResRow).join('')
+}
+
+async function renderReservas() {
+  const { data } = await sb.from('reservas').select('*').order('fecha',{ascending:false}).order('hora_inicio')
+  document.getElementById('res-tbody').innerHTML = (data||[]).map(buildResRow).join('')
+}
+
+function buildResRow(r) {
+  const sc = {pendiente:'chip-pendiente',confirmado:'chip-confirmado',cancelado:'chip-cancelado',bloqueado:'chip-bloqueado'}[r.estado]||'chip-libre'
+  const tc = {fijo:'chip-fijo',bloqueo:'chip-bloqueado'}[r.tipo]||'chip-confirmado'
+  let acts = ''
+  if(r.estado==='pendiente') acts=`<button class="btn btn-approve btn-sm" onclick="confirmarRes('${r.id}')">✓ OK</button><button class="btn btn-cancel-act btn-sm" onclick="cancelarRes('${r.id}')">✗</button>`
+  else if(r.estado==='confirmado'&&r.tipo!=='bloqueo') acts=`<button class="btn btn-free btn-sm" onclick="liberarRes('${r.id}','${r.hora_inicio}')">🔓 Liberar</button>`
+  else acts='—'
+  const hi = (r.hora_inicio||'').slice(0,5)
+  const hf = (r.hora_fin||'').slice(0,5)
+  return `<tr>
+    <td><strong>${r.cliente_nombre}</strong><br><span style="font-size:11px;color:var(--t3)">${r.cliente_tel||'—'}</span></td>
+    <td>${r.fecha}</td>
+    <td class="td-mono">${hi}–${hf}</td>
+    <td class="td-mono" style="color:var(--neon)">${r.precio>0?'$'+r.precio.toLocaleString('es-CO'):'—'}</td>
+    <td><span class="chip ${tc}" style="font-size:9px">${(r.tipo||'normal').toUpperCase()}</span></td>
+    <td><span class="chip ${sc}" style="font-size:9px">${r.estado.toUpperCase()}</span></td>
+    <td>${acts}</td>
+  </tr>`
+}
+
+// ═══ CLIENTES FIJOS ═══════════════════════════════════════
+async function renderFijos() {
+  const [{ data: solicitudes }, { data: activos }] = await Promise.all([
+    sb.from('clientes_fijos').select('*').eq('estado','solicitud').order('created_at',{ascending:false}),
+    sb.from('clientes_fijos').select('*').eq('estado','activo').order('nombre'),
+  ])
+
+  const ss = document.getElementById('solicitudes-section')
+  ss.innerHTML = (solicitudes||[]).length > 0
+    ? `<div class="sec-hd"><span class="sec-title" style="color:var(--gold)">⏳ Solicitudes (${solicitudes.length})</span></div>` +
+      (solicitudes||[]).map(s=>`
+        <div class="solicitud-item">
+          <div class="sol-row1"><span class="sol-name">${s.nombre}</span><span class="sol-time">${timeSince(s.created_at)}</span></div>
+          <div class="sol-details">${s.telefono||'—'} · Pide: <strong style="color:var(--t1)">${DIAS_FULL[s.dia_semana]} a las ${(s.hora_inicio||'').slice(0,5)}</strong> · ${s.personas||10} personas</div>
+          <div class="sol-actions">
+            <button class="btn btn-approve btn-sm" onclick="aprobarFijo('${s.id}')">✓ Aprobar</button>
+            <button class="btn btn-cancel-act btn-sm" onclick="rechazarFijo('${s.id}')">✗ Rechazar</button>
+          </div>
+        </div>`).join('')
+    : '<div style="font-size:12px;color:var(--t3);padding:4px 0 16px">No hay solicitudes pendientes ✓</div>'
+
+  document.getElementById('fijos-grid').innerHTML = (activos||[]).map(f=>`
+    <div class="fijo-card">
+      <div class="fc-header">
+        <div><div class="fc-name">${f.nombre}</div><div class="fc-tel">📞 ${f.telefono||'—'}</div></div>
+        <span class="chip chip-fijo" style="font-size:9px">FIJO</span>
+      </div>
+      <div class="fc-schedule">
+        <span class="fc-dia">${DIAS_FULL[f.dia_semana]}</span>
+        <span class="fc-sep">·</span>
+        <span class="fc-hora">${(f.hora_inicio||'').slice(0,5)}</span>
+        <span class="fc-persons">· 👥 ${f.personas||10}</span>
+      </div>
+      <div class="fc-desde">Desde ${new Date(f.created_at).toLocaleDateString('es-CO',{month:'short',year:'numeric'})}</div>
+      <div class="fc-actions">
+        <button class="btn btn-edit btn-sm" onclick="editFijo('${f.id}','${f.nombre}','${f.telefono||''}',${f.dia_semana},'${(f.hora_inicio||'').slice(0,5)}')">✏️ Editar</button>
+        <button class="btn btn-cancel-act btn-sm" onclick="desactivarFijo('${f.id}','${f.nombre}')">🔓 Desactivar</button>
+      </div>
+    </div>`).join('')
+  updateBadges()
+}
+
+window.aprobarFijo = async function(id) {
+  const { error } = await sb.from('clientes_fijos').update({estado:'activo'}).eq('id',id)
+  if (error) { showToast('❌ '+error.message); return }
+  await renderFijos(); showToast('✅ Cliente fijo activado')
+}
+window.rechazarFijo = async function(id) {
+  const { error } = await sb.from('clientes_fijos').delete().eq('id',id)
+  if (error) { showToast('❌ '+error.message); return }
+  await renderFijos(); showToast('❌ Solicitud rechazada')
+}
+window.desactivarFijo = async function(id, nombre) {
+  if (!confirm(`¿Desactivar cupo de ${nombre}?`)) return
+  const { error } = await sb.from('clientes_fijos').update({estado:'inactivo'}).eq('id',id)
+  if (error) { showToast('❌ '+error.message); return }
+  await renderFijos(); showToast(`🔓 Cupo de ${nombre} desactivado`)
+}
+
+// ═══ EVENTOS ══════════════════════════════════════════════
+async function renderEventos() {
+  const { data } = await sb.from('eventos').select('*').order('created_at',{ascending:false})
+  document.getElementById('ev-tbody').innerHTML = (data||[]).map(e=>`<tr>
+    <td><strong>${e.titulo}</strong></td>
+    <td><span class="chip chip-fijo" style="font-size:9px">${e.tipo.toUpperCase()}</span></td>
+    <td>${e.fecha_inicio ? new Date(e.fecha_inicio).toLocaleDateString('es-CO') : 'Por definir'}</td>
+    <td class="td-mono" style="color:var(--gold)">$${(e.precio||0).toLocaleString('es-CO')}</td>
+    <td style="color:var(--t2)">${e.cupos_ocupados}/${e.cupos_total===99?'∞':e.cupos_total}</td>
+    <td><span class="chip ${e.estado==='activo'?'chip-confirmado':'chip-cancelado'}" style="font-size:9px">${e.estado.toUpperCase()}</span></td>
+    <td>
+      <button class="btn btn-edit btn-sm" onclick="editEvento('${e.id}')">✏️</button>
+      <button class="btn ${e.estado==='activo'?'btn-cancel-act':'btn-approve'} btn-sm" onclick="toggleEvento('${e.id}','${e.estado}')">${e.estado==='activo'?'Cerrar':'Abrir'}</button>
+    </td>
+  </tr>`).join('')
+}
+
+window.toggleEvento = async function(id, estadoActual) {
+  const nuevo = estadoActual==='activo'?'cerrado':'activo'
+  await sb.from('eventos').update({estado:nuevo}).eq('id',id)
+  await renderEventos(); showToast(`Evento ${nuevo}`)
+}
+
+// ═══ FINANZAS ═════════════════════════════════════════════
+async function renderFinanzas() {
+  // Ingresos últimos 7 días
+  const hoy = new Date(); const desdeDate = new Date(); desdeDate.setDate(hoy.getDate()-6)
+  const desde = desdeDate.toISOString().split('T')[0]
+  const { data: resData } = await sb.from('reservas').select('fecha,precio').gte('fecha',desde).eq('estado','confirmado')
+  const diasMap = {}
+  for (let i=0;i<7;i++) {
+    const d=new Date(desdeDate); d.setDate(desdeDate.getDate()+i)
+    diasMap[d.toISOString().split('T')[0]]=0
+  }
+  for (const r of (resData||[])) { diasMap[r.fecha]=(diasMap[r.fecha]||0)+r.precio }
+  const diasArr = Object.entries(diasMap).map(([f,v])=>({d:DIAS_ES[new Date(f+'T12:00').getDay()],v}))
+  const maxD = Math.max(...diasArr.map(x=>x.v),1)
+  document.getElementById('fin-dias').innerHTML = diasArr.map(x=>`
+    <div class="bar-row"><span class="bar-lbl">${x.d}</span>
+    <div class="bar-track"><div class="bar-fill g" style="width:${(x.v/maxD*100).toFixed(0)}%"></div></div>
+    <span class="bar-val">${x.v>0?'$'+(x.v/1000).toFixed(0)+'k':'$0'}</span></div>`).join('')
+
+  // Franjas
+  const fr=[{l:'Mañana 7–12',v:0,c:'g'},{l:'Tarde 12–18',v:0,c:'y'},{l:'Noche 18–23',v:0,c:'b'}]
+  for (const r of (resData||[])) {
+    // Aproximar franja por precio (sin hora exacta en este query)
+    if (r.precio<=65000) fr[0].v+=r.precio
+    else if (r.precio<=80000) fr[1].v+=r.precio
+    else fr[2].v+=r.precio
+  }
+  const maxF=Math.max(...fr.map(x=>x.v),1)
+  document.getElementById('fin-franjas').innerHTML=fr.map(x=>`
+    <div class="bar-row"><span class="bar-lbl" style="font-size:10px;width:80px">${x.l}</span>
+    <div class="bar-track"><div class="bar-fill ${x.c}" style="width:${(x.v/maxF*100).toFixed(0)}%"></div></div>
+    <span class="bar-val">${x.v>0?'$'+(x.v/1000).toFixed(0)+'k':'$0'}</span></div>`).join('')
+
+  // Productos
+  const { data: prods } = await sb.from('productos').select('*').eq('activo',true).order('nombre')
+  const { data: ventas } = await sb.from('ventas_productos').select('producto_id, cantidad, total')
+    .gte('created_at', desde+'T00:00:00')
+
+  const ventasMap={}
+  for(const v of (ventas||[])) {
+    ventasMap[v.producto_id]=(ventasMap[v.producto_id]||{cant:0,total:0})
+    ventasMap[v.producto_id].cant+=v.cantidad
+    ventasMap[v.producto_id].total+=v.total
+  }
+
+  document.getElementById('tienda-list').innerHTML=(prods||[]).map(p=>`
+    <div class="product-item" onclick="registrarVenta('${p.id}',${p.precio})">
+      <div class="prod-icon">${p.emoji||'📦'}</div>
+      <div><div class="prod-name">${p.nombre}</div><div class="prod-price">$${p.precio.toLocaleString('es-CO')} c/u</div></div>
+      <div class="prod-right">
+        <span class="prod-sold">${ventasMap[p.id]?.cant||0} vendidos</span>
+        <span class="prod-total">$${(ventasMap[p.id]?.total||0).toLocaleString('es-CO')}</span>
+        <button class="btn btn-edit btn-sm" onclick="event.stopPropagation();editProducto('${p.id}','${p.nombre}',${p.precio},'${p.emoji||''}')">✏️</button>
+      </div>
+    </div>`).join('')
+
+  // Movimientos
+  const { data: movs } = await sb.from('ventas_productos')
+    .select('id, created_at, total, productos(nombre)')
+    .order('created_at',{ascending:false}).limit(20)
+  document.getElementById('movs-tbody').innerHTML=(movs||[]).map(m=>`<tr>
+    <td><strong>Venta - ${m.productos?.nombre||'Producto'}</strong></td>
+    <td><span class="mv-cat-tienda">Tienda</span></td>
+    <td>${new Date(m.created_at).toLocaleTimeString('es-CO',{hour:'2-digit',minute:'2-digit'})}</td>
+    <td class="td-mono" style="color:var(--neon)">+$${m.total.toLocaleString('es-CO')}</td>
+  </tr>`).join('')
+}
+
+function renderEstadisticas() {
+  // Usa datos mock para gráficas de tendencia (real requeriría queries agregadas adicionales)
+  const dias=[{d:'Lun',v:180},{d:'Mar',v:150},{d:'Mié',v:210},{d:'Jue',v:190},{d:'Vie',v:280},{d:'Sáb',v:350},{d:'Dom',v:310}]
+  const maxD=Math.max(...dias.map(x=>x.v))
+  document.getElementById('stat-dias-chart').innerHTML=dias.map(x=>`
+    <div class="bar-row"><span class="bar-lbl">${x.d}</span>
+    <div class="bar-track"><div class="bar-fill g" style="width:${(x.v/maxD*100).toFixed(0)}%"></div></div>
+    <span class="bar-val">$${x.v}k</span></div>`).join('')
+  const fr=[{l:'Mañana',v:26,c:'g'},{l:'Tarde',v:38,c:'y'},{l:'Noche',v:52,c:'b'}]
+  const maxF=Math.max(...fr.map(x=>x.v))
+  document.getElementById('stat-franja-chart').innerHTML=fr.map(x=>`
+    <div class="bar-row"><span class="bar-lbl">${x.l}</span>
+    <div class="bar-track"><div class="bar-fill ${x.c}" style="width:${(x.v/maxF*100).toFixed(0)}%"></div></div>
+    <span class="bar-val">${x.v} res</span></div>`).join('')
+  const pop=[{d:'Sábado',v:22},{d:'Viernes',v:18},{d:'Domingo',v:15},{d:'Miércoles',v:12},{d:'Lunes',v:10}]
+  const maxP=Math.max(...pop.map(x=>x.v))
+  document.getElementById('stat-popularidad-chart').innerHTML=pop.map(x=>`
+    <div class="bar-row"><span class="bar-lbl" style="font-size:10px;width:76px">${x.d}</span>
+    <div class="bar-track"><div class="bar-fill g" style="width:${(x.v/maxP*100).toFixed(0)}%"></div></div>
+    <span class="bar-val">${x.v} res</span></div>`).join('')
+  const est=[{l:'Confirmadas',v:71,c:'g'},{l:'Canceladas',v:12,c:'r'},{l:'Pendientes',v:17,c:'y'}]
+  const maxE=Math.max(...est.map(x=>x.v))
+  document.getElementById('stat-estado-chart').innerHTML=est.map(x=>`
+    <div class="bar-row"><span class="bar-lbl" style="font-size:10px;width:76px">${x.l}</span>
+    <div class="bar-track"><div class="bar-fill ${x.c}" style="width:${(x.v/maxE*100).toFixed(0)}%"></div></div>
+    <span class="bar-val">${x.v}%</span></div>`).join('')
+}
+
+window.registrarVenta = async function(prodId, precio) {
+  const { error } = await sb.from('ventas_productos').insert({producto_id:prodId,cantidad:1,precio_unit:precio})
+  if (error) { showToast('❌ '+error.message); return }
+  await renderFinanzas(); showToast('🛒 Venta registrada')
+}
+
+// ═══ CONFIGURACIÓN ════════════════════════════════════════
+async function cargarFranjasConf() {
+  const { data } = await sb.from('franjas_precio').select('*').order('hora_inicio')
+  franjasConf = data || []
+}
+
+function renderFranjasConfig() {
+  document.getElementById('franjas-config').innerHTML = franjasConf.map((f,i)=>`
+    <div class="price-row">
+      <div><div class="price-label">${f.nombre}</div></div>
+      <div class="price-range">${f.hora_inicio}:00 – ${f.hora_fin}:00</div>
+      <div>
+        <div style="font-size:9px;color:var(--t3);letter-spacing:1px;text-transform:uppercase;margin-bottom:4px">Lun–Jue</div>
+        <input class="price-edit" type="number" value="${f.precio_lv}" onchange="updateFranja('${f.id}','precio_lv',+this.value)"/>
+      </div>
+      <div>
+        <div style="font-size:9px;color:var(--t3);letter-spacing:1px;text-transform:uppercase;margin-bottom:4px">Vie–Dom</div>
+        <input class="price-edit" type="number" value="${f.precio_fsd}" onchange="updateFranja('${f.id}','precio_fsd',+this.value)"/>
+      </div>
+    </div>`).join('')
+}
+
+window.updateFranja = async function(id, campo, valor) {
+  const { error } = await sb.from('franjas_precio').update({[campo]:valor}).eq('id',id)
+  if (error) showToast('❌ '+error.message)
+  else showToast('💾 Precio actualizado')
+}
+
+async function cargarHorarios() {
+  const { data } = await sb.from('horarios_operativos').select('*').order('dia_semana')
+  horarioOp = data || []
+}
+
+function renderHorarioGrid() {
+  document.getElementById('horario-grid').innerHTML = horarioOp.map((h,i)=>`
+    <div class="horario-item">
+      <div class="horario-dia">${DIAS_FULL[h.dia_semana]}
+        <label class="toggle-switch">
+          <input type="checkbox" ${h.activo?'checked':''} onchange="updateHorario('${h.id}','activo',this.checked)"/>
+          <span class="toggle-slider"></span>
+        </label>
+      </div>
+      <div class="horario-times">
+        <input type="time" class="time-input" value="${h.apertura.slice(0,5)}" onchange="updateHorario('${h.id}','apertura',this.value)"/>
+        <span style="color:var(--t3);font-size:12px">–</span>
+        <input type="time" class="time-input" value="${h.cierre.slice(0,5)}" onchange="updateHorario('${h.id}','cierre',this.value)"/>
+      </div>
+    </div>`).join('')
+}
+
+window.updateHorario = async function(id, campo, valor) {
+  const { error } = await sb.from('horarios_operativos').update({[campo]:valor}).eq('id',id)
+  if (error) showToast('❌ '+error.message)
+}
+
+function renderMultiplicadores() {
+  document.getElementById('multiplicadores-list').innerHTML=multiplicadores.map((m,i)=>`
+    <div style="display:flex;align-items:center;justify-content:space-between;padding:11px 16px;border-radius:9px;background:var(--bg3);border:1px solid var(--border);margin-bottom:6px">
+      <div>
+        <span style="font-family:var(--fh);font-size:14px;font-weight:800;color:var(--t1)">${m.dia}</span>
+        <span style="font-size:11px;color:var(--t3);margin-left:10px">${m.desc}</span>
+      </div>
+      <div style="display:flex;align-items:center;gap:8px">
+        <span class="chip ${m.tipo==='up'?'chip-confirmado':'chip-cancelado'}">${m.val}</span>
+        <button class="btn btn-cancel-act btn-sm" onclick="multiplicadores.splice(${i},1);renderMultiplicadores()">✗</button>
+      </div>
+    </div>`).join('')
+}
+
+window.saveConfig = function() { showToast('💾 Configuración guardada') }
+
+// ═══ MODAL helpers ════════════════════════════════════════
+function horaOpts(offset=0) {
+  let s=''
+  for(let h=7+offset;h<=22;h++) s+=`<option value="${String(h).padStart(2,'0')}:00">${String(h).padStart(2,'0')}:00</option>`
+  return s
+}
+
+window.openModal = function(html) {
+  document.getElementById('modal-body').innerHTML=html
+  document.getElementById('ov').classList.add('open')
+}
+window.closeModal = function() { document.getElementById('ov').classList.remove('open') }
+
+// ═══ MODALES DE ACCIÓN ════════════════════════════════════
+
+window.openNuevaReserva = function() { openNuevaReservaHora(null, null) }
+window.openNuevaReservaHora = function(hora, fecha) {
+  const fechaDef = fecha || new Date().toISOString().split('T')[0]
+  openModal(`
+    <div class="m-head"><div class="m-title">Nueva Reserva</div><button class="m-x" onclick="closeModal()">×</button></div>
+    <div class="form-group"><label class="form-label">Cliente</label><input class="form-input" id="nr-n" placeholder="Nombre..."/></div>
+    <div class="form-group"><label class="form-label">Teléfono</label><input class="form-input" id="nr-t" placeholder="+57..."/></div>
+    <div class="form-group"><label class="form-label">Fecha</label><input type="date" class="form-input" id="nr-f" value="${fechaDef}"/></div>
+    <div class="form-2col">
+      <div class="form-group"><label class="form-label">Desde</label><select class="form-select" id="nr-hi">${horaOpts()}</select></div>
+      <div class="form-group"><label class="form-label">Hasta</label><select class="form-select" id="nr-hf">${horaOpts(1)}</select></div>
+    </div>
+    <div class="form-group"><label class="form-label">Tipo</label>
+      <select class="form-select" id="nr-tp"><option value="normal">Normal</option><option value="fijo">Cliente Fijo</option><option value="evento">Evento</option></select></div>
+    <div class="form-group"><label class="form-label">Estado</label>
+      <select class="form-select" id="nr-e"><option value="pendiente">Pendiente</option><option value="confirmado">Confirmado</option></select></div>
+    <div class="m-btns">
+      <button class="m-cancel-btn" onclick="closeModal()">Cancelar</button>
+      <button class="m-save-btn" onclick="guardarNuevaReserva()">Guardar</button>
+    </div>`)
+  if (hora) setTimeout(()=>{ const s=document.getElementById('nr-hi'); if(s)s.value=hora },50)
+}
+
+window.guardarNuevaReserva = async function() {
+  const nombre=document.getElementById('nr-n').value.trim()
+  const tel=document.getElementById('nr-t').value||'—'
+  const fecha=document.getElementById('nr-f').value
+  const hi=document.getElementById('nr-hi').value
+  const hf=document.getElementById('nr-hf').value
+  const tipo=document.getElementById('nr-tp').value
+  const estado=document.getElementById('nr-e').value
+  if(!nombre||!fecha){showToast('⚠️ Completa nombre y fecha');return}
+  const dow=new Date(fecha+'T12:00').getDay()
+  const h=parseInt(hi)
+  const {data:franjas2}=await sb.from('franjas_precio').select('*').eq('activo',true)
+  const f=(franjas2||[]).find(f=>h>=f.hora_inicio&&h<f.hora_fin)
+  const precio=f?(dow===0||dow===6?f.precio_fsd:dow===5?f.precio_vie:f.precio_lv):65000
+  const {error}=await sb.from('reservas').insert({
+    cliente_nombre:nombre,cliente_tel:tel,fecha,
+    hora_inicio:hi+':00',hora_fin:hf+':00',
+    precio,tipo,estado
+  })
+  if(error){showToast('❌ '+error.message);return}
+  closeModal(); await renderAgenda(); renderReservas(); updateBadges()
+  showToast(`✅ Reserva de ${nombre} creada`)
+}
+
+window.openBloqueo = function() {
+  const fechaDef=selDate.toISOString().split('T')[0]
+  openModal(`
+    <div class="m-head"><div class="m-title">Bloquear Hora</div><button class="m-x" onclick="closeModal()">×</button></div>
+    <div class="form-group"><label class="form-label">Motivo</label>
+      <select class="form-select" id="bl-m"><option>Mantenimiento</option><option>Uso propio</option><option>Evento</option><option>Otro</option></select></div>
+    <div class="form-group"><label class="form-label">Fecha</label><input type="date" class="form-input" id="bl-f" value="${fechaDef}"/></div>
+    <div class="form-2col">
+      <div class="form-group"><label class="form-label">Desde</label><select class="form-select" id="bl-hi">${horaOpts()}</select></div>
+      <div class="form-group"><label class="form-label">Hasta</label><select class="form-select" id="bl-hf">${horaOpts(1)}</select></div>
+    </div>
+    <div class="m-btns">
+      <button class="m-cancel-btn" onclick="closeModal()">Cancelar</button>
+      <button class="m-save-btn" style="background:var(--gold);color:#000" onclick="guardarBloqueo()">🔒 Bloquear</button>
+    </div>`)
+}
+
+window.guardarBloqueo = async function() {
+  const motivo=document.getElementById('bl-m').value
+  const fecha=document.getElementById('bl-f').value
+  const hi=document.getElementById('bl-hi').value
+  const hf=document.getElementById('bl-hf').value
+  const {error}=await sb.from('reservas').insert({
+    cliente_nombre:'BLOQUEADO',cliente_tel:motivo,fecha,
+    hora_inicio:hi+':00',hora_fin:hf+':00',precio:0,tipo:'bloqueo',estado:'bloqueado'
+  })
+  if(error){showToast('❌ '+error.message);return}
+  closeModal(); await renderAgenda()
+  showToast(`🔒 ${hi} bloqueado (${motivo})`)
+}
+
+window.openNuevoFijo = function() {
+  openModal(`
+    <div class="m-head"><div class="m-title">Registrar Cliente Fijo</div><button class="m-x" onclick="closeModal()">×</button></div>
+    <div class="form-group"><label class="form-label">Nombre</label><input class="form-input" id="nf-n" placeholder="Nombre..."/></div>
+    <div class="form-group"><label class="form-label">Teléfono</label><input class="form-input" id="nf-t" placeholder="+57..."/></div>
+    <div class="form-2col">
+      <div class="form-group"><label class="form-label">Día</label>
+        <select class="form-select" id="nf-d">${DIAS_FULL.map((d,i)=>`<option value="${i}">${d}</option>`).join('')}</select></div>
+      <div class="form-group"><label class="form-label">Hora</label><select class="form-select" id="nf-h">${horaOpts()}</select></div>
+    </div>
+    <div class="form-group"><label class="form-label">Personas</label>
+      <select class="form-select" id="nf-p"><option value="10">10 (5vs5)</option><option value="12">12 (6vs6)</option></select></div>
+    <div class="m-btns">
+      <button class="m-cancel-btn" onclick="closeModal()">Cancelar</button>
+      <button class="m-save-btn" onclick="guardarFijo()">Registrar</button>
+    </div>`)
+}
+
+window.guardarFijo = async function() {
+  const nombre=document.getElementById('nf-n').value.trim()
+  if(!nombre){showToast('⚠️ Ingresa el nombre');return}
+  const hi=document.getElementById('nf-h').value
+  const {error}=await sb.from('clientes_fijos').insert({
+    nombre,telefono:document.getElementById('nf-t').value||'—',
+    dia_semana:+document.getElementById('nf-d').value,
+    hora_inicio:hi+':00',hora_fin:String(parseInt(hi)+1).padStart(2,'0')+':00:00',
+    personas:+document.getElementById('nf-p').value,estado:'activo'
+  })
+  if(error){showToast('❌ '+error.message);return}
+  closeModal(); await renderFijos(); showToast(`✅ ${nombre} registrado`)
+}
+
+window.editFijo = function(id,nombre,tel,dia,hora) {
+  openModal(`
+    <div class="m-head"><div class="m-title">Editar Cliente Fijo</div><button class="m-x" onclick="closeModal()">×</button></div>
+    <div class="form-group"><label class="form-label">Nombre</label><input class="form-input" id="ef-n" value="${nombre}"/></div>
+    <div class="form-group"><label class="form-label">Teléfono</label><input class="form-input" id="ef-t" value="${tel}"/></div>
+    <div class="form-2col">
+      <div class="form-group"><label class="form-label">Día</label>
+        <select class="form-select" id="ef-d">${DIAS_FULL.map((d,i)=>`<option value="${i}"${i===dia?' selected':''}>${d}</option>`).join('')}</select></div>
+      <div class="form-group"><label class="form-label">Hora</label><select class="form-select" id="ef-h">${horaOpts()}</select></div>
+    </div>
+    <div class="m-btns">
+      <button class="m-cancel-btn" onclick="closeModal()">Cancelar</button>
+      <button class="m-save-btn" onclick="saveEditFijo('${id}')">Guardar</button>
+    </div>`)
+  setTimeout(()=>{ const s=document.getElementById('ef-h'); if(s)s.value=hora },50)
+}
+
+window.saveEditFijo = async function(id) {
+  const hi=document.getElementById('ef-h').value
+  const {error}=await sb.from('clientes_fijos').update({
+    nombre:document.getElementById('ef-n').value,
+    telefono:document.getElementById('ef-t').value,
+    dia_semana:+document.getElementById('ef-d').value,
+    hora_inicio:hi+':00',hora_fin:String(parseInt(hi)+1).padStart(2,'0')+':00:00',
+  }).eq('id',id)
+  if(error){showToast('❌ '+error.message);return}
+  closeModal(); await renderFijos(); showToast('✅ Cliente fijo actualizado')
+}
+
+window.openNuevoEvento = function() {
+  openModal(`
+    <div class="m-head"><div class="m-title">Crear Evento</div><button class="m-x" onclick="closeModal()">×</button></div>
+    <div class="form-group"><label class="form-label">Nombre</label><input class="form-input" id="ne-tt" placeholder="Torneo..."/></div>
+    <div class="form-group"><label class="form-label">Tipo</label>
+      <select class="form-select" id="ne-tp"><option value="torneo">Torneo</option><option value="cumpleanos">Cumpleaños</option><option value="campeonato">Campeonato</option><option value="corporativo">Corporativo</option><option value="otro">Otro</option></select></div>
+    <div class="form-2col">
+      <div class="form-group"><label class="form-label">Fecha inicio</label><input type="datetime-local" class="form-input" id="ne-f"/></div>
+      <div class="form-group"><label class="form-label">Precio</label><input class="form-input" type="number" id="ne-p" placeholder="120000"/></div>
+    </div>
+    <div class="form-group"><label class="form-label">Cupos</label><input class="form-input" type="number" id="ne-c" placeholder="8"/></div>
+    <div class="form-group"><label class="form-label">Descripción</label><textarea class="form-textarea" id="ne-d"></textarea></div>
+    <div class="m-btns">
+      <button class="m-cancel-btn" onclick="closeModal()">Cancelar</button>
+      <button class="m-save-btn gold" onclick="guardarEvento()">Crear</button>
+    </div>`)
+}
+
+window.guardarEvento = async function() {
+  const titulo=document.getElementById('ne-tt').value.trim()
+  if(!titulo){showToast('⚠️ Ingresa el nombre');return}
+  const {error}=await sb.from('eventos').insert({
+    titulo,tipo:document.getElementById('ne-tp').value,
+    fecha_inicio:document.getElementById('ne-f').value||null,
+    precio:+document.getElementById('ne-p').value||0,
+    cupos_total:+document.getElementById('ne-c').value||10,
+    descripcion:document.getElementById('ne-d').value,estado:'activo'
+  })
+  if(error){showToast('❌ '+error.message);return}
+  closeModal(); await renderEventos(); showToast(`🏆 Evento "${titulo}" creado`)
+}
+
+window.editEvento = async function(id) {
+  const {data:e}=await sb.from('eventos').select('*').eq('id',id).single()
+  if(!e)return
+  openModal(`
+    <div class="m-head"><div class="m-title">Editar Evento</div><button class="m-x" onclick="closeModal()">×</button></div>
+    <div class="form-group"><label class="form-label">Nombre</label><input class="form-input" id="ee-t" value="${e.titulo}"/></div>
+    <div class="form-2col">
+      <div class="form-group"><label class="form-label">Precio</label><input class="form-input" type="number" id="ee-p" value="${e.precio}"/></div>
+      <div class="form-group"><label class="form-label">Cupos</label><input class="form-input" type="number" id="ee-c" value="${e.cupos_total}"/></div>
+    </div>
+    <div class="m-btns">
+      <button class="m-cancel-btn" onclick="closeModal()">Cancelar</button>
+      <button class="m-save-btn gold" onclick="saveEditEvento('${e.id}')">Guardar</button>
+    </div>`)
+}
+
+window.saveEditEvento = async function(id) {
+  const {error}=await sb.from('eventos').update({
+    titulo:document.getElementById('ee-t').value,
+    precio:+document.getElementById('ee-p').value,
+    cupos_total:+document.getElementById('ee-c').value,
+  }).eq('id',id)
+  if(error){showToast('❌ '+error.message);return}
+  closeModal(); await renderEventos(); showToast('✅ Evento actualizado')
+}
+
+window.openAddProduct = function() {
+  openModal(`
+    <div class="m-head"><div class="m-title">Agregar Producto</div><button class="m-x" onclick="closeModal()">×</button></div>
+    <div class="form-group"><label class="form-label">Nombre</label><input class="form-input" id="ap-n" placeholder="Agua, Gatorade..."/></div>
+    <div class="form-2col">
+      <div class="form-group"><label class="form-label">Precio</label><input class="form-input" type="number" id="ap-p" placeholder="3000"/></div>
+      <div class="form-group"><label class="form-label">Emoji</label><input class="form-input" id="ap-i" placeholder="🥤" maxlength="2"/></div>
+    </div>
+    <div class="m-btns">
+      <button class="m-cancel-btn" onclick="closeModal()">Cancelar</button>
+      <button class="m-save-btn" onclick="guardarProducto()">Agregar</button>
+    </div>`)
+}
+
+window.guardarProducto = async function() {
+  const nombre=document.getElementById('ap-n').value.trim()
+  const precio=+document.getElementById('ap-p').value
+  if(!nombre||!precio){showToast('⚠️ Completa nombre y precio');return}
+  const {error}=await sb.from('productos').insert({nombre,precio,emoji:document.getElementById('ap-i').value||'📦',activo:true})
+  if(error){showToast('❌ '+error.message);return}
+  closeModal(); await renderFinanzas(); showToast(`✅ "${nombre}" agregado`)
+}
+
+window.editProducto = function(id,nombre,precio,emoji) {
+  openModal(`
+    <div class="m-head"><div class="m-title">Editar Producto</div><button class="m-x" onclick="closeModal()">×</button></div>
+    <div class="form-group"><label class="form-label">Nombre</label><input class="form-input" id="ep-n" value="${nombre}"/></div>
+    <div class="form-2col">
+      <div class="form-group"><label class="form-label">Precio</label><input class="form-input" type="number" id="ep-p" value="${precio}"/></div>
+      <div class="form-group"><label class="form-label">Emoji</label><input class="form-input" id="ep-i" value="${emoji}" maxlength="2"/></div>
+    </div>
+    <div class="m-btns">
+      <button class="m-cancel-btn" onclick="closeModal()">Cancelar</button>
+      <button class="m-save-btn red" onclick="eliminarProducto('${id}')" style="flex:1">Eliminar</button>
+      <button class="m-save-btn" onclick="saveEditProducto('${id}')">Guardar</button>
+    </div>`)
+}
+
+window.saveEditProducto = async function(id) {
+  const {error}=await sb.from('productos').update({
+    nombre:document.getElementById('ep-n').value,
+    precio:+document.getElementById('ep-p').value,
+    emoji:document.getElementById('ep-i').value||'📦',
+  }).eq('id',id)
+  if(error){showToast('❌ '+error.message);return}
+  closeModal(); await renderFinanzas(); showToast('✅ Producto actualizado')
+}
+
+window.eliminarProducto = async function(id) {
+  const {error}=await sb.from('productos').update({activo:false}).eq('id',id)
+  if(error){showToast('❌ '+error.message);return}
+  closeModal(); await renderFinanzas(); showToast('🗑 Producto eliminado')
+}
+
+window.openNuevoMultiplicador = function() {
+  openModal(`
+    <div class="m-head"><div class="m-title">Multiplicador</div><button class="m-x" onclick="closeModal()">×</button></div>
+    <div class="form-group"><label class="form-label">Día</label>
+      <select class="form-select" id="nm-d">${DIAS_FULL.map(d=>`<option>${d}</option>`).join('')}</select></div>
+    <div class="form-group"><label class="form-label">Incremento (%)</label><input class="form-input" type="number" id="nm-v" placeholder="25"/></div>
+    <div class="form-group"><label class="form-label">Descripción</label><input class="form-input" id="nm-desc" placeholder="Precio fin de semana..."/></div>
+    <div class="m-btns">
+      <button class="m-cancel-btn" onclick="closeModal()">Cancelar</button>
+      <button class="m-save-btn" onclick="guardarMultiplicador()">Guardar</button>
+    </div>`)
+}
+
+window.guardarMultiplicador = function() {
+  const dia=document.getElementById('nm-d').value
+  const val=+document.getElementById('nm-v').value||0
+  const desc=document.getElementById('nm-desc').value||'Precio especial'
+  multiplicadores.push({dia,val:`+${val}%`,tipo:'up',desc})
+  closeModal(); renderMultiplicadores(); showToast('✅ Multiplicador guardado')
+}
+
+// ═══ UTILS ════════════════════════════════════════════════
+function showToast(msg) {
+  const t=document.getElementById('toast'); t.querySelector('#t-msg').textContent=msg
+  t.classList.add('show'); clearTimeout(t._t); t._t=setTimeout(()=>t.classList.remove('show'),3500)
+}
+
+function timeSince(dateStr) {
+  const d=new Date(dateStr); const now=new Date()
+  const mins=Math.floor((now-d)/60000)
+  if(mins<60) return `hace ${mins}m`
+  const hrs=Math.floor(mins/60)
+  if(hrs<24) return `hace ${hrs}h`
+  return `hace ${Math.floor(hrs/24)}d`
+}
+
+// Auto-focus PIN
+setTimeout(()=>document.getElementById('pin-input')?.focus(), 100)
+</script>
+</body>
+</html>
