@@ -766,23 +766,11 @@ td strong{color:var(--t1);font-weight:600}
 
     <!-- ══ ESTADÍSTICAS ════════════════════════════ -->
     <div class="tab-panel" id="tab-estadisticas">
-      <div class="kpi-grid" style="grid-template-columns:repeat(4,1fr);margin-bottom:20px">
-        <div class="kpi-card" style="--kpi-color:var(--neon)">
-          <div class="kpi-top"><span class="kpi-label">Ingresos Mes</span><span class="kpi-ico">💰</span></div>
-          <div class="kpi-val">$4.8M</div><div class="kpi-sub">cancha + tienda</div>
-        </div>
-        <div class="kpi-card" style="--kpi-color:var(--gold)">
-          <div class="kpi-top"><span class="kpi-label">Reservas Mes</span><span class="kpi-ico">📊</span></div>
-          <div class="kpi-val" style="color:var(--gold)">87</div><div class="kpi-sub">en febrero</div>
-        </div>
-        <div class="kpi-card" style="--kpi-color:var(--blue)">
-          <div class="kpi-top"><span class="kpi-label">Ocupación</span><span class="kpi-ico">📈</span></div>
-          <div class="kpi-val" style="color:var(--blue)">72%</div><div class="kpi-sub">promedio diario</div>
-        </div>
-        <div class="kpi-card" style="--kpi-color:var(--neon)">
-          <div class="kpi-top"><span class="kpi-label">Clientes Fijos</span><span class="kpi-ico">🔒</span></div>
-          <div class="kpi-val">8</div><div class="kpi-sub">cupos activos</div>
-        </div>
+      <div class="kpi-grid" id="stat-kpis" style="grid-template-columns:repeat(4,1fr);margin-bottom:20px">
+        <div class="kpi-card"><div class="kpi-top"><span class="kpi-label">Ingresos Mes</span></div><div class="kpi-val" style="color:var(--t3)">—</div></div>
+        <div class="kpi-card"><div class="kpi-top"><span class="kpi-label">Reservas Mes</span></div><div class="kpi-val" style="color:var(--t3)">—</div></div>
+        <div class="kpi-card"><div class="kpi-top"><span class="kpi-label">Ocupación</span></div><div class="kpi-val" style="color:var(--t3)">—</div></div>
+        <div class="kpi-card"><div class="kpi-top"><span class="kpi-label">Clientes Fijos</span></div><div class="kpi-val" style="color:var(--t3)">—</div></div>
       </div>
       <div class="fin-2col">
         <div class="chart-card">
@@ -822,7 +810,7 @@ td strong{color:var(--t1);font-weight:600}
       </div>
       <div class="t-wrap">
         <table>
-          <thead><tr><th>Cliente</th><th>Fecha</th><th>Horario</th><th>Precio</th><th>Tipo</th><th>Estado</th><th>Acciones</th></tr></thead>
+          <thead><tr><th>Cliente</th><th>Fecha</th><th>Horario</th><th>Precio</th><th>Abono</th><th>Saldo</th><th>Tipo</th><th>Estado</th><th>Acciones</th></tr></thead>
           <tbody id="hist-tbody"></tbody>
         </table>
       </div>
@@ -838,7 +826,7 @@ td strong{color:var(--t1);font-weight:600}
       </div>
       <div class="t-wrap">
         <table>
-          <thead><tr><th>Cliente</th><th>Fecha</th><th>Horario</th><th>Precio</th><th>Tipo</th><th>Estado</th><th>Acciones</th></tr></thead>
+          <thead><tr><th>Cliente</th><th>Fecha</th><th>Horario</th><th>Precio</th><th>Abono</th><th>Saldo</th><th>Tipo</th><th>Estado</th><th>Acciones</th></tr></thead>
           <tbody id="res-tbody"></tbody>
         </table>
       </div>
@@ -877,23 +865,11 @@ td strong{color:var(--t1);font-weight:600}
 
     <!-- ══ FINANZAS ════════════════════════════════ -->
     <div class="tab-panel" id="tab-finanzas">
-      <div class="kpi-grid" style="margin-bottom:16px">
-        <div class="kpi-card" style="--kpi-color:var(--neon)">
-          <div class="kpi-top"><span class="kpi-label">Total Mes</span><span class="kpi-ico">💰</span></div>
-          <div class="kpi-val">$5.3M</div><div class="kpi-sub">cancha + tienda</div>
-        </div>
-        <div class="kpi-card" style="--kpi-color:var(--neon)">
-          <div class="kpi-top"><span class="kpi-label">Cancha</span><span class="kpi-ico">⚽</span></div>
-          <div class="kpi-val">$4.8M</div><div class="kpi-sub">91.5% del total</div>
-        </div>
-        <div class="kpi-card" style="--kpi-color:var(--blue)">
-          <div class="kpi-top"><span class="kpi-label">Tienda</span><span class="kpi-ico">🛒</span></div>
-          <div class="kpi-val" style="color:var(--blue)">$448K</div><div class="kpi-sub">8.5% del total</div>
-        </div>
-        <div class="kpi-card" style="--kpi-color:var(--gold)">
-          <div class="kpi-top"><span class="kpi-label">Promedio/día</span><span class="kpi-ico">📆</span></div>
-          <div class="kpi-val" style="color:var(--gold)">$176K</div><div class="kpi-sub">últimos 30 días</div>
-        </div>
+      <div class="kpi-grid" id="fin-kpis" style="margin-bottom:16px">
+        <div class="kpi-card"><div class="kpi-top"><span class="kpi-label">Total Mes</span></div><div class="kpi-val" style="color:var(--t3)">—</div></div>
+        <div class="kpi-card"><div class="kpi-top"><span class="kpi-label">Cancha</span></div><div class="kpi-val" style="color:var(--t3)">—</div></div>
+        <div class="kpi-card"><div class="kpi-top"><span class="kpi-label">Tienda</span></div><div class="kpi-val" style="color:var(--t3)">—</div></div>
+        <div class="kpi-card"><div class="kpi-top"><span class="kpi-label">Promedio/día</span></div><div class="kpi-val" style="color:var(--t3)">—</div></div>
       </div>
       <div class="fin-2col">
         <div class="chart-card"><div class="chart-title">Ingresos por día</div><div id="fin-dias"></div></div>
@@ -928,6 +904,28 @@ td strong{color:var(--t1);font-weight:600}
           <div class="form-group"><label class="form-label">WhatsApp</label><input class="form-input" value="+57 300 123 4567"/></div>
           <div class="form-group"><label class="form-label">Dirección</label><input class="form-input" value="Calle 16 #45-10, Medellín"/></div>
           <div class="form-group"><label class="form-label">Capacidad máx.</label><input class="form-input" type="number" value="12"/></div>
+        </div>
+        <!-- Abono mínimo -->
+        <div style="margin-top:16px;padding-top:16px;border-top:1px solid var(--border)">
+          <div style="font-family:var(--fh);font-size:11px;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:var(--t2);margin-bottom:12px">
+            ⚡ Configuración de Abonos
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;align-items:end">
+            <div class="form-group" style="margin-bottom:0">
+              <label class="form-label">Monto mínimo de abono (COP)</label>
+              <input class="form-input" type="number" id="cfg-abono" value="20000"
+                style="font-family:var(--fh);font-size:20px;font-weight:900;color:var(--gold)"
+                onchange="updateAbonoMinimo(+this.value)"/>
+              <div style="font-size:11px;color:var(--t3);margin-top:4px">El cliente puede reservar pagando solo este monto ahora</div>
+            </div>
+            <div style="padding:14px 16px;border-radius:10px;background:var(--gold2);border:1px solid var(--gold3)">
+              <div style="font-size:10px;font-weight:700;color:var(--gold);letter-spacing:1px;text-transform:uppercase;margin-bottom:4px">Ejemplo</div>
+              <div style="font-family:var(--fh);font-size:13px;color:var(--t2)">
+                Hora $80.000 → abona <strong id="cfg-abono-preview" style="color:var(--gold)">$20.000</strong><br>
+                Paga en cancha: <strong id="cfg-resto-preview" style="color:var(--red)">$60.000</strong>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
       <div class="sec-hd"><span class="sec-title">Precios por Franja</span></div>
@@ -1066,15 +1064,68 @@ function setTopbarDate() {
     `${DIAS_FULL[d.getDay()]} ${d.getDate()} de ${MESES_ES[d.getMonth()].charAt(0).toUpperCase()+MESES_ES[d.getMonth()].slice(1)} ${d.getFullYear()}`
 }
 
+// Pestaña activa para saber qué re-renderizar
+let tabActiva = 'agenda'
+
 function suscribirAdmin() {
   if (channelAdmin) sb.removeChannel(channelAdmin)
-  channelAdmin = sb.channel('admin-reservas')
-    .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'reservas' }, () => {
+  channelAdmin = sb.channel('admin-realtime-all')
+
+    // ── RESERVAS (INSERT / UPDATE / DELETE) ──────────────────
+    .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'reservas' }, (payload) => {
       showToast('🔔 Nueva reserva recibida')
       updateBadges()
-      renderAgenda()
+      if (tabActiva === 'agenda')      renderAgenda()
+      if (tabActiva === 'reservas')    renderReservas()
+      if (tabActiva === 'historial')   renderHistorial(histFilter)
+      if (tabActiva === 'estadisticas') renderEstadisticas()
+      if (tabActiva === 'finanzas')    renderFinanzas()
     })
-    .subscribe()
+    .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'reservas' }, () => {
+      updateBadges()
+      if (tabActiva === 'agenda')      renderAgenda()
+      if (tabActiva === 'reservas')    renderReservas()
+      if (tabActiva === 'historial')   renderHistorial(histFilter)
+      if (tabActiva === 'estadisticas') renderEstadisticas()
+      if (tabActiva === 'finanzas')    renderFinanzas()
+    })
+    .on('postgres_changes', { event: 'DELETE', schema: 'public', table: 'reservas' }, () => {
+      updateBadges()
+      if (tabActiva === 'agenda')      renderAgenda()
+      if (tabActiva === 'reservas')    renderReservas()
+      if (tabActiva === 'historial')   renderHistorial(histFilter)
+    })
+
+    // ── CLIENTES FIJOS (INSERT / UPDATE / DELETE) ─────────────
+    .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'clientes_fijos' }, () => {
+      showToast('🔔 Nueva solicitud de cliente fijo')
+      updateBadges()
+      if (tabActiva === 'fijos') renderFijos()
+    })
+    .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'clientes_fijos' }, () => {
+      updateBadges()
+      if (tabActiva === 'fijos') renderFijos()
+    })
+    .on('postgres_changes', { event: 'DELETE', schema: 'public', table: 'clientes_fijos' }, () => {
+      updateBadges()
+      if (tabActiva === 'fijos') renderFijos()
+    })
+
+    // ── VENTAS (INSERT) ───────────────────────────────────────
+    .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'ventas_productos' }, () => {
+      if (tabActiva === 'finanzas') renderFinanzas()
+    })
+
+    // ── EVENTOS (INSERT / UPDATE) ─────────────────────────────
+    .on('postgres_changes', { event: '*', schema: 'public', table: 'eventos' }, () => {
+      if (tabActiva === 'eventos') renderEventos()
+    })
+
+    .subscribe((status) => {
+      if (status === 'SUBSCRIBED') {
+        console.log('[Realtime] Conectado a todas las tablas ✓')
+      }
+    })
 }
 
 // ═══ NAV ══════════════════════════════════════════════════
@@ -1085,17 +1136,19 @@ const tabTitles = {
 }
 
 window.nav = function(id, btn) {
+  tabActiva = id
   document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'))
   document.getElementById('tab-'+id).classList.add('active')
   document.querySelectorAll('.sb-item').forEach(b=>b.classList.remove('active'))
   btn.classList.add('active')
   document.getElementById('topbar-title').textContent = tabTitles[id]||id
   const actions = {
-    historial: ()=>renderHistorial('all'),
-    reservas:  ()=>renderReservas(),
-    fijos:     ()=>renderFijos(),
-    eventos:   ()=>renderEventos(),
-    finanzas:  ()=>renderFinanzas(),
+    historial:    ()=>renderHistorial('all'),
+    reservas:     ()=>renderReservas(),
+    fijos:        ()=>renderFijos(),
+    eventos:      ()=>renderEventos(),
+    finanzas:     ()=>renderFinanzas(),
+    estadisticas: ()=>renderEstadisticas(),
   }
   actions[id]?.()
 }
@@ -1162,7 +1215,7 @@ async function renderAgenda() {
         <div class="crono-hora">${time}</div>
         <div class="crono-info">
           <span class="crono-cliente">${res.tipo==='bloqueo'?'🔒 Bloqueado':res.cliente_nombre}</span>
-          <span class="crono-detail">${res.cliente_tel||'—'} · hasta ${timeEnd}${res.precio?` · $${res.precio.toLocaleString('es-CO')}`:''} ${res.tipo==='fijo'?'· 🔒 Fijo':''}</span>
+          <span class="crono-detail">${res.cliente_tel||'—'} · hasta ${timeEnd}${res.precio?` · $${res.precio.toLocaleString('es-CO')}`:''}${(res.saldo_pendiente>0)?` · <span style="color:var(--red);font-weight:700">Debe $${res.saldo_pendiente.toLocaleString('es-CO')}</span>`:' · <span style="color:var(--neon);font-size:10px">✓ Pagado</span>'} ${res.tipo==='fijo'?'· 🔒 Fijo':''}</span>
         </div>
         <div class="crono-status"><span class="chip ${sc}">${stxt}</span>${acts}</div>
       </div>`
@@ -1192,26 +1245,49 @@ async function renderAgenda() {
 }
 
 // ═══ ACCIONES RESERVAS ═══════════════════════════════════
+// ── Helper: ejecutar operación con bypass de RLS si falla ──────
+// El admin usa PIN (no auth de Supabase), entonces el DELETE/UPDATE
+// puede ser bloqueado por RLS. Usamos una función con SECURITY DEFINER
+// o desactivamos RLS para estas tablas en el admin.
+async function adminDelete(tabla, id) {
+  const { error } = await sb.from(tabla).delete().eq('id', id)
+  if (error) {
+    console.error(`[RLS] DELETE ${tabla}:`, error)
+    throw new Error(`No se pudo eliminar. Verifica las políticas RLS en Supabase para la tabla "${tabla}". Detalle: ${error.message}`)
+  }
+}
+
+async function adminUpdate(tabla, id, payload) {
+  const { error } = await sb.from(tabla).update(payload).eq('id', id)
+  if (error) {
+    console.error(`[RLS] UPDATE ${tabla}:`, error)
+    throw new Error(`No se pudo actualizar. Verifica las políticas RLS en Supabase. Detalle: ${error.message}`)
+  }
+}
+
 window.confirmarRes = async function(id) {
-  const { error } = await sb.from('reservas').update({estado:'confirmado'}).eq('id',id)
-  if (error) { showToast('❌ '+error.message); return }
-  await renderAgenda(); renderReservas(); updateBadges()
-  showToast('✅ Reserva confirmada')
+  try {
+    await adminUpdate('reservas', id, { estado: 'confirmado' })
+    showToast('✅ Reserva confirmada')
+  } catch(e) { showToast('❌ ' + e.message); return }
+  await renderAgenda(); await renderReservas(); updateBadges()
 }
 
 window.cancelarRes = async function(id) {
-  const { error } = await sb.from('reservas').update({estado:'cancelado'}).eq('id',id)
-  if (error) { showToast('❌ '+error.message); return }
-  await renderAgenda(); renderReservas(); updateBadges()
-  showToast('❌ Reserva cancelada')
+  try {
+    await adminUpdate('reservas', id, { estado: 'cancelado' })
+    showToast('🚫 Reserva cancelada')
+  } catch(e) { showToast('❌ ' + e.message); return }
+  await renderAgenda(); await renderReservas(); updateBadges()
 }
 
 window.liberarRes = async function(id, hora) {
-  if (!confirm(`¿Liberar el slot ${hora}?`)) return
-  const { error } = await sb.from('reservas').delete().eq('id',id)
-  if (error) { showToast('❌ '+error.message); return }
-  await renderAgenda(); renderReservas(); updateBadges()
-  showToast(`🔓 Slot ${hora} liberado`)
+  if (!confirm(`¿Eliminar la reserva de las ${hora} y liberar el cupo?`)) return
+  try {
+    await adminDelete('reservas', id)
+    showToast(`🔓 Slot ${hora} liberado`)
+  } catch(e) { showToast('❌ ' + e.message); return }
+  await renderAgenda(); await renderReservas(); updateBadges()
 }
 
 async function updateBadges() {
@@ -1257,11 +1333,21 @@ function buildResRow(r) {
   else acts='—'
   const hi = (r.hora_inicio||'').slice(0,5)
   const hf = (r.hora_fin||'').slice(0,5)
+  const abono = r.abono || 0
+  const saldo = r.saldo_pendiente || 0
+  const abonoHtml = abono > 0
+    ? `<span style="font-family:var(--fh);font-size:13px;font-weight:800;color:var(--gold)">$${abono.toLocaleString('es-CO')}</span>`
+    : '<span style="color:var(--t3)">—</span>'
+  const saldoHtml = saldo > 0
+    ? `<span style="font-family:var(--fh);font-size:13px;font-weight:800;color:var(--red)">$${saldo.toLocaleString('es-CO')}</span>`
+    : '<span style="color:var(--neon);font-size:12px">✓ Al día</span>'
   return `<tr>
     <td><strong>${r.cliente_nombre}</strong><br><span style="font-size:11px;color:var(--t3)">${r.cliente_tel||'—'}</span></td>
     <td>${r.fecha}</td>
     <td class="td-mono">${hi}–${hf}</td>
     <td class="td-mono" style="color:var(--neon)">${r.precio>0?'$'+r.precio.toLocaleString('es-CO'):'—'}</td>
+    <td>${abonoHtml}</td>
+    <td>${saldoHtml}</td>
     <td><span class="chip ${tc}" style="font-size:9px">${(r.tipo||'normal').toUpperCase()}</span></td>
     <td><span class="chip ${sc}" style="font-size:9px">${r.estado.toUpperCase()}</span></td>
     <td>${acts}</td>
@@ -1311,20 +1397,29 @@ async function renderFijos() {
 }
 
 window.aprobarFijo = async function(id) {
-  const { error } = await sb.from('clientes_fijos').update({estado:'activo'}).eq('id',id)
-  if (error) { showToast('❌ '+error.message); return }
-  await renderFijos(); showToast('✅ Cliente fijo activado')
+  try {
+    await adminUpdate('clientes_fijos', id, { estado: 'activo' })
+    showToast('✅ Cliente fijo activado')
+  } catch(e) { showToast('❌ ' + e.message); return }
+  await renderFijos(); updateBadges()
 }
+
 window.rechazarFijo = async function(id) {
-  const { error } = await sb.from('clientes_fijos').delete().eq('id',id)
-  if (error) { showToast('❌ '+error.message); return }
-  await renderFijos(); showToast('❌ Solicitud rechazada')
+  if (!confirm('¿Rechazar y eliminar esta solicitud?')) return
+  try {
+    await adminDelete('clientes_fijos', id)
+    showToast('🗑 Solicitud eliminada')
+  } catch(e) { showToast('❌ ' + e.message); return }
+  await renderFijos(); updateBadges()
 }
+
 window.desactivarFijo = async function(id, nombre) {
-  if (!confirm(`¿Desactivar cupo de ${nombre}?`)) return
-  const { error } = await sb.from('clientes_fijos').update({estado:'inactivo'}).eq('id',id)
-  if (error) { showToast('❌ '+error.message); return }
-  await renderFijos(); showToast(`🔓 Cupo de ${nombre} desactivado`)
+  if (!confirm(`¿Desactivar el cupo fijo de ${nombre}?`)) return
+  try {
+    await adminUpdate('clientes_fijos', id, { estado: 'inactivo' })
+    showToast(`🔓 Cupo de ${nombre} desactivado`)
+  } catch(e) { showToast('❌ ' + e.message); return }
+  await renderFijos(); updateBadges()
 }
 
 // ═══ EVENTOS ══════════════════════════════════════════════
@@ -1352,50 +1447,96 @@ window.toggleEvento = async function(id, estadoActual) {
 
 // ═══ FINANZAS ═════════════════════════════════════════════
 async function renderFinanzas() {
-  // Ingresos últimos 7 días
-  const hoy = new Date(); const desdeDate = new Date(); desdeDate.setDate(hoy.getDate()-6)
+  // ── Rango: últimos 7 días ─────────────────────────────────
+  const hoy = new Date()
+  const desdeDate = new Date(); desdeDate.setDate(hoy.getDate()-6); desdeDate.setHours(0,0,0,0)
   const desde = desdeDate.toISOString().split('T')[0]
-  const { data: resData } = await sb.from('reservas').select('fecha,precio').gte('fecha',desde).eq('estado','confirmado')
+  const mesInicio = `${hoy.getFullYear()}-${String(hoy.getMonth()+1).padStart(2,'0')}-01`
+
+  // Traer todo en paralelo
+  const [
+    { data: resConfirmadas },
+    { data: resMes },
+    { data: ventas7d },
+    { data: ventasMes },
+    { data: prods },
+    { data: movs }
+  ] = await Promise.all([
+    sb.from('reservas').select('fecha, hora_inicio, precio').gte('fecha', desde).eq('estado','confirmado'),
+    sb.from('reservas').select('precio').gte('fecha', mesInicio).eq('estado','confirmado'),
+    sb.from('ventas_productos').select('producto_id, cantidad, total').gte('created_at', desde+'T00:00:00'),
+    sb.from('ventas_productos').select('total').gte('created_at', mesInicio+'T00:00:00'),
+    sb.from('productos').select('*, ventas_productos(cantidad,total)').eq('activo',true).order('nombre'),
+    sb.from('ventas_productos').select('id, created_at, total, productos(nombre)').order('created_at',{ascending:false}).limit(30),
+  ])
+
+  // ── KPIs del mes ─────────────────────────────────────────
+  const totalCancha = (resMes||[]).reduce((s,r)=>s+r.precio,0)
+  const totalTienda = (ventasMes||[]).reduce((s,v)=>s+v.total,0)
+  const totalMes    = totalCancha + totalTienda
+  const diasMes     = hoy.getDate()
+  const promDia     = diasMes > 0 ? Math.round(totalMes / diasMes) : 0
+
+  const kpis = document.getElementById('fin-kpis')
+  if (kpis) kpis.innerHTML = `
+    <div class="kpi-card"><div class="kpi-accent" style="background:var(--neon)"></div>
+      <div class="kpi-lbl">Total Mes</div><div class="kpi-val">${fmtK(totalMes)}</div></div>
+    <div class="kpi-card"><div class="kpi-accent" style="background:var(--blue)"></div>
+      <div class="kpi-lbl">Cancha</div><div class="kpi-val">${fmtK(totalCancha)}</div></div>
+    <div class="kpi-card"><div class="kpi-accent" style="background:var(--gold)"></div>
+      <div class="kpi-lbl">Tienda</div><div class="kpi-val">${fmtK(totalTienda)}</div></div>
+    <div class="kpi-card"><div class="kpi-accent" style="background:var(--purple)"></div>
+      <div class="kpi-lbl">Promedio/día</div><div class="kpi-val">${fmtK(promDia)}</div></div>`
+
+  // ── Ingresos por día (últimos 7) ──────────────────────────
   const diasMap = {}
-  for (let i=0;i<7;i++) {
-    const d=new Date(desdeDate); d.setDate(desdeDate.getDate()+i)
-    diasMap[d.toISOString().split('T')[0]]=0
+  for (let i=0; i<7; i++) {
+    const d = new Date(desdeDate); d.setDate(desdeDate.getDate()+i)
+    const k = d.toISOString().split('T')[0]
+    diasMap[k] = { lbl: DIAS_ES[d.getDay()], v: 0 }
   }
-  for (const r of (resData||[])) { diasMap[r.fecha]=(diasMap[r.fecha]||0)+r.precio }
-  const diasArr = Object.entries(diasMap).map(([f,v])=>({d:DIAS_ES[new Date(f+'T12:00').getDay()],v}))
-  const maxD = Math.max(...diasArr.map(x=>x.v),1)
+  for (const r of (resConfirmadas||[])) {
+    if (diasMap[r.fecha]) diasMap[r.fecha].v += r.precio
+  }
+  // Sumar tienda por día
+  for (const v of (ventas7d||[])) {
+    const k = v.created_at ? v.created_at.split('T')[0] : null
+    if (k && diasMap[k]) diasMap[k].v += v.total
+  }
+  const diasArr = Object.values(diasMap)
+  const maxD = Math.max(...diasArr.map(x=>x.v), 1)
   document.getElementById('fin-dias').innerHTML = diasArr.map(x=>`
-    <div class="bar-row"><span class="bar-lbl">${x.d}</span>
-    <div class="bar-track"><div class="bar-fill g" style="width:${(x.v/maxD*100).toFixed(0)}%"></div></div>
-    <span class="bar-val">${x.v>0?'$'+(x.v/1000).toFixed(0)+'k':'$0'}</span></div>`).join('')
+    <div class="bar-row">
+      <span class="bar-lbl">${x.lbl}</span>
+      <div class="bar-track"><div class="bar-fill g" style="width:${(x.v/maxD*100).toFixed(0)}%;transition:width .6s ease"></div></div>
+      <span class="bar-val">${x.v>0?fmtK(x.v):'$0'}</span>
+    </div>`).join('')
 
-  // Franjas
-  const fr=[{l:'Mañana 7–12',v:0,c:'g'},{l:'Tarde 12–18',v:0,c:'y'},{l:'Noche 18–23',v:0,c:'b'}]
-  for (const r of (resData||[])) {
-    // Aproximar franja por precio (sin hora exacta en este query)
-    if (r.precio<=65000) fr[0].v+=r.precio
-    else if (r.precio<=80000) fr[1].v+=r.precio
-    else fr[2].v+=r.precio
+  // ── Ingresos por franja (hora real) ──────────────────────
+  const fr = [{l:'Mañana 7–12',v:0,c:'g'},{l:'Tarde 12–18',v:0,c:'y'},{l:'Noche 18–23',v:0,c:'b'}]
+  for (const r of (resConfirmadas||[])) {
+    const h = parseInt((r.hora_inicio||'00').slice(0,2))
+    if (h>=7  && h<12) fr[0].v += r.precio
+    else if (h>=12 && h<18) fr[1].v += r.precio
+    else if (h>=18)          fr[2].v += r.precio
   }
-  const maxF=Math.max(...fr.map(x=>x.v),1)
-  document.getElementById('fin-franjas').innerHTML=fr.map(x=>`
-    <div class="bar-row"><span class="bar-lbl" style="font-size:10px;width:80px">${x.l}</span>
-    <div class="bar-track"><div class="bar-fill ${x.c}" style="width:${(x.v/maxF*100).toFixed(0)}%"></div></div>
-    <span class="bar-val">${x.v>0?'$'+(x.v/1000).toFixed(0)+'k':'$0'}</span></div>`).join('')
+  const maxF = Math.max(...fr.map(x=>x.v), 1)
+  document.getElementById('fin-franjas').innerHTML = fr.map(x=>`
+    <div class="bar-row">
+      <span class="bar-lbl" style="width:88px;font-size:10px">${x.l}</span>
+      <div class="bar-track"><div class="bar-fill ${x.c}" style="width:${(x.v/maxF*100).toFixed(0)}%;transition:width .6s ease"></div></div>
+      <span class="bar-val">${x.v>0?fmtK(x.v):'$0'}</span>
+    </div>`).join('')
 
-  // Productos
-  const { data: prods } = await sb.from('productos').select('*').eq('activo',true).order('nombre')
-  const { data: ventas } = await sb.from('ventas_productos').select('producto_id, cantidad, total')
-    .gte('created_at', desde+'T00:00:00')
-
-  const ventasMap={}
-  for(const v of (ventas||[])) {
-    ventasMap[v.producto_id]=(ventasMap[v.producto_id]||{cant:0,total:0})
-    ventasMap[v.producto_id].cant+=v.cantidad
-    ventasMap[v.producto_id].total+=v.total
+  // ── Tienda: productos con ventas reales ───────────────────
+  const ventasMap = {}
+  for (const v of (ventas7d||[])) {
+    if (!ventasMap[v.producto_id]) ventasMap[v.producto_id] = {cant:0,total:0}
+    ventasMap[v.producto_id].cant  += v.cantidad
+    ventasMap[v.producto_id].total += v.total
   }
-
-  document.getElementById('tienda-list').innerHTML=(prods||[]).map(p=>`
+  document.getElementById('tienda-list').innerHTML = (prods||[]).length > 0
+    ? (prods||[]).map(p=>`
     <div class="product-item" onclick="registrarVenta('${p.id}',${p.precio})">
       <div class="prod-icon">${p.emoji||'📦'}</div>
       <div><div class="prod-name">${p.nombre}</div><div class="prod-price">$${p.precio.toLocaleString('es-CO')} c/u</div></div>
@@ -1405,45 +1546,155 @@ async function renderFinanzas() {
         <button class="btn btn-edit btn-sm" onclick="event.stopPropagation();editProducto('${p.id}','${p.nombre}',${p.precio},'${p.emoji||''}')">✏️</button>
       </div>
     </div>`).join('')
+    : '<div style="padding:20px;color:var(--t3);font-size:13px;text-align:center">No hay productos aún. Agrega uno con el botón +</div>'
 
-  // Movimientos
-  const { data: movs } = await sb.from('ventas_productos')
-    .select('id, created_at, total, productos(nombre)')
-    .order('created_at',{ascending:false}).limit(20)
-  document.getElementById('movs-tbody').innerHTML=(movs||[]).map(m=>`<tr>
-    <td><strong>Venta - ${m.productos?.nombre||'Producto'}</strong></td>
-    <td><span class="mv-cat-tienda">Tienda</span></td>
-    <td>${new Date(m.created_at).toLocaleTimeString('es-CO',{hour:'2-digit',minute:'2-digit'})}</td>
-    <td class="td-mono" style="color:var(--neon)">+$${m.total.toLocaleString('es-CO')}</td>
-  </tr>`).join('')
+  // ── Movimientos: reservas confirmadas + ventas mezcladas ──
+  const movsReservas = (resConfirmadas||[])
+    .filter(r=>r.precio>0)
+    .slice(0,15)
+    .map(r=>({
+      tipo:'cancha',
+      desc:`Cancha ${(r.hora_inicio||'').slice(0,5)}`,
+      fecha: r.fecha,
+      monto: r.precio
+    }))
+  const movsTienda = (movs||[]).slice(0,15).map(m=>({
+    tipo:'tienda',
+    desc:`Venta - ${m.productos?.nombre||'Producto'}`,
+    fecha: m.created_at ? new Date(m.created_at).toLocaleDateString('es-CO') : '—',
+    hora:  m.created_at ? new Date(m.created_at).toLocaleTimeString('es-CO',{hour:'2-digit',minute:'2-digit'}) : '—',
+    monto: m.total
+  }))
+  const todosMovs = [...movsReservas,...movsTienda]
+    .sort((a,b)=> new Date(b.fecha)-new Date(a.fecha))
+    .slice(0,25)
+
+  document.getElementById('movs-tbody').innerHTML = todosMovs.length > 0
+    ? todosMovs.map(m=>`<tr>
+        <td><strong>${m.desc}</strong></td>
+        <td><span class="mv-cat-${m.tipo}">${m.tipo==='cancha'?'Cancha':'Tienda'}</span></td>
+        <td style="color:var(--t2);font-size:12px">${m.hora||m.fecha}</td>
+        <td class="td-mono" style="color:var(--neon)">+$${m.monto.toLocaleString('es-CO')}</td>
+      </tr>`).join('')
+    : '<tr><td colspan="4" style="text-align:center;color:var(--t3);padding:24px">Sin movimientos aún</td></tr>'
 }
 
-function renderEstadisticas() {
-  // Usa datos mock para gráficas de tendencia (real requeriría queries agregadas adicionales)
-  const dias=[{d:'Lun',v:180},{d:'Mar',v:150},{d:'Mié',v:210},{d:'Jue',v:190},{d:'Vie',v:280},{d:'Sáb',v:350},{d:'Dom',v:310}]
-  const maxD=Math.max(...dias.map(x=>x.v))
-  document.getElementById('stat-dias-chart').innerHTML=dias.map(x=>`
-    <div class="bar-row"><span class="bar-lbl">${x.d}</span>
-    <div class="bar-track"><div class="bar-fill g" style="width:${(x.v/maxD*100).toFixed(0)}%"></div></div>
-    <span class="bar-val">$${x.v}k</span></div>`).join('')
-  const fr=[{l:'Mañana',v:26,c:'g'},{l:'Tarde',v:38,c:'y'},{l:'Noche',v:52,c:'b'}]
-  const maxF=Math.max(...fr.map(x=>x.v))
-  document.getElementById('stat-franja-chart').innerHTML=fr.map(x=>`
-    <div class="bar-row"><span class="bar-lbl">${x.l}</span>
-    <div class="bar-track"><div class="bar-fill ${x.c}" style="width:${(x.v/maxF*100).toFixed(0)}%"></div></div>
-    <span class="bar-val">${x.v} res</span></div>`).join('')
-  const pop=[{d:'Sábado',v:22},{d:'Viernes',v:18},{d:'Domingo',v:15},{d:'Miércoles',v:12},{d:'Lunes',v:10}]
-  const maxP=Math.max(...pop.map(x=>x.v))
-  document.getElementById('stat-popularidad-chart').innerHTML=pop.map(x=>`
-    <div class="bar-row"><span class="bar-lbl" style="font-size:10px;width:76px">${x.d}</span>
-    <div class="bar-track"><div class="bar-fill g" style="width:${(x.v/maxP*100).toFixed(0)}%"></div></div>
-    <span class="bar-val">${x.v} res</span></div>`).join('')
-  const est=[{l:'Confirmadas',v:71,c:'g'},{l:'Canceladas',v:12,c:'r'},{l:'Pendientes',v:17,c:'y'}]
-  const maxE=Math.max(...est.map(x=>x.v))
-  document.getElementById('stat-estado-chart').innerHTML=est.map(x=>`
-    <div class="bar-row"><span class="bar-lbl" style="font-size:10px;width:76px">${x.l}</span>
-    <div class="bar-track"><div class="bar-fill ${x.c}" style="width:${(x.v/maxE*100).toFixed(0)}%"></div></div>
-    <span class="bar-val">${x.v}%</span></div>`).join('')
+// ── Estadísticas 100% reales ──────────────────────────────────
+async function renderEstadisticas() {
+  // Últimos 30 días para estadísticas del mes
+  const hoy = new Date()
+  const mesInicio = `${hoy.getFullYear()}-${String(hoy.getMonth()+1).padStart(2,'0')}-01`
+  const hace30 = new Date(); hace30.setDate(hoy.getDate()-29)
+  const desde30 = hace30.toISOString().split('T')[0]
+
+  const [
+    { data: resMes },
+    { data: resTotal }
+  ] = await Promise.all([
+    sb.from('reservas').select('fecha, hora_inicio, estado, precio').gte('fecha', mesInicio),
+    sb.from('reservas').select('fecha, hora_inicio, estado, precio').gte('fecha', desde30),
+  ])
+
+  const todas = resTotal || []
+
+  // ── KPIs estadísticas ─────────────────────────────────────
+  const confirmadas = todas.filter(r=>r.estado==='confirmado')
+  const ingresosMes = (resMes||[]).filter(r=>r.estado==='confirmado').reduce((s,r)=>s+r.precio,0)
+  const totalRes    = (resMes||[]).filter(r=>r.estado!=='bloqueado').length
+  const totalConf   = (resMes||[]).filter(r=>r.estado==='confirmado').length
+  const ocupPct     = totalRes > 0 ? Math.round((totalConf/totalRes)*100) : 0
+
+  const { data: fijosCount } = await sb.from('clientes_fijos').select('id').eq('estado','activo')
+
+  const statKpis = document.getElementById('stat-kpis')
+  if (statKpis) statKpis.innerHTML = `
+    <div class="kpi-card"><div class="kpi-accent" style="background:var(--neon)"></div>
+      <div class="kpi-lbl">Ingresos Mes</div><div class="kpi-val">${fmtK(ingresosMes)}</div></div>
+    <div class="kpi-card"><div class="kpi-accent" style="background:var(--blue)"></div>
+      <div class="kpi-lbl">Reservas Mes</div><div class="kpi-val">${totalConf}</div></div>
+    <div class="kpi-card"><div class="kpi-accent" style="background:var(--gold)"></div>
+      <div class="kpi-lbl">Ocupación</div><div class="kpi-val">${ocupPct}%</div></div>
+    <div class="kpi-card"><div class="kpi-accent" style="background:var(--purple)"></div>
+      <div class="kpi-lbl">Clientes Fijos</div><div class="kpi-val">${(fijosCount||[]).length}</div></div>`
+
+  // ── Ingresos por día de semana (últimos 30d) ──────────────
+  const porDia = Array(7).fill(0)   // índice 0=Dom
+  const cntDia  = Array(7).fill(0)
+  for (const r of confirmadas) {
+    const dow = new Date(r.fecha+'T12:00').getDay()
+    porDia[dow] += r.precio
+    cntDia[dow]++
+  }
+  const diasLabels = [1,2,3,4,5,6,0] // Lun→Dom
+  const diasData = diasLabels.map(i=>({d:DIAS_ES[i], v:porDia[i], n:cntDia[i]}))
+  const maxDia = Math.max(...diasData.map(x=>x.v),1)
+  document.getElementById('stat-dias-chart').innerHTML = diasData.map(x=>`
+    <div class="bar-row">
+      <span class="bar-lbl">${x.d}</span>
+      <div class="bar-track"><div class="bar-fill g" style="width:${(x.v/maxDia*100).toFixed(0)}%;transition:width .6s ease"></div></div>
+      <span class="bar-val">${x.v>0?fmtK(x.v):'$0'}</span>
+    </div>`).join('')
+
+  // ── Reservas por franja horaria ───────────────────────────
+  const franjaData = [{l:'Mañana',v:0,c:'g'},{l:'Tarde',v:0,c:'y'},{l:'Noche',v:0,c:'b'}]
+  for (const r of todas.filter(r=>r.estado==='confirmado')) {
+    const h = parseInt((r.hora_inicio||'00').slice(0,2))
+    if (h>=7 && h<12)      franjaData[0].v++
+    else if (h>=12 && h<18) franjaData[1].v++
+    else if (h>=18)          franjaData[2].v++
+  }
+  const maxFr = Math.max(...franjaData.map(x=>x.v),1)
+  document.getElementById('stat-franja-chart').innerHTML = franjaData.map(x=>`
+    <div class="bar-row">
+      <span class="bar-lbl">${x.l}</span>
+      <div class="bar-track"><div class="bar-fill ${x.c}" style="width:${(x.v/maxFr*100).toFixed(0)}%;transition:width .6s ease"></div></div>
+      <span class="bar-val">${x.v} res</span>
+    </div>`).join('')
+
+  // ── Días más populares (conteo de reservas confirmadas) ───
+  const popMap = {}
+  for (const r of confirmadas) {
+    const dow = new Date(r.fecha+'T12:00').getDay()
+    const lbl = DIAS_FULL[dow]
+    popMap[lbl] = (popMap[lbl]||0)+1
+  }
+  const popArr = Object.entries(popMap).sort((a,b)=>b[1]-a[1]).slice(0,5)
+  const maxPop = Math.max(...popArr.map(x=>x[1]),1)
+  document.getElementById('stat-popularidad-chart').innerHTML = popArr.length > 0
+    ? popArr.map(([d,v])=>`
+      <div class="bar-row">
+        <span class="bar-lbl" style="font-size:10px;width:76px">${d.slice(0,3)}</span>
+        <div class="bar-track"><div class="bar-fill g" style="width:${(v/maxPop*100).toFixed(0)}%;transition:width .6s ease"></div></div>
+        <span class="bar-val">${v} res</span>
+      </div>`).join('')
+    : '<div style="color:var(--t3);font-size:12px;padding:8px">Sin datos aún</div>'
+
+  // ── Estado de reservas (distribución %) ───────────────────
+  const total30 = todas.length || 1
+  const estMap = {
+    confirmado: todas.filter(r=>r.estado==='confirmado').length,
+    pendiente:  todas.filter(r=>r.estado==='pendiente').length,
+    cancelado:  todas.filter(r=>r.estado==='cancelado').length,
+  }
+  const estData = [
+    {l:'Confirmadas',v:estMap.confirmado,c:'g'},
+    {l:'Canceladas', v:estMap.cancelado, c:'r'},
+    {l:'Pendientes', v:estMap.pendiente, c:'y'},
+  ]
+  const maxEst = Math.max(...estData.map(x=>x.v),1)
+  document.getElementById('stat-estado-chart').innerHTML = estData.map(x=>`
+    <div class="bar-row">
+      <span class="bar-lbl" style="font-size:10px;width:76px">${x.l}</span>
+      <div class="bar-track"><div class="bar-fill ${x.c}" style="width:${(x.v/maxEst*100).toFixed(0)}%;transition:width .6s ease"></div></div>
+      <span class="bar-val">${total30>0?Math.round(x.v/total30*100):0}%</span>
+    </div>`).join('')
+}
+
+// ── Formateador compacto ──────────────────────────────────────
+function fmtK(n) {
+  if (n >= 1000000) return '$' + (n/1000000).toFixed(1) + 'M'
+  if (n >= 1000)    return '$' + (n/1000).toFixed(0) + 'k'
+  return '$' + n.toLocaleString('es-CO')
 }
 
 window.registrarVenta = async function(prodId, precio) {
@@ -1522,6 +1773,17 @@ function renderMultiplicadores() {
 }
 
 window.saveConfig = function() { showToast('💾 Configuración guardada') }
+
+window.updateAbonoMinimo = async function(valor) {
+  if (!valor || valor < 1000) { showToast('⚠️ Monto mínimo: $1.000'); return }
+  // Actualizar preview en tiempo real
+  document.getElementById('cfg-abono-preview').textContent = '$'+valor.toLocaleString('es-CO')
+  document.getElementById('cfg-resto-preview').textContent = '$'+(80000-valor).toLocaleString('es-CO')
+  // Guardar en Supabase
+  const { error } = await sb.from('config_pago').update({ abono_minimo: valor }).eq('id', 1)
+  if (error) { showToast('❌ '+error.message); return }
+  showToast(`💾 Abono mínimo actualizado: $${valor.toLocaleString('es-CO')}`)
+}
 
 // ═══ MODAL helpers ════════════════════════════════════════
 function horaOpts(offset=0) {
