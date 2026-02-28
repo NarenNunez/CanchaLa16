@@ -446,18 +446,26 @@ td strong{color:var(--t1);font-weight:600}
 
 /* Tienda */
 .product-item{
-  display:flex;align-items:center;gap:12px;padding:11px 14px;
-  border-radius:9px;background:var(--bg4);border:1px solid var(--border);
-  margin-bottom:6px;cursor:pointer;transition:all .2s;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  gap:6px;padding:16px 12px;text-align:center;
+  border-radius:12px;background:var(--bg4);border:1px solid var(--border);
+  cursor:pointer;transition:all .18s;position:relative;
+  min-height:110px;
 }
-.product-item:hover{border-color:var(--border-neon);background:rgba(57,255,20,.04)}
-.prod-icon{font-size:22px;width:38px;height:38px;display:flex;align-items:center;justify-content:center;
-  background:var(--bg3);border-radius:8px;border:1px solid var(--border);flex-shrink:0}
-.prod-name{font-size:13px;font-weight:600;color:var(--t1)}
-.prod-price{font-size:11px;color:var(--t3)}
-.prod-right{margin-left:auto;display:flex;align-items:center;gap:12px}
-.prod-sold{font-size:11px;color:var(--t2)}
-.prod-total{font-family:var(--fh);font-size:14px;font-weight:800;color:var(--neon)}
+.product-item:hover{border-color:var(--bneon);background:var(--neon2);transform:translateY(-2px);box-shadow:0 4px 20px rgba(57,255,20,.08)}
+.product-item:active{transform:scale(.96)}
+.prod-icon{font-size:28px;line-height:1}
+.prod-name{font-family:var(--fh);font-size:13px;font-weight:800;color:var(--t1);text-transform:uppercase;letter-spacing:.3px;line-height:1.2}
+.prod-price{font-family:var(--fh);font-size:16px;font-weight:900;color:var(--neon)}
+.prod-sold{font-size:10px;color:var(--t3)}
+.prod-edit-btn{
+  position:absolute;top:6px;right:6px;
+  background:transparent;border:none;font-size:11px;
+  color:var(--t3);cursor:pointer;padding:2px 4px;
+  border-radius:4px;opacity:0;transition:opacity .15s;
+}
+.product-item:hover .prod-edit-btn{opacity:1}
+.prod-right{display:none} /* legacy - oculto */
 
 .add-prod-btn{
   display:flex;align-items:center;justify-content:center;gap:6px;
@@ -876,13 +884,34 @@ td strong{color:var(--t1);font-weight:600}
         <div class="chart-card"><div class="chart-title">Ingresos por franja</div><div id="fin-franjas"></div></div>
       </div>
       <div class="sec-hd">
-        <span class="sec-title">Tienda · Productos</span>
+        <span class="sec-title">Tienda · Caja</span>
         <div class="sec-actions"><button class="btn btn-neon btn-sm" onclick="openAddProduct()">+ Producto</button></div>
       </div>
+
+      <!-- Productos: caja registradora -->
       <div class="t-wrap" style="padding:14px">
-        <div id="tienda-list"></div>
-        <button class="add-prod-btn" onclick="openAddProduct()">+ Agregar producto o bebida</button>
+        <div style="font-family:var(--fh);font-size:9px;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:var(--t3);margin-bottom:10px">
+          Toca para registrar venta
+        </div>
+        <div id="tienda-list" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:8px"></div>
+        <button class="add-prod-btn" style="margin-top:10px" onclick="openAddProduct()">+ Agregar producto</button>
       </div>
+
+      <!-- Movimientos con opción de anular -->
+      <div class="sec-hd" style="margin-top:16px">
+        <span class="sec-title">Ventas de hoy</span>
+        <div class="sec-actions">
+          <span id="ventas-total-hoy" style="font-family:var(--fh);font-size:14px;font-weight:900;color:var(--neon)">$0</span>
+        </div>
+      </div>
+      <div class="t-wrap">
+        <table>
+          <thead><tr><th>Producto</th><th>Cant.</th><th>Hora</th><th>Total</th><th>Anular</th></tr></thead>
+          <tbody id="ventas-hoy-tbody"></tbody>
+        </table>
+      </div>
+
+      <!-- Historial movimientos (cancha + tienda) -->
       <div class="sec-hd" style="margin-top:16px"><span class="sec-title">Movimientos recientes</span></div>
       <div class="t-wrap">
         <table>
@@ -983,8 +1012,8 @@ td strong{color:var(--t1);font-weight:600}
 <!-- ENV -->
 <script>
 window.ENV = {
-  SUPABASE_URL:      'https://laoipuyrbqhnkcredtag.supabase.co',
-  SUPABASE_ANON_KEY: 'sb_publishable_jh2DtwMpGx7wOgmAuD378A_iK2Z9MTt',
+  SUPABASE_URL:      'https://TU_PROYECTO.supabase.co',
+  SUPABASE_ANON_KEY: 'TU_ANON_KEY',
   ADMIN_PIN:         '1234',
 }
 </script>
@@ -1046,6 +1075,8 @@ window.logout = function() {
 // ═══ INIT ═════════════════════════════════════════════════
 async function initApp() {
   setTopbarDate()
+  // Diagnóstico rápido de permisos al iniciar
+  await diagnosticarRLS()
   await Promise.all([cargarFranjasConf(), cargarHorarios()])
   buildCalStrip()
   await renderAgenda()
@@ -1054,8 +1085,22 @@ async function initApp() {
   renderHorarioGrid()
   renderMultiplicadores()
   updateBadges()
-  // Realtime para notificaciones de nuevas reservas
   suscribirAdmin()
+}
+
+async function diagnosticarRLS() {
+  // Intenta un UPDATE de prueba para verificar si RLS permite operaciones
+  // Usamos un UPDATE que no cambia nada pero verifica permisos
+  const { error } = await sb.from('reservas')
+    .update({ notas: null })
+    .eq('id', '00000000-0000-0000-0000-000000000000') // ID que no existe - solo prueba permisos
+  
+  if (error && (error.code === '42501' || error.message?.includes('permission denied') || error.message?.includes('policy'))) {
+    console.warn('[RLS] ⚠️ Permisos insuficientes detectados. Debes correr 003_fix_rls_admin.sql en Supabase.')
+    showToast('⚠️ Permisos incompletos. Ve a Supabase → SQL Editor y corre el archivo 003_fix_rls_admin.sql', 8000)
+  } else {
+    console.log('[RLS] ✓ Permisos correctos')
+  }
 }
 
 function setTopbarDate() {
@@ -1111,9 +1156,12 @@ function suscribirAdmin() {
       if (tabActiva === 'fijos') renderFijos()
     })
 
-    // ── VENTAS (INSERT) ───────────────────────────────────────
+    // ── VENTAS (INSERT/DELETE) ────────────────────────────────
     .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'ventas_productos' }, () => {
-      if (tabActiva === 'finanzas') renderFinanzas()
+      if (tabActiva === 'finanzas') { renderFinanzas(); renderVentasHoy() }
+    })
+    .on('postgres_changes', { event: 'DELETE', schema: 'public', table: 'ventas_productos' }, () => {
+      if (tabActiva === 'finanzas') { renderFinanzas(); renderVentasHoy() }
     })
 
     // ── EVENTOS (INSERT / UPDATE) ─────────────────────────────
@@ -1147,7 +1195,7 @@ window.nav = function(id, btn) {
     reservas:     ()=>renderReservas(),
     fijos:        ()=>renderFijos(),
     eventos:      ()=>renderEventos(),
-    finanzas:     ()=>renderFinanzas(),
+    finanzas:     ()=>{ renderFinanzas(); renderVentasHoy() },
     estadisticas: ()=>renderEstadisticas(),
   }
   actions[id]?.()
@@ -1215,7 +1263,15 @@ async function renderAgenda() {
         <div class="crono-hora">${time}</div>
         <div class="crono-info">
           <span class="crono-cliente">${res.tipo==='bloqueo'?'🔒 Bloqueado':res.cliente_nombre}</span>
-          <span class="crono-detail">${res.cliente_tel||'—'} · hasta ${timeEnd}${res.precio?` · $${res.precio.toLocaleString('es-CO')}`:''}${(res.saldo_pendiente>0)?` · <span style="color:var(--red);font-weight:700">Debe $${res.saldo_pendiente.toLocaleString('es-CO')}</span>`:' · <span style="color:var(--neon);font-size:10px">✓ Pagado</span>'} ${res.tipo==='fijo'?'· 🔒 Fijo':''}</span>
+          <span class="crono-detail">
+            ${res.cliente_tel&&res.tipo!=='bloqueo'?res.cliente_tel+' · ':''}hasta ${timeEnd}
+            ${res.precio>0 ? ` · <span style="color:var(--t2)">$${res.precio.toLocaleString('es-CO')}</span>` : ''}
+            ${res.saldo_pendiente>0
+              ? ` · <span style="color:var(--gold);font-weight:700">⚡ Abonó $${(res.abono||0).toLocaleString('es-CO')}</span> · <span style="color:var(--red);font-weight:700">Debe $${res.saldo_pendiente.toLocaleString('es-CO')}</span>`
+              : res.precio>0 ? ` · <span style="color:var(--neon);font-size:10px">✓ Pagado</span>` : ''
+            }
+            ${res.tipo==='fijo'?' · 🔒 Fijo':''}
+          </span>
         </div>
         <div class="crono-status"><span class="chip ${sc}">${stxt}</span>${acts}</div>
       </div>`
@@ -1528,25 +1584,9 @@ async function renderFinanzas() {
       <span class="bar-val">${x.v>0?fmtK(x.v):'$0'}</span>
     </div>`).join('')
 
-  // ── Tienda: productos con ventas reales ───────────────────
-  const ventasMap = {}
-  for (const v of (ventas7d||[])) {
-    if (!ventasMap[v.producto_id]) ventasMap[v.producto_id] = {cant:0,total:0}
-    ventasMap[v.producto_id].cant  += v.cantidad
-    ventasMap[v.producto_id].total += v.total
-  }
-  document.getElementById('tienda-list').innerHTML = (prods||[]).length > 0
-    ? (prods||[]).map(p=>`
-    <div class="product-item" onclick="registrarVenta('${p.id}',${p.precio})">
-      <div class="prod-icon">${p.emoji||'📦'}</div>
-      <div><div class="prod-name">${p.nombre}</div><div class="prod-price">$${p.precio.toLocaleString('es-CO')} c/u</div></div>
-      <div class="prod-right">
-        <span class="prod-sold">${ventasMap[p.id]?.cant||0} vendidos</span>
-        <span class="prod-total">$${(ventasMap[p.id]?.total||0).toLocaleString('es-CO')}</span>
-        <button class="btn btn-edit btn-sm" onclick="event.stopPropagation();editProducto('${p.id}','${p.nombre}',${p.precio},'${p.emoji||''}')">✏️</button>
-      </div>
-    </div>`).join('')
-    : '<div style="padding:20px;color:var(--t3);font-size:13px;text-align:center">No hay productos aún. Agrega uno con el botón +</div>'
+  // ── Tienda: productos + ventas de hoy ────────────────────
+  renderProductosCaja(prods, ventas7d)
+  await renderVentasHoy()
 
   // ── Movimientos: reservas confirmadas + ventas mezcladas ──
   const movsReservas = (resConfirmadas||[])
@@ -1697,10 +1737,113 @@ function fmtK(n) {
   return '$' + n.toLocaleString('es-CO')
 }
 
-window.registrarVenta = async function(prodId, precio) {
-  const { error } = await sb.from('ventas_productos').insert({producto_id:prodId,cantidad:1,precio_unit:precio})
-  if (error) { showToast('❌ '+error.message); return }
-  await renderFinanzas(); showToast('🛒 Venta registrada')
+// ── TIENDA: render productos como caja registradora ──────────
+function renderProductosCaja(prods, ventasHoy) {
+  const ventasMap = {}
+  for (const v of (ventasHoy||[])) {
+    if (!ventasMap[v.producto_id]) ventasMap[v.producto_id] = 0
+    ventasMap[v.producto_id] += v.cantidad
+  }
+
+  document.getElementById('tienda-list').innerHTML = (prods||[]).length > 0
+    ? (prods||[]).map(p => `
+      <div class="product-item" onclick="openVentaModal('${p.id}','${p.nombre.replace(/'/g,"\\'")}',${p.precio},'${p.emoji||'📦'}')">
+        <button class="prod-edit-btn" onclick="event.stopPropagation();editProducto('${p.id}','${p.nombre.replace(/'/g,"\\'")}',${p.precio},'${p.emoji||''}')">✏️</button>
+        <div class="prod-icon">${p.emoji||'📦'}</div>
+        <div class="prod-name">${p.nombre}</div>
+        <div class="prod-price">$${p.precio.toLocaleString('es-CO')}</div>
+        <div class="prod-sold">${ventasMap[p.id]||0} hoy</div>
+      </div>`).join('')
+    : '<div style="grid-column:1/-1;padding:24px;color:var(--t3);font-size:13px;text-align:center">No hay productos. Agrega uno con el botón +</div>'
+}
+
+// Modal para registrar venta con cantidad
+window.openVentaModal = function(prodId, nombre, precio, emoji) {
+  openModal(`
+    <div class="m-head">
+      <div class="m-title">${emoji} ${nombre}</div>
+      <button class="m-x" onclick="closeModal()">×</button>
+    </div>
+    <div style="text-align:center;padding:16px 0 8px">
+      <div style="font-family:var(--fh);font-size:36px;font-weight:900;color:var(--neon)" id="vt-precio-total">
+        $${precio.toLocaleString('es-CO')}
+      </div>
+      <div style="font-size:12px;color:var(--t3);margin-top:4px">$${precio.toLocaleString('es-CO')} c/u</div>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Cantidad</label>
+      <div style="display:flex;align-items:center;gap:12px">
+        <button onclick="cambiarCant(-1,${precio})" style="width:40px;height:40px;border-radius:8px;background:var(--bg3);border:1px solid var(--border);color:var(--t1);font-size:20px;cursor:pointer;flex-shrink:0">−</button>
+        <input class="form-input" type="number" id="vt-cant" value="1" min="1" max="20" style="text-align:center;font-family:var(--fh);font-size:22px;font-weight:900" oninput="actualizarTotalVenta(${precio})"/>
+        <button onclick="cambiarCant(1,${precio})" style="width:40px;height:40px;border-radius:8px;background:var(--bg3);border:1px solid var(--border);color:var(--t1);font-size:20px;cursor:pointer;flex-shrink:0">+</button>
+      </div>
+    </div>
+    <div class="m-btns">
+      <button class="m-cancel-btn" onclick="closeModal()">Cancelar</button>
+      <button class="m-save-btn" onclick="confirmarVenta('${prodId}',${precio})">💰 Registrar venta</button>
+    </div>`)
+}
+
+window.cambiarCant = function(delta, precio) {
+  const inp = document.getElementById('vt-cant')
+  const v = Math.max(1, Math.min(20, (parseInt(inp.value)||1) + delta))
+  inp.value = v
+  actualizarTotalVenta(precio)
+}
+
+window.actualizarTotalVenta = function(precio) {
+  const cant = parseInt(document.getElementById('vt-cant')?.value)||1
+  const el   = document.getElementById('vt-precio-total')
+  if (el) el.textContent = '$' + (cant * precio).toLocaleString('es-CO')
+}
+
+window.confirmarVenta = async function(prodId, precio) {
+  const cant = parseInt(document.getElementById('vt-cant')?.value) || 1
+  const { error } = await sb.from('ventas_productos').insert({
+    producto_id: prodId, cantidad: cant, precio_unit: precio
+  })
+  if (error) { showToast('❌ ' + error.message); return }
+  closeModal()
+  await renderFinanzas()
+  showToast(`🛒 ${cant}x registrado · $${(cant*precio).toLocaleString('es-CO')}`)
+}
+
+// Ventas de hoy con opción de anular
+async function renderVentasHoy() {
+  const hoy = new Date().toISOString().split('T')[0]
+  const { data } = await sb.from('ventas_productos')
+    .select('id, cantidad, precio_unit, total, created_at, productos(nombre,emoji)')
+    .gte('created_at', hoy + 'T00:00:00')
+    .order('created_at', { ascending: false })
+
+  const ventas = data || []
+  const totalHoy = ventas.reduce((s,v) => s + v.total, 0)
+
+  const totalEl = document.getElementById('ventas-total-hoy')
+  if (totalEl) totalEl.textContent = '$' + totalHoy.toLocaleString('es-CO')
+
+  document.getElementById('ventas-hoy-tbody').innerHTML = ventas.length > 0
+    ? ventas.map(v => `<tr>
+        <td><strong>${v.productos?.emoji||'📦'} ${v.productos?.nombre||'Producto'}</strong></td>
+        <td style="color:var(--t2);text-align:center">${v.cantidad}</td>
+        <td style="color:var(--t2);font-size:12px">${new Date(v.created_at).toLocaleTimeString('es-CO',{hour:'2-digit',minute:'2-digit'})}</td>
+        <td class="td-mono" style="color:var(--neon)">$${v.total.toLocaleString('es-CO')}</td>
+        <td><button class="btn btn-cancel-act btn-sm" onclick="anularVenta('${v.id}','${(v.productos?.nombre||'').replace(/'/g,"\\'")}',${v.total})" title="Anular venta">✗</button></td>
+      </tr>`).join('')
+    : '<tr><td colspan="5" style="text-align:center;color:var(--t3);padding:20px">Sin ventas hoy</td></tr>'
+}
+
+window.anularVenta = async function(id, nombre, total) {
+  if (!confirm(`¿Anular venta de "${nombre}" por $${Number(total).toLocaleString('es-CO')}?`)) return
+  const { error } = await sb.from('ventas_productos').delete().eq('id', id)
+  if (error) { showToast('❌ ' + error.message); return }
+  await renderFinanzas()
+  showToast(`↩️ Venta de ${nombre} anulada`)
+}
+
+window.registrarVenta = function(prodId, precio) {
+  // Mantener compatibilidad — redirige al nuevo modal
+  openVentaModal(prodId, '¿Cuántos?', precio, '📦')
 }
 
 // ═══ CONFIGURACIÓN ════════════════════════════════════════
@@ -1824,26 +1967,29 @@ window.openNuevaReservaHora = function(hora, fecha) {
 }
 
 window.guardarNuevaReserva = async function() {
-  const nombre=document.getElementById('nr-n').value.trim()
-  const tel=document.getElementById('nr-t').value||'—'
-  const fecha=document.getElementById('nr-f').value
-  const hi=document.getElementById('nr-hi').value
-  const hf=document.getElementById('nr-hf').value
-  const tipo=document.getElementById('nr-tp').value
-  const estado=document.getElementById('nr-e').value
-  if(!nombre||!fecha){showToast('⚠️ Completa nombre y fecha');return}
-  const dow=new Date(fecha+'T12:00').getDay()
-  const h=parseInt(hi)
-  const {data:franjas2}=await sb.from('franjas_precio').select('*').eq('activo',true)
-  const f=(franjas2||[]).find(f=>h>=f.hora_inicio&&h<f.hora_fin)
-  const precio=f?(dow===0||dow===6?f.precio_fsd:dow===5?f.precio_vie:f.precio_lv):65000
-  const {error}=await sb.from('reservas').insert({
-    cliente_nombre:nombre,cliente_tel:tel,fecha,
-    hora_inicio:hi+':00',hora_fin:hf+':00',
-    precio,tipo,estado
+  const nombre = document.getElementById('nr-n').value.trim()
+  const tel    = document.getElementById('nr-t').value || '—'
+  const fecha  = document.getElementById('nr-f').value
+  const hi_raw = document.getElementById('nr-hi').value
+  const hf_raw = document.getElementById('nr-hf').value
+  const tipo   = document.getElementById('nr-tp').value
+  const estado = document.getElementById('nr-e').value
+  if (!nombre||!fecha) { showToast('⚠️ Completa nombre y fecha'); return }
+  const hi = hi_raw.slice(0,2) + ':00:00'
+  const hf = hf_raw.slice(0,2) + ':00:00'
+  const dow = new Date(fecha+'T12:00').getDay()
+  const h   = parseInt(hi_raw)
+  const {data:franjas2} = await sb.from('franjas_precio').select('*').eq('activo',true)
+  const fj   = (franjas2||[]).find(f=>h>=f.hora_inicio&&h<f.hora_fin)
+  const precio = fj ? (dow===0||dow===6?fj.precio_fsd:dow===5?fj.precio_vie:fj.precio_lv) : 65000
+  const {error} = await sb.from('reservas').insert({
+    cliente_nombre:nombre, cliente_tel:tel, fecha,
+    hora_inicio:hi, hora_fin:hf,
+    precio, tipo, estado,
+    tipo_pago:'full', abono: estado==='confirmado'?precio:0, saldo_pendiente:0,
   })
-  if(error){showToast('❌ '+error.message);return}
-  closeModal(); await renderAgenda(); renderReservas(); updateBadges()
+  if (error) { const msg=error.message||error.details||JSON.stringify(error); console.error('[guardarNuevaReserva]',error); showToast('❌ '+msg); return }
+  closeModal(); await renderAgenda(); await renderReservas(); updateBadges()
   showToast(`✅ Reserva de ${nombre} creada`)
 }
 
@@ -1865,17 +2011,21 @@ window.openBloqueo = function() {
 }
 
 window.guardarBloqueo = async function() {
-  const motivo=document.getElementById('bl-m').value
-  const fecha=document.getElementById('bl-f').value
-  const hi=document.getElementById('bl-hi').value
-  const hf=document.getElementById('bl-hf').value
-  const {error}=await sb.from('reservas').insert({
-    cliente_nombre:'BLOQUEADO',cliente_tel:motivo,fecha,
-    hora_inicio:hi+':00',hora_fin:hf+':00',precio:0,tipo:'bloqueo',estado:'bloqueado'
+  const motivo = document.getElementById('bl-m').value
+  const fecha  = document.getElementById('bl-f').value
+  const hi_raw = document.getElementById('bl-hi').value
+  const hf_raw = document.getElementById('bl-hf').value
+  const hi = hi_raw.slice(0,2) + ':00:00'
+  const hf = hf_raw.slice(0,2) + ':00:00'
+  const {error} = await sb.from('reservas').insert({
+    cliente_nombre:'BLOQUEADO', cliente_tel:motivo, fecha,
+    hora_inicio:hi, hora_fin:hf,
+    precio:0, tipo:'bloqueo', estado:'bloqueado',
+    tipo_pago:'full', abono:0, saldo_pendiente:0,
   })
-  if(error){showToast('❌ '+error.message);return}
+  if (error) { const msg=error.message||error.details||JSON.stringify(error); console.error('[guardarBloqueo]',error); showToast('❌ '+msg); return }
   closeModal(); await renderAgenda()
-  showToast(`🔒 ${hi} bloqueado (${motivo})`)
+  showToast(`🔒 ${hi_raw} bloqueado (${motivo})`)
 }
 
 window.openNuevoFijo = function() {
@@ -1897,17 +2047,26 @@ window.openNuevoFijo = function() {
 }
 
 window.guardarFijo = async function() {
-  const nombre=document.getElementById('nf-n').value.trim()
-  if(!nombre){showToast('⚠️ Ingresa el nombre');return}
-  const hi=document.getElementById('nf-h').value
-  const {error}=await sb.from('clientes_fijos').insert({
-    nombre,telefono:document.getElementById('nf-t').value||'—',
-    dia_semana:+document.getElementById('nf-d').value,
-    hora_inicio:hi+':00',hora_fin:String(parseInt(hi)+1).padStart(2,'0')+':00:00',
-    personas:+document.getElementById('nf-p').value,estado:'activo'
+  const nombre = document.getElementById('nf-n').value.trim()
+  const tel    = document.getElementById('nf-t').value.trim() || '—'
+  const dia    = +document.getElementById('nf-d').value
+  const hi_raw = document.getElementById('nf-h').value          // "07:00"
+  const pers   = +document.getElementById('nf-p').value || 10
+
+  if (!nombre) { showToast('⚠️ Ingresa el nombre del cliente'); return }
+
+  const h  = parseInt(hi_raw.split(':')[0])
+  const hi = String(h).padStart(2,'0')   + ':00:00'
+  const hf = String(h+1).padStart(2,'0') + ':00:00'
+
+  const { error } = await sb.from('clientes_fijos').insert({
+    nombre, telefono: tel, dia_semana: dia,
+    hora_inicio: hi, hora_fin: hf,
+    personas: pers, estado: 'activo'
   })
-  if(error){showToast('❌ '+error.message);return}
-  closeModal(); await renderFijos(); showToast(`✅ ${nombre} registrado`)
+  if (error) { const msg=error.message||error.details||JSON.stringify(error); console.error('[guardarFijo]',error); showToast('❌ '+msg); return }
+  closeModal(); await renderFijos()
+  showToast(`✅ ${nombre} registrado como cliente fijo`)
 }
 
 window.editFijo = function(id,nombre,tel,dia,hora) {
@@ -1928,14 +2087,17 @@ window.editFijo = function(id,nombre,tel,dia,hora) {
 }
 
 window.saveEditFijo = async function(id) {
-  const hi=document.getElementById('ef-h').value
-  const {error}=await sb.from('clientes_fijos').update({
-    nombre:document.getElementById('ef-n').value,
-    telefono:document.getElementById('ef-t').value,
-    dia_semana:+document.getElementById('ef-d').value,
-    hora_inicio:hi+':00',hora_fin:String(parseInt(hi)+1).padStart(2,'0')+':00:00',
-  }).eq('id',id)
-  if(error){showToast('❌ '+error.message);return}
+  const hi_raw = document.getElementById('ef-h').value
+  const h  = parseInt(hi_raw.split(':')[0])
+  const hi = String(h).padStart(2,'0')   + ':00:00'
+  const hf = String(h+1).padStart(2,'0') + ':00:00'
+  const { error } = await sb.from('clientes_fijos').update({
+    nombre:     document.getElementById('ef-n').value,
+    telefono:   document.getElementById('ef-t').value,
+    dia_semana: +document.getElementById('ef-d').value,
+    hora_inicio: hi, hora_fin: hf,
+  }).eq('id', id)
+  if (error) { showToast('❌ ' + error.message); return }
   closeModal(); await renderFijos(); showToast('✅ Cliente fijo actualizado')
 }
 
@@ -1967,7 +2129,7 @@ window.guardarEvento = async function() {
     cupos_total:+document.getElementById('ne-c').value||10,
     descripcion:document.getElementById('ne-d').value,estado:'activo'
   })
-  if(error){showToast('❌ '+error.message);return}
+  if(error){const msg=error.message||error.details||JSON.stringify(error);console.error('[guardarEvento]',error);showToast('❌ '+msg);return}
   closeModal(); await renderEventos(); showToast(`🏆 Evento "${titulo}" creado`)
 }
 
@@ -2016,7 +2178,7 @@ window.guardarProducto = async function() {
   const precio=+document.getElementById('ap-p').value
   if(!nombre||!precio){showToast('⚠️ Completa nombre y precio');return}
   const {error}=await sb.from('productos').insert({nombre,precio,emoji:document.getElementById('ap-i').value||'📦',activo:true})
-  if(error){showToast('❌ '+error.message);return}
+  if(error){const msg=error.message||error.details||JSON.stringify(error);console.error('[guardarProducto]',error);showToast('❌ '+msg);return}
   closeModal(); await renderFinanzas(); showToast(`✅ "${nombre}" agregado`)
 }
 

@@ -568,6 +568,64 @@ footer{
 .m-next-btn.gold{background:var(--gold)}
 .m-next-btn.purple{background:var(--purple)}
 
+/* ════ ABONO SELECTOR ════════════════════════ */
+.abono-section{margin-bottom:16px}
+.abono-label{
+  font-family:var(--fh);font-size:10px;font-weight:800;letter-spacing:2px;
+  text-transform:uppercase;color:var(--t3);margin-bottom:10px;display:block;
+}
+.abono-options{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.abono-card{
+  border-radius:14px;border:2px solid var(--border2);background:var(--bg4);
+  padding:16px 14px;cursor:pointer;transition:all .22s;
+  display:flex;flex-direction:column;gap:6px;position:relative;overflow:hidden;
+  text-align:left;width:100%;font-family:var(--fb);
+}
+.abono-card:hover{border-color:var(--bneon);background:var(--neon2);transform:translateY(-2px)}
+.abono-card.selected-full{
+  border-color:var(--neon);background:rgba(57,255,20,.1);
+  box-shadow:0 0 0 1px var(--neon),0 0 24px rgba(57,255,20,.15);
+}
+.abono-card.selected-abono{
+  border-color:var(--gold);background:rgba(255,184,0,.08);
+  box-shadow:0 0 0 1px var(--gold),0 0 24px rgba(255,184,0,.12);
+}
+.abono-card-ico{font-size:26px;margin-bottom:4px}
+.abono-card-title{
+  font-family:var(--fh);font-size:17px;font-weight:900;letter-spacing:.5px;
+  text-transform:uppercase;line-height:1;
+}
+.abono-card.selected-full .abono-card-title{color:var(--neon)}
+.abono-card.selected-abono .abono-card-title{color:var(--gold)}
+.abono-card-price{
+  font-family:var(--fh);font-size:30px;font-weight:900;line-height:1;
+  margin:4px 0 2px;
+}
+.abono-card.selected-full .abono-card-price{color:var(--neon);text-shadow:0 0 20px rgba(57,255,20,.4)}
+.abono-card.selected-abono .abono-card-price{color:var(--gold);text-shadow:0 0 20px rgba(255,184,0,.4)}
+.abono-card-sub{font-size:11px;color:var(--t3);line-height:1.4}
+.abono-card.selected-abono .abono-card-sub span{color:var(--gold);font-weight:700}
+.abono-badge{
+  position:absolute;top:10px;right:10px;
+  padding:3px 8px;border-radius:99px;
+  font-family:var(--fh);font-size:9px;font-weight:900;letter-spacing:.8px;text-transform:uppercase;
+}
+.abono-badge-full{background:var(--neon);color:#000}
+.abono-badge-abono{background:var(--gold);color:#000}
+.abono-resto-box{
+  display:none;
+  background:rgba(255,184,0,.06);border:1px solid var(--gold3);border-radius:10px;
+  padding:12px 14px;margin-top:6px;
+}
+.abono-resto-box.show{display:block}
+.arb-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:4px}
+.arb-row:last-child{margin-bottom:0;padding-top:8px;border-top:1px solid var(--gold3)}
+.arb-k{font-size:12px;color:var(--t2)}
+.arb-v{font-family:var(--fh);font-size:15px;font-weight:900}
+.arb-v.gold{color:var(--gold)}
+.arb-v.neon{color:var(--neon)}
+.arb-v.red{color:var(--red)}
+
 /* ════ TOAST ══════════════════════════════════ */
 .toast{
   position:fixed;bottom:20px;right:20px;z-index:9999;
@@ -915,7 +973,7 @@ footer{
       <div class="step-ind" id="si-2"><div class="step-num">3</div><div class="step-lbl">Comprobante</div></div>
     </div>
 
-    <!-- Step 1: Resumen -->
+    <!-- Step 1: Datos + Resumen -->
     <div class="modal-step active" id="ms-0">
       <div class="modal-body">
         <div class="res-box">
@@ -924,38 +982,83 @@ footer{
           <div><div class="rb-k">Horario</div><div class="rb-v" id="m-hora">—</div></div>
           <div><div class="rb-k">Total</div><div class="rb-v neon" id="m-precio">—</div></div>
         </div>
-        <div style="font-size:12px;color:var(--t3);line-height:1.6;padding:12px 14px;border-radius:9px;background:rgba(255,255,255,.03);border:1px solid var(--border)">
+        <!-- Datos del cliente -->
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px">
+          <div>
+            <label style="display:block;font-family:var(--fh);font-size:9px;font-weight:800;letter-spacing:1.5px;text-transform:uppercase;color:var(--t3);margin-bottom:5px">Tu nombre *</label>
+            <input class="form-input" id="res-nombre" placeholder="Nombre completo..." style="font-size:13px"/>
+          </div>
+          <div>
+            <label style="display:block;font-family:var(--fh);font-size:9px;font-weight:800;letter-spacing:1.5px;text-transform:uppercase;color:var(--t3);margin-bottom:5px">WhatsApp *</label>
+            <input class="form-input" id="res-tel" type="tel" placeholder="+57 300..." style="font-size:13px"/>
+          </div>
+        </div>
+        <div style="font-size:12px;color:var(--t3);line-height:1.6;padding:10px 13px;border-radius:9px;background:rgba(255,255,255,.03);border:1px solid var(--border);margin-top:10px">
           📋 Tu reserva quedará en estado <strong style="color:var(--gold)">PENDIENTE</strong> hasta que verifiquemos tu pago. Te confirmamos por WhatsApp en máximo 1 hora.
         </div>
       </div>
       <div class="modal-btns">
         <button class="m-cancel-btn" onclick="closeReservaModal()">Cancelar</button>
-        <button class="m-next-btn" onclick="goStep(1)">Continuar al pago →</button>
+        <button class="m-next-btn" onclick="validarStep0()">Continuar al pago →</button>
       </div>
     </div>
 
-    <!-- Step 2: Método de pago -->
+    <!-- Step 2: Abono + Método de pago -->
     <div class="modal-step" id="ms-1">
       <div class="modal-body">
-        <div style="font-family:var(--fh);font-size:10px;font-weight:800;letter-spacing:1.5px;text-transform:uppercase;color:var(--t3);margin-bottom:10px">Selecciona tu método</div>
-        <div class="metodos">
-          <button class="metodo" onclick="selectMetodo(this,'nequi')">
-            <div class="metodo-ico">📱</div>
-            <div><div class="metodo-name">Nequi</div><div class="metodo-sub">Transferencia instantánea</div></div>
-            <div class="metodo-check">✓</div>
-          </button>
-          <button class="metodo" onclick="selectMetodo(this,'bancolombia')">
-            <div class="metodo-ico">🏦</div>
-            <div><div class="metodo-name">Bancolombia</div><div class="metodo-sub">Transferencia / PSE</div></div>
-            <div class="metodo-check">✓</div>
-          </button>
-          <button class="metodo" onclick="selectMetodo(this,'efectivo')">
-            <div class="metodo-ico">💵</div>
-            <div><div class="metodo-name">Efectivo</div><div class="metodo-sub">Al llegar a la cancha</div></div>
-            <div class="metodo-check">✓</div>
-          </button>
+
+        <!-- ★ SELECTOR DE ABONO -->
+        <div class="abono-section">
+          <span class="abono-label">¿Cuánto quieres pagar ahora?</span>
+          <div class="abono-options">
+            <!-- Pago completo -->
+            <button class="abono-card" id="ac-full" onclick="selectAbono('full')">
+              <div class="abono-badge abono-badge-full" style="display:none" id="ab-full-badge">✓</div>
+              <div class="abono-card-ico">💳</div>
+              <div class="abono-card-title">Pago completo</div>
+              <div class="abono-card-price" id="ac-full-price">—</div>
+              <div class="abono-card-sub">Reserva confirmada al instante</div>
+            </button>
+            <!-- Abono -->
+            <button class="abono-card" id="ac-abono" onclick="selectAbono('abono')">
+              <div class="abono-badge abono-badge-abono" style="display:none" id="ab-abono-badge">✓</div>
+              <div class="abono-card-ico">⚡</div>
+              <div class="abono-card-title">Solo abono</div>
+              <div class="abono-card-price" id="ac-abono-price">—</div>
+              <div class="abono-card-sub">Resto: <span id="ac-resto-inline">—</span> en la cancha</div>
+            </button>
+          </div>
+          <!-- Desglose abono -->
+          <div class="abono-resto-box" id="abono-resto-box">
+            <div class="arb-row"><span class="arb-k">Valor total de la hora</span><span class="arb-v" id="arb-total">—</span></div>
+            <div class="arb-row"><span class="arb-k">Abono ahora (transferencia)</span><span class="arb-v gold" id="arb-abono">—</span></div>
+            <div class="arb-row"><span class="arb-k"><strong>Resto a pagar en la cancha</strong></span><span class="arb-v red" id="arb-resto">—</span></div>
+          </div>
         </div>
-        <div class="instrucciones" id="instrucciones-box" style="display:none"></div>
+
+        <!-- MÉTODO DE PAGO -->
+        <div id="metodo-section" style="display:none">
+          <div style="font-family:var(--fh);font-size:10px;font-weight:800;letter-spacing:1.5px;text-transform:uppercase;color:var(--t3);margin-bottom:10px">Método de pago</div>
+          <div class="metodos" id="metodos-list">
+            <button class="metodo" onclick="selectMetodo(this,'nequi')">
+              <div class="metodo-ico">📱</div>
+              <div><div class="metodo-name">Nequi</div><div class="metodo-sub">Transferencia instantánea</div></div>
+              <div class="metodo-check">✓</div>
+            </button>
+            <button class="metodo" onclick="selectMetodo(this,'bancolombia')">
+              <div class="metodo-ico">🏦</div>
+              <div><div class="metodo-name">Bancolombia</div><div class="metodo-sub">Transferencia / PSE</div></div>
+              <div class="metodo-check">✓</div>
+            </button>
+            <button class="metodo" id="metodo-efectivo-btn" onclick="selectMetodo(this,'efectivo')">
+              <div class="metodo-ico">💵</div>
+              <div><div class="metodo-name">Efectivo</div><div class="metodo-sub">Al llegar a la cancha</div></div>
+              <div class="metodo-check">✓</div>
+            </button>
+          </div>
+          <div class="instrucciones" id="instrucciones-box" style="display:none"></div>
+        </div>
+
       </div>
       <div class="modal-btns">
         <button class="m-cancel-btn" onclick="goStep(0)">← Volver</button>
@@ -968,7 +1071,11 @@ footer{
       <div class="modal-body">
         <div class="res-box" style="grid-template-columns:1fr 1fr;margin-bottom:14px">
           <div><div class="rb-k">Método</div><div class="rb-v" id="m-metodo">—</div></div>
-          <div><div class="rb-k">Total</div><div class="rb-v neon" id="m-precio2">—</div></div>
+          <div><div class="rb-k" id="m-monto-label">Total a pagar</div><div class="rb-v neon" id="m-precio2">—</div></div>
+        </div>
+        <!-- Aviso abono -->
+        <div id="abono-aviso" style="display:none;background:rgba(255,184,0,.07);border:1px solid var(--gold3);border-radius:10px;padding:12px 14px;margin-bottom:12px;font-size:12px;color:var(--t2);line-height:1.6">
+          ⚡ Estás abonando <strong id="aa-monto" style="color:var(--gold)">—</strong> ahora. El resto (<strong id="aa-resto" style="color:var(--red)">—</strong>) lo pagas al llegar a la cancha.
         </div>
         <div class="upload-zone" id="upload-zone" onclick="document.getElementById('file-input').click()">
           <div class="upload-ico">📎</div>
@@ -993,8 +1100,8 @@ footer{
 <!-- ENV: inyecta tus credenciales aquí antes de subir -->
 <script>
 window.ENV = {
-  SUPABASE_URL:      'https://laoipuyrbqhnkcredtag.supabase.co',
-  SUPABASE_ANON_KEY: 'sb_publishable_jh2DtwMpGx7wOgmAuD378A_iK2Z9MTt',
+  SUPABASE_URL:      'https://TU_PROYECTO.supabase.co',
+  SUPABASE_ANON_KEY: 'TU_ANON_KEY',
   WA_NUM: '573001234567',
 }
 </script>
@@ -1201,80 +1308,193 @@ function updateSummary() {
   }
 }
 
-// ── MODAL RESERVA ──────────────────────────────────────────────
+// Validar step 0 antes de avanzar
+window.validarStep0 = function() {
+  const nombre = document.getElementById('res-nombre').value.trim()
+  const tel    = document.getElementById('res-tel').value.trim()
+  if (!nombre) { 
+    document.getElementById('res-nombre').focus()
+    document.getElementById('res-nombre').style.borderColor='var(--red)'
+    showToast('⚠️ Ingresa tu nombre para continuar')
+    setTimeout(()=>document.getElementById('res-nombre').style.borderColor='',2000)
+    return
+  }
+  if (!tel) {
+    document.getElementById('res-tel').focus()
+    document.getElementById('res-tel').style.borderColor='var(--red)'
+    showToast('⚠️ Ingresa tu WhatsApp para continuar')
+    setTimeout(()=>document.getElementById('res-tel').style.borderColor='',2000)
+    return
+  }
+  goStep(1)
+}
+let selTipoPago = null   // 'full' | 'abono'
+let montoAbono  = 20000  // default, se actualiza desde configPago
+
 window.openReservaModal = function() {
   if (!selDate || !selSlot) return
   const dow = selDate.getDay()
-  const h = parseInt(selSlot)
+  const h   = parseInt(selSlot)
   document.getElementById('m-fecha').textContent  = `${DIAS[dow]} ${selDate.getDate()} de ${MESES[selDate.getMonth()]}`
   document.getElementById('m-hora').textContent   = `${selSlot} – ${String(h+1).padStart(2,'0')}:00`
   document.getElementById('m-precio').textContent = `$${selPrecio.toLocaleString('es-CO')}`
   document.getElementById('m-precio2').textContent= `$${selPrecio.toLocaleString('es-CO')}`
+
+  // Cargar monto de abono desde config
+  montoAbono = configPago?.abono_minimo || 20000
+
+  // Actualizar cards de abono
+  document.getElementById('ac-full-price').textContent  = `$${selPrecio.toLocaleString('es-CO')}`
+  document.getElementById('ac-abono-price').textContent = `$${montoAbono.toLocaleString('es-CO')}`
+  const resto = selPrecio - montoAbono
+  document.getElementById('ac-resto-inline').textContent = `$${resto.toLocaleString('es-CO')}`
+  document.getElementById('arb-total').textContent  = `$${selPrecio.toLocaleString('es-CO')}`
+  document.getElementById('arb-abono').textContent  = `$${montoAbono.toLocaleString('es-CO')}`
+  document.getElementById('arb-resto').textContent  = `$${resto.toLocaleString('es-CO')}`
+
+  // Reset selección
+  selTipoPago = null; selMetodo = null; uploadFile = null
+  ;['ac-full','ac-abono'].forEach(id => {
+    document.getElementById(id).classList.remove('selected-full','selected-abono')
+  })
+  document.getElementById('ab-full-badge').style.display='none'
+  document.getElementById('ab-abono-badge').style.display='none'
+  document.getElementById('metodo-section').style.display='none'
+  document.getElementById('abono-resto-box').classList.remove('show')
+  document.querySelectorAll('.metodo').forEach(m=>m.classList.remove('selected'))
+  document.getElementById('instrucciones-box').style.display='none'
+  const n2=document.getElementById('btn-next-2'); n2.disabled=true; n2.style.opacity='.4'; n2.style.cursor='not-allowed'
+
   goStep(0)
   document.getElementById('ov-reserva').classList.add('open')
 }
 
 window.closeReservaModal = function() {
   document.getElementById('ov-reserva').classList.remove('open')
-  selMetodo = null; uploadFile = null
+  selMetodo=null; uploadFile=null; selTipoPago=null
+  // Limpiar datos del cliente
+  const rn = document.getElementById('res-nombre'); if(rn) { rn.value=''; rn.style.borderColor='' }
+  const rt = document.getElementById('res-tel');    if(rt) { rt.value=''; rt.style.borderColor='' }
   document.querySelectorAll('.metodo').forEach(m=>m.classList.remove('selected'))
   document.getElementById('instrucciones-box').style.display='none'
   resetUpload()
   document.getElementById('efectivo-note').style.display='none'
-  const n2 = document.getElementById('btn-next-2')
-  n2.disabled=true; n2.style.opacity='.4'; n2.style.cursor='not-allowed'
+  document.getElementById('abono-aviso').style.display='none'
 }
 
 window.goStep = function(n) {
   document.querySelectorAll('.modal-step').forEach((el,i)=>el.classList.toggle('active',i===n))
-  const titles = ['Confirmar reserva','Método de pago','Sube tu comprobante']
+  const titles = ['Confirmar reserva','¿Cuánto pagas ahora?','Sube tu comprobante']
   document.getElementById('modal-step-title').textContent = titles[n]
-  ;['si-0','si-1','si-2'].forEach((id,i)=>{
-    const el=document.getElementById(id); el.classList.remove('current','done')
-    if(i<n) el.classList.add('done'); if(i===n) el.classList.add('current')
-  })
+  ;['si-0','si-1','si-2'].forEach((id,i)=>{ const el=document.getElementById(id); el.classList.remove('current','done'); if(i<n)el.classList.add('done'); if(i===n)el.classList.add('current') })
   ;['sl-0','sl-1'].forEach((id,i)=>document.getElementById(id).classList.toggle('done',i<n))
   currentStep=n
+
+  // Al llegar al step 3, actualizar monto real
+  if (n===2) {
+    const montoReal = selTipoPago==='abono' ? montoAbono : selPrecio
+    document.getElementById('m-precio2').textContent = `$${montoReal.toLocaleString('es-CO')}`
+    document.getElementById('m-monto-label').textContent = selTipoPago==='abono' ? 'Abono ahora' : 'Total a pagar'
+    const aviso = document.getElementById('abono-aviso')
+    if (selTipoPago==='abono') {
+      aviso.style.display='block'
+      document.getElementById('aa-monto').textContent = `$${montoAbono.toLocaleString('es-CO')}`
+      document.getElementById('aa-resto').textContent = `$${(selPrecio-montoAbono).toLocaleString('es-CO')}`
+    } else {
+      aviso.style.display='none'
+    }
+  }
+}
+
+// ── SELECTOR ABONO ─────────────────────────────────────────────
+window.selectAbono = function(tipo) {
+  selTipoPago = tipo
+
+  // Estilos de cards
+  const cardFull  = document.getElementById('ac-full')
+  const cardAbono = document.getElementById('ac-abono')
+  cardFull.classList.remove('selected-full','selected-abono')
+  cardAbono.classList.remove('selected-full','selected-abono')
+
+  if (tipo==='full') {
+    cardFull.classList.add('selected-full')
+    document.getElementById('ab-full-badge').style.display='block'
+    document.getElementById('ab-abono-badge').style.display='none'
+    document.getElementById('abono-resto-box').classList.remove('show')
+    // Efectivo disponible para pago completo
+    document.getElementById('metodo-efectivo-btn').style.display='flex'
+  } else {
+    cardAbono.classList.add('selected-abono')
+    document.getElementById('ab-abono-badge').style.display='block'
+    document.getElementById('ab-full-badge').style.display='none'
+    document.getElementById('abono-resto-box').classList.add('show')
+    // Efectivo NO aplica para abono (necesita transferencia)
+    document.getElementById('metodo-efectivo-btn').style.display='none'
+    // Si tenía efectivo seleccionado, deseleccionar
+    if (selMetodo==='efectivo') {
+      selMetodo=null
+      document.querySelectorAll('.metodo').forEach(m=>m.classList.remove('selected'))
+      document.getElementById('instrucciones-box').style.display='none'
+      const n2=document.getElementById('btn-next-2'); n2.disabled=true; n2.style.opacity='.4'; n2.style.cursor='not-allowed'
+    }
+  }
+
+  // Mostrar sección de método
+  document.getElementById('metodo-section').style.display='block'
+  // Scroll suave al método
+  setTimeout(()=>document.getElementById('metodo-section').scrollIntoView({behavior:'smooth',block:'nearest'}),80)
+
+  // Habilitar continuar si ya tiene método también
+  if (selMetodo) {
+    const n2=document.getElementById('btn-next-2'); n2.disabled=false; n2.style.opacity='1'; n2.style.cursor='pointer'
+  }
 }
 
 // ── MÉTODO DE PAGO ─────────────────────────────────────────────
 const INSTRUCCIONES = {
   nequi: {
     title:'Pago por Nequi',
-    lines: () => [
-      'Abre tu app Nequi y selecciona "Enviar plata"',
-      `Número: <strong style="color:var(--neon)">${configPago.nequi_numero||'+57 300 123 4567'}</strong>`,
-      `Monto exacto: <strong style="color:var(--neon)">$${selPrecio.toLocaleString('es-CO')}</strong>`,
-      'En el concepto: tu nombre y hora reservada',
-      'Toma captura del comprobante',
-    ]
+    lines: () => {
+      const monto = selTipoPago==='abono' ? montoAbono : selPrecio
+      return [
+        'Abre tu app Nequi → "Enviar plata"',
+        `Número: <strong style="color:var(--neon)">${configPago.nequi_numero||'+57 300 123 4567'}</strong>`,
+        `Monto ${selTipoPago==='abono'?'del abono':'exacto'}: <strong style="color:var(--neon)">$${monto.toLocaleString('es-CO')}</strong>`,
+        'Concepto: tu nombre y la hora reservada',
+        'Toma captura del comprobante',
+      ]
+    }
   },
   bancolombia: {
     title:'Transferencia Bancolombia',
-    lines: () => [
-      `Banco: <strong style="color:var(--neon)">${configPago.banco_nombre||'Bancolombia'}</strong>`,
-      `Cuenta Ahorros: <strong style="color:var(--neon)">${configPago.banco_cuenta||'123-456789-00'}</strong>`,
-      `Titular: <strong style="color:var(--neon)">${configPago.banco_titular||'Cancha de la 16'}</strong>`,
-      `Monto exacto: <strong style="color:var(--neon)">$${selPrecio.toLocaleString('es-CO')}</strong>`,
-      'Guarda el comprobante de la transferencia',
-    ]
+    lines: () => {
+      const monto = selTipoPago==='abono' ? montoAbono : selPrecio
+      return [
+        `Banco: <strong style="color:var(--neon)">${configPago.banco_nombre||'Bancolombia'}</strong>`,
+        `Cuenta Ahorros: <strong style="color:var(--neon)">${configPago.banco_cuenta||'123-456789-00'}</strong>`,
+        `Titular: <strong style="color:var(--neon)">${configPago.banco_titular||'Cancha de la 16'}</strong>`,
+        `Monto ${selTipoPago==='abono'?'del abono':'exacto'}: <strong style="color:var(--neon)">$${monto.toLocaleString('es-CO')}</strong>`,
+        'Guarda el comprobante de la transferencia',
+      ]
+    }
   },
   efectivo: {
     title:'Pago en efectivo',
     lines: () => [
-      'No necesitas hacer ninguna transferencia previa',
+      'No necesitas transferencia previa',
       'Llega <strong style="color:var(--neon)">10 minutos antes</strong> de tu hora',
-      'Cancela directamente en la cancha al encargado',
+      'Cancela el valor completo en la cancha',
       'Tu reserva se libera si no llegas en <strong>20 minutos</strong>',
     ]
   }
 }
 
 window.selectMetodo = function(btn, tipo) {
+  if (!selTipoPago) { showToast('⚠️ Primero elige cuánto quieres pagar'); return }
   document.querySelectorAll('.metodo').forEach(m=>m.classList.remove('selected'))
   btn.classList.add('selected')
   selMetodo = tipo
-  const box = document.getElementById('instrucciones-box')
+  const box  = document.getElementById('instrucciones-box')
   const inst = INSTRUCCIONES[tipo]
   box.style.display='block'
   box.innerHTML = `<div class="inst-title">${inst.title}</div>` + inst.lines().map(l=>`<div class="inst-line">${l}</div>`).join('')
@@ -1299,13 +1519,26 @@ function resetUpload() {
 }
 
 window.confirmarReserva = async function() {
-  const btn = document.getElementById('btn-confirmar')
-  btn.disabled=true; btn.textContent='Enviando...'
-  try {
-    const h    = parseInt(selSlot)
-    const fecha= selDate.toISOString().split('T')[0]
+  const btn    = document.getElementById('btn-confirmar')
+  const nombre = document.getElementById('res-nombre')?.value.trim() || ''
+  const tel    = document.getElementById('res-tel')?.value.trim()    || ''
 
-    // Upload comprobante si hay
+  if (!nombre || !tel) { showToast('⚠️ Faltan tus datos en el paso 1'); goStep(0); return }
+  if (!selTipoPago)    { showToast('⚠️ Elige cuánto quieres pagar'); goStep(1); return }
+  if (!selMetodo)      { showToast('⚠️ Selecciona el método de pago'); goStep(1); return }
+
+  btn.disabled = true; btn.textContent = 'Enviando...'
+  try {
+    const h     = parseInt(selSlot)
+    const fecha = selDate.toISOString().split('T')[0]
+    const tipoPagoFinal = selTipoPago || 'full'
+    const montoAbonoFinal = montoAbono || 20000
+    const restante = tipoPagoFinal === 'abono' ? (selPrecio - montoAbonoFinal) : 0
+
+    // Formato TIME estricto "HH:MM:SS" para PostgreSQL
+    const hiStr = String(h).padStart(2,'0')   + ':00:00'
+    const hfStr = String(h+1).padStart(2,'00') + ':00:00'
+
     let comprobante_url = null
     if (uploadFile) {
       const ext  = uploadFile.name.split('.').pop()
@@ -1315,31 +1548,37 @@ window.confirmarReserva = async function() {
       comprobante_url = path
     }
 
-    // Crear reserva
     const { error } = await sb.from('reservas').insert({
-      cliente_nombre: 'Reserva web',
+      cliente_nombre:  nombre,
+      cliente_tel:     tel,
       fecha,
-      hora_inicio: selSlot + ':00',
-      hora_fin:    String(h+1).padStart(2,'0') + ':00:00',
-      precio:      selPrecio,
-      metodo_pago: selMetodo,
-      estado:      'pendiente',
+      hora_inicio:     hiStr,
+      hora_fin:        hfStr,
+      precio:          selPrecio,
+      abono:           tipoPagoFinal === 'abono' ? montoAbonoFinal : selPrecio,
+      saldo_pendiente: restante,
+      metodo_pago:     selMetodo,
+      tipo_pago:       tipoPagoFinal,
+      tipo:            'normal',
+      estado:          'pendiente',
       comprobante_url,
     })
     if (error) throw error
 
-    // Actualizar estado local
-    if (!ocupados[selDayIdx]) ocupados[selDayIdx]=[]
+    if (!ocupados[selDayIdx]) ocupados[selDayIdx] = []
     ocupados[selDayIdx].push(selSlot)
-
     closeReservaModal()
-    selSlot=null; selPrecio=0
+    selSlot = null; selPrecio = 0
     renderSlots(); updateSummary()
-    showToast('🎉 ¡Reserva enviada! Te confirmamos pronto por WhatsApp.')
+    const msg = tipoPagoFinal === 'abono'
+      ? `🎉 ¡Listo ${nombre.split(' ')[0]}! Abono $${montoAbonoFinal.toLocaleString('es-CO')} enviado. Resto $${restante.toLocaleString('es-CO')} lo pagas en la cancha.`
+      : `🎉 ¡Listo ${nombre.split(' ')[0]}! Tu reserva está pendiente de confirmación.`
+    showToast(msg, 7000)
   } catch(e) {
-    showToast('❌ Error: ' + e.message)
+    console.error('[confirmarReserva]', e)
+    showToast('❌ ' + (e.message || 'Error al crear la reserva'))
   } finally {
-    btn.disabled=false; btn.innerHTML='✓ Confirmar reserva'
+    btn.disabled = false; btn.innerHTML = '✓ Confirmar reserva'
   }
 }
 
@@ -1368,29 +1607,40 @@ function buildHoraSelect() {
 window.submitFijo = async function() {
   const nombre = document.getElementById('fijo-nombre').value.trim()
   const tel    = document.getElementById('fijo-tel').value.trim()
-  const hora   = document.getElementById('fijo-hora').value
+  const hora   = document.getElementById('fijo-hora').value          // "07:00"
   const dias   = [...document.querySelectorAll('.dia-cb:checked')].map(c=>c.value)
-  const DIAS_DOW = {Lun:1,Mar:2,Mié:3,Jue:4,Vie:5,Sáb:6,Dom:0}
+  const DIAS_DOW = {Lun:1, Mar:2, 'Mié':3, Jue:4, Vie:5, 'Sáb':6, Dom:0}
 
-  if (!nombre||!tel||!hora||dias.length===0) {
-    showToast('⚠️ Completa todos los campos del formulario'); return
-  }
+  if (!nombre) { showToast('⚠️ Ingresa tu nombre'); return }
+  if (!tel)    { showToast('⚠️ Ingresa tu WhatsApp'); return }
+  if (dias.length === 0) { showToast('⚠️ Selecciona al menos un día'); return }
+
+  const h  = parseInt(hora.split(':')[0])
+  // Formato HH:MM:SS estricto para PostgreSQL TIME
+  const hi = String(h).padStart(2,'0')   + ':00:00'
+  const hf = String(h+1).padStart(2,'0') + ':00:00'
 
   const inserts = dias.map(d => ({
-    nombre, telefono: tel,
-    dia_semana: DIAS_DOW[d],
-    hora_inicio: hora + ':00',
-    hora_fin:    String(parseInt(hora)+1).padStart(2,'0')+':00:00',
-    estado: 'solicitud',
+    nombre,
+    telefono:    tel,
+    dia_semana:  DIAS_DOW[d],
+    hora_inicio: hi,
+    hora_fin:    hf,
+    personas:    10,
+    estado:      'solicitud',
   }))
 
   const { error } = await sb.from('clientes_fijos').insert(inserts)
-  if (error) { showToast('❌ Error: ' + error.message); return }
+  if (error) {
+    console.error('[submitFijo]', error)
+    showToast('❌ ' + error.message)
+    return
+  }
 
-  showToast(`✅ Solicitud enviada, ${nombre.split(' ')[0]}! Te confirmamos en 24h.`)
-  document.getElementById('fijo-nombre').value=''
-  document.getElementById('fijo-tel').value=''
-  document.querySelectorAll('.dia-cb').forEach(c=>c.checked=false)
+  showToast(`✅ ¡Solicitud enviada, ${nombre.split(' ')[0]}! Te confirmamos en 24h.`, 6000)
+  document.getElementById('fijo-nombre').value = ''
+  document.getElementById('fijo-tel').value    = ''
+  document.querySelectorAll('.dia-cb').forEach(c => c.checked = false)
 }
 
 // ── UTILS ──────────────────────────────────────────────────────
